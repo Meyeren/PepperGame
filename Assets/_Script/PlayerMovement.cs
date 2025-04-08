@@ -73,6 +73,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 direction = moveAction.ReadValue<Vector2>();
 
+
         rb.linearVelocity = new Vector3(direction.x * Speed, rb.linearVelocity.y, direction.y * Speed);
     }
 
