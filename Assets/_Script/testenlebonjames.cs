@@ -4,12 +4,23 @@ using UnityEngine.AI;
 public class MoveTo : MonoBehaviour
 {
 
-    public Transform goal;
+    NavMeshAgent agent;
 
     void Start()
     {
-        NavMeshAgent agent = GetComponent<NavMeshAgent>();
-        agent.destination = goal.position;
+        agent = GetComponent<NavMeshAgent>();
+    }
+    void Update()
+    {
+        if (Input.GetButton("Jump"))
+        {
+            RaycastHit hit;
+
+            if (Physics.Raycast(Component.CompareTag("Player"), out hit, 100))
+            {
+                agent.destination = hit.point;
+            }
+        }
     }
 }
 
