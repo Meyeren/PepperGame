@@ -1,4 +1,4 @@
-using System.Net.Mime;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -9,18 +9,28 @@ public class PlayerMovement : MonoBehaviour
     PlayerInput input;
     InputAction moveAction;
     InputAction jumpAction;
+    InputAction lookAction;
+    InputAction dashAction;
+
     Transform groundCheck;
     LayerMask groundLayer;
+    Transform cam;
 
     [SerializeField] float Speed = 8.0f;
 
     [SerializeField] float Stamina = 100f;
+
+    [SerializeField] float sensitivity = 100f;
+    float Xrotation;
 
     [SerializeField] float jumpPower = 15.0f;
     [SerializeField] float fallStop = 1.0f;
     [SerializeField] float fallSpeed = 1.0f;
     [SerializeField] float jumpCost = 50f;
     [SerializeField] float staminaRegenAmount = 10f;
+
+    [SerializeField] float dashCost = 100f;
+    [SerializeField] float dashSpeed = 20f;
 
     Slider staminaSlider;
     CanvasGroup staminaCanvasGroup;
@@ -36,12 +46,17 @@ public class PlayerMovement : MonoBehaviour
 
         moveAction = input.actions.FindAction("Move");
         jumpAction = input.actions.FindAction("Jump");
+        lookAction = input.actions.FindAction("Look");
+        dashAction = input.actions.FindAction("Dash");
 
         groundCheck = transform.Find("GroundCheck");
         groundLayer = LayerMask.GetMask("Ground");
 
         Stamina = 100f;
 
+        cam = Camera.main.transform;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
 
     }
 
@@ -49,7 +64,10 @@ public class PlayerMovement : MonoBehaviour
     {
         HandleJump();
         StaminaRegen();
-        
+        RotatePlayer();
+        Dash();
+
+
         staminaSlider.value = Stamina;
         if (Stamina == 100)
         {
@@ -72,9 +90,24 @@ public class PlayerMovement : MonoBehaviour
     private void MovePlayer()
     {
         Vector2 direction = moveAction.ReadValue<Vector2>();
+        direction.Normalize();
+        
+        Vector3 move = transform.right * direction.x + transform.forward * direction.y;
+        rb.linearVelocity = new Vector3(move.x * Speed, rb.linearVelocity.y, move.z * Speed);
 
+    }
 
-        rb.linearVelocity = new Vector3(direction.x * Speed, rb.linearVelocity.y, direction.y * Speed);
+    void RotatePlayer()
+    {
+        Vector2 rotation = lookAction.ReadValue<Vector2>();
+        rotation.Normalize();
+
+        transform.Rotate(Vector3.up * rotation.x * sensitivity * Time.deltaTime);
+        
+        Xrotation -= rotation.y * sensitivity * Time.deltaTime;
+        Xrotation = Mathf.Clamp(Xrotation, -20f, 20f);
+
+        cam.localRotation = Quaternion.Euler(Xrotation, 0f, 0f);
     }
 
     bool IsGrounded()
@@ -95,9 +128,24 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void Dash()
+    {
+        Debug.Log(dashAction.triggered);
+        if (dashAction.triggered && Stamina >= dashCost)
+        {
+            Debug.Log("Dash");
+            Stamina -= dashCost;
+            Vector3 dashDirection = cam.transform.forward;
+            dashDirection.y = 0f;
+            dashDirection.Normalize();
+
+            transform.Translate(dashDirection * dashSpeed);
+        }
+    }
+
     void StaminaRegen()
     {
-        if (IsGrounded() && Stamina > 0f)
+        if (IsGrounded() && Stamina >= 0f)
         {
             Stamina += staminaRegenAmount * Time.deltaTime;
             Stamina = Mathf.Clamp(Stamina, 0, 100);
