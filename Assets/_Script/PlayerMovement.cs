@@ -147,7 +147,6 @@ public class PlayerMovement : MonoBehaviour
         }
         if (jumpAction.WasReleasedThisFrame() && rb.linearVelocity.y > 0f)
         {
-            Debug.Log("RElese");
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y * fallStop - fallSpeed, rb.linearVelocity.z);
         }
     }
@@ -174,7 +173,8 @@ public class PlayerMovement : MonoBehaviour
 
         while (elapsedTime < dashLength && isDashing)
         {
-            transform.Translate(dashDirection * dashSpeed * Time.deltaTime, Space.World);
+            rb.MovePosition(rb.position + dashDirection * dashSpeed * Time.deltaTime);
+            //transform.Translate(dashDirection * dashSpeed * Time.deltaTime, Space.World);
             elapsedTime += Time.deltaTime;
             yield return null;
         }

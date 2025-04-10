@@ -16,10 +16,10 @@ public class MoveTo : MonoBehaviour
         {
             RaycastHit hit;
 
-            if (Physics.Raycast(Component.CompareTag("Player"), out hit, 100))
+            /*if (Physics.Raycast(Component.CompareTag("Player"), out hit, 100))
             {
                 agent.destination = hit.point;
-            }
+            }*/
         }
     }
 }
