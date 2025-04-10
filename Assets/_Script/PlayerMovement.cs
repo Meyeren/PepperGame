@@ -29,6 +29,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float fallSpeed = 1.0f;
     [SerializeField] float jumpCost = 50f;
     [SerializeField] float staminaRegenAmount = 10f;
+    [SerializeField] float fallgravity = 15f;
 
     [SerializeField] float dashCost = 100f;
     [SerializeField] float dashSpeed = 20f;
@@ -67,10 +68,9 @@ public class PlayerMovement : MonoBehaviour
     private void Update()
     {
         RotatePlayer();
-        if (IsGrounded() && jumpAction.triggered && Stamina >= jumpCost)
-        {
-            HandleJump();
-        }
+
+        HandleJump();
+        
         if (dashAction.triggered && Stamina >= dashCost && !isDashing)
         {
             StartDash();
@@ -132,11 +132,22 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleJump()
     {
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x,jumpPower, rb.linearVelocity.z);
-        Stamina -= jumpCost;
-        
+        if (IsGrounded() && jumpAction.triggered && Stamina >= jumpCost)
+        {
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpPower, rb.linearVelocity.z);
+            Stamina -= jumpCost;
+        }
+        if (rb.linearVelocity.y > 0f)
+        {
+            Physics.gravity = new Vector3(0, -fallgravity, 0);
+        }
+        else
+        {
+            Physics.gravity = new Vector3(0, -9.81f, 0);
+        }
         if (jumpAction.WasReleasedThisFrame() && rb.linearVelocity.y > 0f)
         {
+            Debug.Log("RElese");
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y * fallStop - fallSpeed, rb.linearVelocity.z);
         }
     }
@@ -147,6 +158,10 @@ public class PlayerMovement : MonoBehaviour
         isDashing = true;
 
         Vector3 dashDirection = rb.linearVelocity;
+        if (dashDirection.magnitude < 0.01f)
+        {
+            dashDirection = transform.forward;
+        }
         dashDirection.y = 0f;
         dashDirection.Normalize();
 
