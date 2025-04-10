@@ -1,3 +1,4 @@
+using System.Collections;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -31,6 +32,8 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] float dashCost = 100f;
     [SerializeField] float dashSpeed = 20f;
+    [SerializeField] float dashLength = 10f;
+    bool isDashing;
 
     Slider staminaSlider;
     CanvasGroup staminaCanvasGroup;
@@ -58,17 +61,28 @@ public class PlayerMovement : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
+        isDashing = false;
     }
 
     private void Update()
     {
-        HandleJump();
-        StaminaRegen();
         RotatePlayer();
-        Dash();
+        if (IsGrounded() && jumpAction.triggered && Stamina >= jumpCost)
+        {
+            HandleJump();
+        }
+        if (dashAction.triggered && Stamina >= dashCost && !isDashing)
+        {
+            StartDash();
+        }
 
 
-        staminaSlider.value = Stamina;
+            staminaSlider.value = Stamina;
+
+        if (IsGrounded() && Stamina >= 0f)
+        {
+            StaminaRegen();
+        }
         if (Stamina == 100)
         {
             FadeOutStaminaBar();
@@ -83,6 +97,7 @@ public class PlayerMovement : MonoBehaviour
     private void FixedUpdate()
     {
         MovePlayer();
+
     }
 
 
@@ -117,29 +132,47 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleJump()
     {
-        if (IsGrounded() && jumpAction.triggered && Stamina >= jumpCost)
-        {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x,jumpPower, rb.linearVelocity.z);
-            Stamina -= jumpCost;
-        }
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x,jumpPower, rb.linearVelocity.z);
+        Stamina -= jumpCost;
+        
         if (jumpAction.WasReleasedThisFrame() && rb.linearVelocity.y > 0f)
         {
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y * fallStop + (-fallSpeed), rb.linearVelocity.z);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y * fallStop - fallSpeed, rb.linearVelocity.z);
         }
     }
 
-    void Dash()
+    void StartDash()
     {
-        Debug.Log(dashAction.triggered);
-        if (dashAction.triggered && Stamina >= dashCost)
-        {
-            Debug.Log("Dash");
-            Stamina -= dashCost;
-            Vector3 dashDirection = cam.transform.forward;
-            dashDirection.y = 0f;
-            dashDirection.Normalize();
+        Stamina -= dashCost;
+        isDashing = true;
 
-            transform.Translate(dashDirection * dashSpeed);
+        Vector3 dashDirection = rb.linearVelocity;
+        dashDirection.y = 0f;
+        dashDirection.Normalize();
+
+        StartCoroutine(Dash(dashDirection));
+    }    
+
+    IEnumerator Dash(Vector3 dashDirection)
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < dashLength && isDashing)
+        {
+            transform.Translate(dashDirection * dashSpeed * Time.deltaTime, Space.World);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+        isDashing = false;
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        
+        if (collision.gameObject.CompareTag("Wall"))
+        {
+            isDashing = false;
+            
         }
     }
 
