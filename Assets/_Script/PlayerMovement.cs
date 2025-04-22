@@ -13,16 +13,12 @@ public class PlayerMovement : MonoBehaviour
     InputAction lookAction;
     InputAction dashAction;
 
-    FootstepAudio footstepAudio;
-
     Transform groundCheck;
     LayerMask groundLayer;
     Transform cam;
 
     [SerializeField] float Speed = 8.0f;
-
     [SerializeField] float Stamina = 100f;
-
     [SerializeField] float sensitivity = 100f;
     float Xrotation;
 
@@ -41,6 +37,8 @@ public class PlayerMovement : MonoBehaviour
     Slider staminaSlider;
     CanvasGroup staminaCanvasGroup;
 
+    FootstepAudio footstepAudio;
+
     private void Start()
     {
         staminaSlider = GameObject.Find("StaminaBar").GetComponent<Slider>();
@@ -49,7 +47,6 @@ public class PlayerMovement : MonoBehaviour
 
         input = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody>();
-        footstepAudio = GetComponentInChildren<FootstepAudio>();
 
         moveAction = input.actions.FindAction("Move");
         jumpAction = input.actions.FindAction("Jump");
@@ -59,33 +56,32 @@ public class PlayerMovement : MonoBehaviour
         groundCheck = transform.Find("GroundCheck");
         groundLayer = LayerMask.GetMask("Ground");
 
-        
-
         cam = Camera.main.transform;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
         isDashing = false;
+
+        footstepAudio = GetComponentInChildren<FootstepAudio>();
     }
 
     private void Update()
     {
         RotatePlayer();
-
         HandleJump();
-        
+
         if (dashAction.triggered && Stamina >= dashCost && !isDashing)
         {
             StartDash();
         }
 
-
-            staminaSlider.value = Stamina;
+        staminaSlider.value = Stamina;
 
         if (IsGrounded() && Stamina >= 0f)
         {
             StaminaRegen();
         }
+
         if (Stamina == 100)
         {
             FadeOutStaminaBar();
@@ -94,25 +90,25 @@ public class PlayerMovement : MonoBehaviour
         {
             staminaCanvasGroup.alpha = 1f;
         }
-        
+
+        if (IsGrounded() && footstepAudio.isJumping)
+        {
+            footstepAudio.SetJumping(false);
+        }
     }
 
     private void FixedUpdate()
     {
         MovePlayer();
-
     }
-
-
 
     private void MovePlayer()
     {
         Vector2 direction = moveAction.ReadValue<Vector2>();
         direction.Normalize();
-        
+
         Vector3 move = transform.right * direction.x + transform.forward * direction.y;
         rb.linearVelocity = new Vector3(move.x * Speed, rb.linearVelocity.y, move.z * Speed);
-
     }
 
     void RotatePlayer()
@@ -121,7 +117,7 @@ public class PlayerMovement : MonoBehaviour
         rotation.Normalize();
 
         transform.Rotate(Vector3.up * rotation.x * sensitivity * Time.deltaTime);
-        
+
         Xrotation -= rotation.y * sensitivity * Time.deltaTime;
         Xrotation = Mathf.Clamp(Xrotation, -20f, 20f);
 
@@ -141,6 +137,7 @@ public class PlayerMovement : MonoBehaviour
             Stamina -= jumpCost;
             footstepAudio.SetJumping(true);
         }
+
         if (rb.linearVelocity.y > 0f)
         {
             Physics.gravity = new Vector3(0, -fallgravity, 0);
@@ -149,13 +146,10 @@ public class PlayerMovement : MonoBehaviour
         {
             Physics.gravity = new Vector3(0, -9.81f, 0);
         }
+
         if (jumpAction.WasReleasedThisFrame() && rb.linearVelocity.y > 0f)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y * fallStop - fallSpeed, rb.linearVelocity.z);
-            if (IsGrounded())
-            {
-                footstepAudio.SetJumping(false);
-            }
         }
     }
 
@@ -170,16 +164,17 @@ public class PlayerMovement : MonoBehaviour
         {
             dashDirection = transform.forward;
         }
+
         dashDirection.y = 0f;
         dashDirection.Normalize();
 
         StartCoroutine(Dash(dashDirection));
+
         if (Gamepad.current != null)
         {
             Gamepad.current.SetMotorSpeeds(0.5f, 1f);
         }
-            
-    }    
+    }
 
     IEnumerator Dash(Vector3 dashDirection)
     {
@@ -191,18 +186,18 @@ public class PlayerMovement : MonoBehaviour
             elapsedTime += Time.deltaTime;
             yield return null;
         }
+
         isDashing = false;
         footstepAudio.SetDashing(false);
+
         if (Gamepad.current != null)
         {
             Gamepad.current.SetMotorSpeeds(0f, 0f);
         }
-        
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        
         if (collision.gameObject.CompareTag("Wall"))
         {
             isDashing = false;
