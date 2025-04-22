@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     InputAction lookAction;
     InputAction dashAction;
 
+    FootstepAudio footstepAudio;
+
     Transform groundCheck;
     LayerMask groundLayer;
     Transform cam;
@@ -47,6 +49,7 @@ public class PlayerMovement : MonoBehaviour
 
         input = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody>();
+        footstepAudio = GetComponentInChildren<FootstepAudio>();
 
         moveAction = input.actions.FindAction("Move");
         jumpAction = input.actions.FindAction("Jump");
@@ -136,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpPower, rb.linearVelocity.z);
             Stamina -= jumpCost;
+            footstepAudio.SetJumping(true);
         }
         if (rb.linearVelocity.y > 0f)
         {
@@ -148,6 +152,10 @@ public class PlayerMovement : MonoBehaviour
         if (jumpAction.WasReleasedThisFrame() && rb.linearVelocity.y > 0f)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y * fallStop - fallSpeed, rb.linearVelocity.z);
+            if (IsGrounded())
+            {
+                footstepAudio.SetJumping(false);
+            }
         }
     }
 
@@ -155,6 +163,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Stamina -= dashCost;
         isDashing = true;
+        footstepAudio.SetDashing(true);
 
         Vector3 dashDirection = rb.linearVelocity;
         if (dashDirection.magnitude < 0.01f)
@@ -183,6 +192,7 @@ public class PlayerMovement : MonoBehaviour
             yield return null;
         }
         isDashing = false;
+        footstepAudio.SetDashing(false);
         if (Gamepad.current != null)
         {
             Gamepad.current.SetMotorSpeeds(0f, 0f);
@@ -196,7 +206,7 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             isDashing = false;
-            
+            footstepAudio.SetDashing(false);
         }
     }
 
