@@ -1,25 +1,22 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-public class MoveTo : MonoBehaviour
+public class EnemyMovement : MonoBehaviour
 {
-
-    NavMeshAgent agent;
+    public Transform player;
+    private NavMeshAgent agent;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
+        player = GameObject.FindGameObjectWithTag("Player").transform;
     }
+
     void Update()
     {
-        if (Input.GetButton("Jump"))
+        if (player != null)
         {
-            RaycastHit hit;
-
-            /*if (Physics.Raycast(Component.CompareTag("Player"), out hit, 100))
-            {
-                agent.destination = hit.point;
-            }*/
+            agent.destination = player.position;
         }
     }
 }
