@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 600, y: -300}
+  m_AnchoredPosition: {x: 0, y: -522}
   m_SizeDelta: {x: 160, y: 20}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6803436105751994340
@@ -146,7 +146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.3168979, g: 0.43267745, b: 0.9245283, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5372549}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -209,6 +209,7 @@ GameObject:
   - component: {fileID: 5718231501293312219}
   - component: {fileID: 2657752924298218969}
   - component: {fileID: 2245757569264895010}
+  - component: {fileID: 6377123449839773518}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -326,10 +327,11 @@ MonoBehaviour:
   Stamina: 100
   sensitivity: 50
   jumpPower: 8
-  fallStop: 0.75
-  fallSpeed: 2
+  fallStop: 0.8
+  fallSpeed: 2.5
   jumpCost: 50
   staminaRegenAmount: 50
+  fallgravity: 20
   dashCost: 100
   dashSpeed: 30
   dashLength: 0.3
@@ -357,9 +359,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 112
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &2245757569264895010
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -470,6 +472,19 @@ MonoBehaviour:
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &6377123449839773518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4113169107202744185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9637a9c0e0b021745a17349af73743cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerHealth: 100
 --- !u!1 &5218155034691325555
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,8 +518,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0.25}
   m_AnchorMax: {x: 1, y: 0.75}
-  m_AnchoredPosition: {x: 54.07357, y: 34.0981}
-  m_SizeDelta: {x: 98.1472, y: 68.1962}
+  m_AnchoredPosition: {x: 0, y: -10.516}
+  m_SizeDelta: {x: 1760, y: 31.031}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &7069333648198691616
 GameObject:

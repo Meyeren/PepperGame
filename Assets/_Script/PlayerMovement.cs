@@ -56,7 +56,7 @@ public class PlayerMovement : MonoBehaviour
         groundCheck = transform.Find("GroundCheck");
         groundLayer = LayerMask.GetMask("Ground");
 
-        Stamina = 100f;
+        
 
         cam = Camera.main.transform;
         Cursor.lockState = CursorLockMode.Locked;
@@ -165,6 +165,11 @@ public class PlayerMovement : MonoBehaviour
         dashDirection.Normalize();
 
         StartCoroutine(Dash(dashDirection));
+        if (Gamepad.current != null)
+        {
+            Gamepad.current.SetMotorSpeeds(0.5f, 1f);
+        }
+            
     }    
 
     IEnumerator Dash(Vector3 dashDirection)
@@ -174,11 +179,15 @@ public class PlayerMovement : MonoBehaviour
         while (elapsedTime < dashLength && isDashing)
         {
             rb.MovePosition(rb.position + dashDirection * dashSpeed * Time.deltaTime);
-            //transform.Translate(dashDirection * dashSpeed * Time.deltaTime, Space.World);
             elapsedTime += Time.deltaTime;
             yield return null;
         }
         isDashing = false;
+        if (Gamepad.current != null)
+        {
+            Gamepad.current.SetMotorSpeeds(0f, 0f);
+        }
+        
     }
 
     private void OnCollisionEnter(Collision collision)
