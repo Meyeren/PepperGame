@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(AudioSource))]
 public class FootstepAudio : MonoBehaviour
@@ -15,11 +16,20 @@ public class FootstepAudio : MonoBehaviour
     public float groundCheckDistance = 0.2f;
     public Transform groundCheck;
 
+    [Header("Vibration Settings")]
+    public float footstepVibrationIntensity = 0.2f;
+    public float footstepVibrationDuration = 0.1f;
+
+    public float jumpVibrationIntensity = 0.3f;
+    public float jumpVibrationDuration = 0.15f;
+
+    public float landVibrationIntensity = 0.4f;
+    public float landVibrationDuration = 0.2f;
+
     private AudioSource audioSource;
     private float stepTimer;
-
-    bool isJumping = false;
-    bool isDashing = false;
+    private bool wasGrounded = true;
+    public bool isJumping = false;
 
     void Start()
     {
@@ -41,7 +51,17 @@ public class FootstepAudio : MonoBehaviour
     {
         if (footstepClip == null || playerRigidbody == null) return;
 
-        if (!IsGrounded() || isJumping || isDashing)
+        bool grounded = IsGrounded();
+
+        if (!wasGrounded && grounded && isJumping)
+        {
+            TriggerVibration(landVibrationIntensity, landVibrationDuration);
+            isJumping = false;
+        }
+
+        wasGrounded = grounded;
+
+        if (!grounded || isJumping)
         {
             stepTimer = 0f;
             return;
@@ -57,6 +77,7 @@ public class FootstepAudio : MonoBehaviour
             if (stepTimer <= 0f)
             {
                 PlayFootstep();
+                TriggerVibration(footstepVibrationIntensity, footstepVibrationDuration);
                 stepTimer = stepInterval;
             }
         }
@@ -72,18 +93,37 @@ public class FootstepAudio : MonoBehaviour
         audioSource.PlayOneShot(footstepClip);
     }
 
-    bool IsGrounded()
+    public bool IsGrounded()
     {
         return Physics.Raycast(groundCheck.position, Vector3.down, groundCheckDistance, groundLayer);
     }
 
     public void SetJumping(bool state)
     {
+        if (!isJumping && state)
+        {
+            TriggerVibration(jumpVibrationIntensity, jumpVibrationDuration);
+        }
         isJumping = state;
     }
 
     public void SetDashing(bool state)
     {
-        isDashing = state;
+        // Optional: can disable footsteps here if needed
+    }
+
+    void TriggerVibration(float intensity, float duration)
+    {
+        if (Gamepad.current != null)
+        {
+            StartCoroutine(Vibrate(intensity, duration));
+        }
+    }
+
+    System.Collections.IEnumerator Vibrate(float intensity, float duration)
+    {
+        Gamepad.current.SetMotorSpeeds(intensity, intensity);
+        yield return new WaitForSeconds(duration);
+        Gamepad.current.SetMotorSpeeds(0f, 0f);
     }
 }
