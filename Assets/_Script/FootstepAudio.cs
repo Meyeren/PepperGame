@@ -55,7 +55,7 @@ public class FootstepAudio : MonoBehaviour
 
         if (!wasGrounded && grounded && isJumping)
         {
-            TriggerVibration(landVibrationIntensity, landVibrationDuration);
+            
             isJumping = false;
         }
 
@@ -77,7 +77,7 @@ public class FootstepAudio : MonoBehaviour
             if (stepTimer <= 0f)
             {
                 PlayFootstep();
-                TriggerVibration(footstepVibrationIntensity, footstepVibrationDuration);
+                
                 stepTimer = stepInterval;
             }
         }
@@ -102,7 +102,7 @@ public class FootstepAudio : MonoBehaviour
     {
         if (!isJumping && state)
         {
-            TriggerVibration(jumpVibrationIntensity, jumpVibrationDuration);
+            
         }
         isJumping = state;
     }
@@ -112,18 +112,5 @@ public class FootstepAudio : MonoBehaviour
         // Optional: can disable footsteps here if needed
     }
 
-    void TriggerVibration(float intensity, float duration)
-    {
-        if (Gamepad.current != null)
-        {
-            StartCoroutine(Vibrate(intensity, duration));
-        }
-    }
-
-    System.Collections.IEnumerator Vibrate(float intensity, float duration)
-    {
-        Gamepad.current.SetMotorSpeeds(intensity, intensity);
-        yield return new WaitForSeconds(duration);
-        Gamepad.current.SetMotorSpeeds(0f, 0f);
-    }
+    
 }

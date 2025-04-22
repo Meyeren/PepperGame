@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: d41f89a84e1afcb4eb07745d06294413
+guid: fb5394623c773d44cbf6f166304e4329
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -31,11 +31,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Foward
+      name: BackWard
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 18
+      lastFrame: 22
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
