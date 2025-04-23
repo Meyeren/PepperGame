@@ -1,13 +1,14 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using TMPro;
 
 public class ShopManager : MonoBehaviour
 {
     [Header("Shop Items")]
     public GameObject[] shopItems; // De tre shop-items
     public Image[] highlightFrames; // UI-billeder til highlighting
-    public Text descriptionText;
+    public TextMeshProUGUI descriptionText;
 
     [Header("References")]
     public GameObject shopUI;

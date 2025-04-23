@@ -41,6 +41,13 @@ public class PlayerMovement : MonoBehaviour
 
     FootstepAudio footstepAudio;
 
+    private bool canMove = true;
+
+    public void SetCanMove(bool value)
+    {
+        canMove = value;
+    }
+
     private void Start()
     {
         staminaSlider = GameObject.Find("StaminaBar").GetComponent<Slider>();
@@ -71,6 +78,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (!canMove) return;
+
         RotatePlayer();
         HandleJump();
 
@@ -103,6 +112,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!canMove) return;
+
         MovePlayer();
     }
 
@@ -110,7 +121,6 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 direction = moveAction.ReadValue<Vector2>();
         direction.Normalize();
-
 
         Vector3 move = transform.right * direction.x + transform.forward * direction.y;
         rb.linearVelocity = new Vector3(move.x * Speed, rb.linearVelocity.y, move.z * Speed);
@@ -125,8 +135,6 @@ public class PlayerMovement : MonoBehaviour
         {
             animator.SetBool("isIdling", false);
         }
-
-        
     }
 
     void RotatePlayer()
@@ -173,7 +181,6 @@ public class PlayerMovement : MonoBehaviour
         if (jumpAction.WasReleasedThisFrame() && rb.linearVelocity.y > 0f)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y * fallStop - fallSpeed, rb.linearVelocity.z);
-            
         }
     }
 
