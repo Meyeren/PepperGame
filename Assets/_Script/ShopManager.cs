@@ -8,10 +8,10 @@ public class ShopManager : MonoBehaviour
     [Header("Shop Items")]
     public GameObject[] shopItems; // De tre shop-items
     public Image[] highlightFrames; // UI-billeder til highlighting
-    public TextMeshProUGUI descriptionText;
+    public TextMeshProUGUI descriptionText; // <- her indsætter du din desc Text i Inspector
 
     [Header("References")]
-    public GameObject shopUI;
+    public GameObject shopUI; // <- dette skal være hele din shop canvas/panel
     public Camera shopCamera;
     public Camera mainCamera;
     public Transform shopSpawnPoint;
@@ -24,14 +24,14 @@ public class ShopManager : MonoBehaviour
 
     void Start()
     {
-        shopUI.SetActive(false);
+        shopUI.SetActive(false); // shop skjult fra start
         shopCamera.enabled = false;
         mainCamera.enabled = true;
     }
 
     void Update()
     {
-        // Midlertidig: tryk på L for at åbne shop (simuler runde er færdig)
+        // Åbn shop når man trykker L
         if (Keyboard.current.lKey.wasPressedThisFrame && !shopOpen)
         {
             OpenShop();
@@ -39,7 +39,7 @@ public class ShopManager : MonoBehaviour
 
         if (!shopOpen) return;
 
-        // Controller navigation
+        // Controller navigation (venstre analog)
         Vector2 nav = Gamepad.current?.leftStick.ReadValue() ?? Vector2.zero;
 
         if (Time.time - lastInputTime > inputCooldown)
@@ -58,8 +58,8 @@ public class ShopManager : MonoBehaviour
             }
         }
 
-        // Vælg item med controller
-        if (Gamepad.current?.buttonSouth.wasPressedThisFrame == true) // A-knap
+        // Vælg med controller (A-knap)
+        if (Gamepad.current?.buttonSouth.wasPressedThisFrame == true)
         {
             SelectItem();
         }
@@ -70,7 +70,7 @@ public class ShopManager : MonoBehaviour
         shopOpen = true;
         selectedIndex = 0;
 
-        // Flyt shoppen til midten
+        // Flyt hele shop-objektet til spawnpunktet (hvis nødvendigt)
         transform.position = shopSpawnPoint.position;
 
         shopUI.SetActive(true);
@@ -80,7 +80,18 @@ public class ShopManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        playerMovement.SetCanMove(false);
+        if (playerMovement != null)
+        {
+            playerMovement.SetCanMove(false);
+        }
+
+        // 🔍 Debug + aktiver items
+        foreach (var item in shopItems)
+        {
+            Debug.Log("Aktiverer: " + item.name);
+            item.SetActive(true);
+        }
+
         UpdateSelection();
     }
 
@@ -90,7 +101,8 @@ public class ShopManager : MonoBehaviour
 
         CloseShop();
 
-        // Start næste bølge (her kan du kalde din wave manager)
+        // HER kan du kalde fx:
+        // FindObjectOfType<WaveManager>().StartNextWave();
     }
 
     public void CloseShop()
@@ -103,7 +115,10 @@ public class ShopManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        playerMovement.SetCanMove(true);
+        if (playerMovement != null)
+        {
+            playerMovement.SetCanMove(true);
+        }
     }
 
     private void UpdateSelection()
