@@ -8,6 +8,7 @@ TagManager:
   - Weak
   - Strong
   - Boss
+  - Sword
   layers:
   - Default
   - TransparentFX
