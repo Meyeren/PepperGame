@@ -7,14 +7,14 @@ using System.Collections;
 public class ShopManager : MonoBehaviour
 {
     [Header("Shop Items")]
-    public GameObject[] shopItems; // De tre shop-items
-    public Image[] highlightFrames; // UI-billeder til highlighting
-    public TextMeshProUGUI descriptionText; // Text-felt til beskrivelse
+    public GameObject[] shopItems;
+    public Image[] highlightFrames;
+    public TextMeshProUGUI descriptionText;
 
     [Header("References")]
-    public GameObject shopUI; // Canvas/panel for shoppen
+    public GameObject shopUI;
     public Camera mainCamera;
-    public Transform shopCameraTarget; // Hvor kamera skal hen ved shop
+    public Transform shopCameraTarget;
     public Transform shopSpawnPoint;
     public PlayerMovement playerMovement;
 
@@ -25,6 +25,7 @@ public class ShopManager : MonoBehaviour
     private float inputCooldown = 0.3f;
     private float lastInputTime;
     private bool shopOpen = false;
+    private bool isReturningToPlayer = false; // NY: Tjekker om kamera er i gang med at returnere
     private Coroutine cameraTransition;
 
     private Vector3 mainCamSavedPosition;
@@ -32,12 +33,12 @@ public class ShopManager : MonoBehaviour
 
     void Start()
     {
-        shopUI.SetActive(false); // Shop skjult fra start
+        shopUI.SetActive(false);
     }
 
     void Update()
     {
-        if (Keyboard.current.lKey.wasPressedThisFrame && !shopOpen)
+        if (Keyboard.current.lKey.wasPressedThisFrame && !shopOpen && !isReturningToPlayer)
         {
             OpenShop();
         }
@@ -72,28 +73,26 @@ public class ShopManager : MonoBehaviour
     {
         shopOpen = true;
         selectedIndex = 0;
+        isReturningToPlayer = false;
 
-        // GEM kamera-position FØRST (før alt andet)
+        // Gem kamera-position FØR bevægelse låses
         mainCamSavedPosition = mainCamera.transform.position;
         mainCamSavedRotation = mainCamera.transform.rotation;
 
-        // Lås bevægelse HELT (inkl. fjern input/velocity)
+        // Frys spilleren HELT
         if (playerMovement != null)
         {
-            playerMovement.SetCanMove(false);
-            playerMovement.FreezePlayerImmediately(); // Kræver denne metode i PlayerMovement
+            playerMovement.FreezePlayerImmediately();
         }
 
-        // Flyt shop prefab til spawnpunkt
         transform.position = shopSpawnPoint.position;
-
         shopUI.SetActive(true);
 
         if (cameraTransition != null)
         {
             StopCoroutine(cameraTransition);
         }
-        cameraTransition = StartCoroutine(SmoothCameraTransition(shopCameraTarget.position, shopCameraTarget.rotation));
+        cameraTransition = StartCoroutine(SmoothCameraTransition(shopCameraTarget.position, shopCameraTarget.rotation, false));
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
@@ -116,20 +115,16 @@ public class ShopManager : MonoBehaviour
     {
         shopOpen = false;
         shopUI.SetActive(false);
+        isReturningToPlayer = true; // Marker at vi returnerer
 
         if (cameraTransition != null)
         {
             StopCoroutine(cameraTransition);
         }
-        cameraTransition = StartCoroutine(SmoothCameraTransition(mainCamSavedPosition, mainCamSavedRotation));
+        cameraTransition = StartCoroutine(SmoothCameraTransition(mainCamSavedPosition, mainCamSavedRotation, true));
 
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
-
-        if (playerMovement != null)
-        {
-            playerMovement.SetCanMove(true);
-        }
     }
 
     private void UpdateSelection()
@@ -146,7 +141,7 @@ public class ShopManager : MonoBehaviour
         }
     }
 
-    private IEnumerator SmoothCameraTransition(Vector3 targetPos, Quaternion targetRot)
+    private IEnumerator SmoothCameraTransition(Vector3 targetPos, Quaternion targetRot, bool isReturning)
     {
         float elapsed = 0f;
         Vector3 startPos = mainCamera.transform.position;
@@ -157,12 +152,18 @@ public class ShopManager : MonoBehaviour
             float t = elapsed / transitionDuration;
             mainCamera.transform.position = Vector3.Lerp(startPos, targetPos, t);
             mainCamera.transform.rotation = Quaternion.Slerp(startRot, targetRot, t);
-
             elapsed += Time.deltaTime;
             yield return null;
         }
 
         mainCamera.transform.position = targetPos;
         mainCamera.transform.rotation = targetRot;
+
+        // Gendan kun bevægelse hvis vi er færdige med at returnere til spilleren
+        if (isReturning && playerMovement != null)
+        {
+            playerMovement.SetCanMove(true);
+            isReturningToPlayer = false;
+        }
     }
 }
