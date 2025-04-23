@@ -49,14 +49,14 @@ public class Combat : MonoBehaviour
         if (attackAction.triggered && player.GetComponent<PlayerMovement>().IsGrounded() && !isAttacking)
         {
             Debug.Log("atta");
-            isAttacking = true;
-            animator.SetBool("isAttacking", true);
             Attack();
         }
     }
 
     void Attack()
     {
+        isAttacking = true;
+        animator.SetBool("isAttacking", true);
         Debug.Log("Sge");
         Collider[] hitEnemies = Physics.OverlapSphere(sword.transform.position, attackRange, enemyLayer);
         Invoke("EndAttack", sAnimationLength);
