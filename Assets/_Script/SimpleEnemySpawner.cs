@@ -30,7 +30,6 @@ public class SimpleEnemySpawner : MonoBehaviour
     {
         if (enemyPrefabs.Length == 0 || prefabIndex >= enemyPrefabs.Length)
         {
-            Debug.LogWarning("No valid prefab to spawn.");
             return;
         }
 
@@ -47,7 +46,7 @@ public class SimpleEnemySpawner : MonoBehaviour
         }
         else
         {
-            Debug.LogWarning("Invalid prefab index.");
+            return;
         }
     }
 }
