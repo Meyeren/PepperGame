@@ -48,6 +48,20 @@ public class PlayerMovement : MonoBehaviour
         canMove = value;
     }
 
+    // NY METODE: Fryser spilleren øjeblikkeligt (kaldes fra ShopManager)
+    public void FreezePlayerImmediately()
+    {
+        if (rb != null)
+        {
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+        }
+        canMove = false;
+        animator.SetFloat("speed", 0f); // Nulstil animationsparametre
+        animator.SetFloat("sideSpeed", 0f);
+        animator.SetBool("isIdling", true);
+    }
+
     private void Start()
     {
         staminaSlider = GameObject.Find("StaminaBar").GetComponent<Slider>();
@@ -82,6 +96,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (!canMove) return; // Ignorer input hvis bevægelse er låst
+
         HandleJump();
 
         if (dashAction.triggered && Stamina >= dashCost && !isDashing)
@@ -113,6 +129,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (!canMove) return; // Stop fysik-håndtering hvis låst
+
         MovePlayer();
         RotatePlayer();
     }
@@ -197,8 +215,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         dashDirection.y = 0f;
-        //dashDirection.Normalize();
-
         StartCoroutine(Dash(dashDirection));
 
         if (Gamepad.current != null)
@@ -213,8 +229,7 @@ public class PlayerMovement : MonoBehaviour
 
         while (elapsedTime < dashLength && isDashing)
         {
-            rb.linearVelocity = dashDirection * dashSpeed;
-            //rb.AddForce(rb.position + dashDirection * dashSpeed * Time.deltaTime);
+            rb.linearVelocity = dashDirection.normalized * dashSpeed;
             elapsedTime += Time.deltaTime;
             yield return null;
             Camera.main.fieldOfView += 0.3f;
