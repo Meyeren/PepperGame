@@ -1,5 +1,3 @@
-using Unity.VisualScripting;
-
 public class Attack : EnemyStates
 {
     public Attack(FlockingTest enemy) : base(enemy) { }
@@ -7,6 +5,7 @@ public class Attack : EnemyStates
     public override void Enter()
     {
         enemy.StopMoving();
+        enemy.EnemyDeath();
     }
 
     public override void Exit() { }

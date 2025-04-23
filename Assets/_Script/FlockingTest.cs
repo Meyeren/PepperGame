@@ -1,11 +1,11 @@
-using Unity.IO.LowLevel.Unsafe;
 using UnityEngine;
 
 public class FlockingTest : MonoBehaviour
 {
     public float neighborRadius = 5f;
     public float separationDistance = 2f;
-    public float moveSpeed = 5f;
+    public float enemySpeed = 5f;
+    public float saveSpeed;
 
     public float separationWeight = 1.5f;
     public float alignmentWeight = 1.0f;
@@ -28,6 +28,8 @@ public class FlockingTest : MonoBehaviour
 
     public void ApplyFlocking()
     {
+        enemySpeed = 5f;
+
         Vector3 separation = Vector3.zero;
         Vector3 alignment = Vector3.zero;
         Vector3 cohesion = Vector3.zero;
@@ -72,13 +74,13 @@ public class FlockingTest : MonoBehaviour
             + toTarget * 0.5f;
 
         transform.forward = Vector3.Lerp(transform.forward, moveDir, Time.deltaTime * 5f);
-        transform.position += transform.forward * moveSpeed * Time.deltaTime;
+        transform.position += transform.forward * enemySpeed * Time.deltaTime;
     }
 
     public bool IsPlayerNearby()
     {
         if (target == null) return false;
-        return Vector3.Distance(transform.position, target.position) < 10f; 
+        return Vector3.Distance(transform.position, target.position) < 20f; 
     }
 
     public bool IsInAttackRange()
@@ -94,6 +96,11 @@ public class FlockingTest : MonoBehaviour
 
     public void StopMoving()
     {
-        moveSpeed = 0f;
+        enemySpeed = 0f;
+    }
+
+    public void EnemyDeath()
+    {
+        Destroy(gameObject);
     }
 }
