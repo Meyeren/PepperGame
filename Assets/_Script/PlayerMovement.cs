@@ -231,7 +231,7 @@ public class PlayerMovement : MonoBehaviour
 
         while (elapsedTime < dashLength && isDashing)
         {
-            rb.linearVelocity = dashDirection.normalized * dashSpeed;
+            rb.AddForce(dashDirection.normalized * dashSpeed, ForceMode.Impulse);
             elapsedTime += Time.deltaTime;
             yield return null;
             Camera.main.fieldOfView += 0.3f;
