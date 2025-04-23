@@ -74,13 +74,14 @@ public class PlayerMovement : MonoBehaviour
         isDashing = false;
 
         footstepAudio = GetComponentInChildren<FootstepAudio>();
+        if (Gamepad.current != null)
+        {
+            sensitivity += 1f;
+        }
     }
 
     private void Update()
     {
-        if (!canMove) return;
-
-        RotatePlayer();
         HandleJump();
 
         if (dashAction.triggered && Stamina >= dashCost && !isDashing)
@@ -112,9 +113,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!canMove) return;
-
         MovePlayer();
+        RotatePlayer();
     }
 
     private void MovePlayer()
@@ -140,11 +140,10 @@ public class PlayerMovement : MonoBehaviour
     void RotatePlayer()
     {
         Vector2 rotation = lookAction.ReadValue<Vector2>();
-        rotation.Normalize();
 
-        transform.Rotate(Vector3.up * rotation.x * sensitivity * Time.deltaTime);
+        transform.Rotate(Vector3.up * rotation.x * sensitivity);
 
-        Xrotation -= rotation.y * sensitivity * Time.deltaTime;
+        Xrotation -= rotation.y * sensitivity;
         Xrotation = Mathf.Clamp(Xrotation, -20f, 20f);
 
         cam.localRotation = Quaternion.Euler(Xrotation, 0f, 0f);
@@ -198,7 +197,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         dashDirection.y = 0f;
-        dashDirection.Normalize();
+        //dashDirection.Normalize();
 
         StartCoroutine(Dash(dashDirection));
 
@@ -214,7 +213,8 @@ public class PlayerMovement : MonoBehaviour
 
         while (elapsedTime < dashLength && isDashing)
         {
-            rb.MovePosition(rb.position + dashDirection * dashSpeed * Time.deltaTime);
+            rb.linearVelocity = dashDirection * dashSpeed;
+            //rb.AddForce(rb.position + dashDirection * dashSpeed * Time.deltaTime);
             elapsedTime += Time.deltaTime;
             yield return null;
             Camera.main.fieldOfView += 0.3f;
@@ -243,7 +243,7 @@ public class PlayerMovement : MonoBehaviour
 
     void StaminaRegen()
     {
-        if (IsGrounded() && Stamina >= 0f)
+        if (IsGrounded() && Stamina >= 0f && !isDashing)
         {
             Stamina += staminaRegenAmount * Time.deltaTime;
             Stamina = Mathf.Clamp(Stamina, 0, 100);

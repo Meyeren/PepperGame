@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class Health : MonoBehaviour
+public class Combat : MonoBehaviour
 {
     public int playerHealth = 100;
 
