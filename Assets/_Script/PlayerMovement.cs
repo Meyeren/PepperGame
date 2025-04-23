@@ -102,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
 
         HandleJump();
 
-        if (dashAction.triggered && Stamina >= dashCost && !isDashing)
+        if (dashAction.triggered && Stamina >= dashCost && !isDashing && IsGrounded())
         {
             StartDash();
         }

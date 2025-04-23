@@ -17,6 +17,8 @@ public class Combat : MonoBehaviour
     
     bool isAttacking;
     [SerializeField] float attackRange = 5f;
+    [SerializeField] int basicDamage = 50;
+    [SerializeField] float capsuleHeight = 5f;
 
     LayerMask enemyLayer;
 
@@ -55,12 +57,14 @@ public class Combat : MonoBehaviour
     void Attack()
     {
         isAttacking = true;
-        animator.SetBool("isAttacking", true);
+        animator.SetTrigger("isAttacking");
         Invoke("EndAttack", sAnimationLength);
-        Collider[] hitEnemies = Physics.OverlapSphere(sword.transform.position, attackRange, enemyLayer);
+        Vector3 capsuleStart = sword.transform.position;
+        Vector3 capsuleEnd = capsuleStart + sword.transform.position * capsuleHeight;
+        Collider[] hitEnemies = Physics.OverlapCapsule(capsuleStart, capsuleEnd, attackRange, enemyLayer);
         foreach (Collider enemy in hitEnemies)
         {
-            Destroy(enemy.gameObject);
+            enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
         }
        
         
@@ -69,7 +73,26 @@ public class Combat : MonoBehaviour
 
     void EndAttack()
     {
-        animator.SetBool("isAttacking", false);
         isAttacking = false;
+    }
+
+    private void OnDrawGizmos()
+    {
+        
+            // Definer kapselens start og slutposition
+            Vector3 capsuleStart = sword.transform.position;
+            Vector3 capsuleEnd = capsuleStart + sword.transform.forward * attackRange; // Justér længden af kapslen
+            float capsuleRadius = attackRange;
+
+            // Indstil farven for Gizmoen
+            Gizmos.color = Color.red;
+
+            // Tegn de to ender som små kugler (capsuleEnd og capsuleStart)
+            Gizmos.DrawWireSphere(capsuleStart, capsuleRadius);  // Startposition
+            Gizmos.DrawWireSphere(capsuleEnd, capsuleRadius);    // Slutposition
+
+            // Tegn forbindelseslinjen mellem de to kugler for at simulere kapselens "krop"
+            Gizmos.DrawLine(capsuleStart, capsuleEnd);
+        
     }
 }

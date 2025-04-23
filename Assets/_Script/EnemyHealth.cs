@@ -13,14 +13,15 @@ public class EnemyHealth : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.O))
-        {
-            enemyHealth -= 50;
-        }
 
         if (enemyHealth <= 0)
         {
             flockingTest.StateMachine.ChangeState(new Death(flockingTest));
         }
+    }
+
+    public void TakeDamage(int Damage)
+    {
+        enemyHealth -= Damage;
     }
 }
