@@ -13,6 +13,8 @@ public class PlayerMovement : MonoBehaviour
     InputAction lookAction;
     InputAction dashAction;
 
+    Animator animator;
+
     Transform groundCheck;
     LayerMask groundLayer;
     Transform cam;
@@ -44,6 +46,8 @@ public class PlayerMovement : MonoBehaviour
         staminaSlider = GameObject.Find("StaminaBar").GetComponent<Slider>();
         staminaCanvasGroup = staminaSlider.GetComponentInParent<CanvasGroup>();
         staminaCanvasGroup.alpha = 0f;
+
+        animator = GetComponent<Animator>();
 
         input = GetComponent<PlayerInput>();
         rb = GetComponent<Rigidbody>();
@@ -107,8 +111,22 @@ public class PlayerMovement : MonoBehaviour
         Vector2 direction = moveAction.ReadValue<Vector2>();
         direction.Normalize();
 
+
         Vector3 move = transform.right * direction.x + transform.forward * direction.y;
         rb.linearVelocity = new Vector3(move.x * Speed, rb.linearVelocity.y, move.z * Speed);
+        animator.SetFloat("speed", direction.y);
+        animator.SetFloat("sideSpeed", direction.x);
+
+        if (direction.y == 0 && direction.x == 0)
+        {
+            animator.SetBool("isIdling", true);
+        }
+        else
+        {
+            animator.SetBool("isIdling", false);
+        }
+
+        
     }
 
     void RotatePlayer()
@@ -136,6 +154,11 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpPower, rb.linearVelocity.z);
             Stamina -= jumpCost;
             footstepAudio.SetJumping(true);
+            animator.SetBool("Jumping", true);
+        }
+        else
+        {
+            animator.SetBool("Jumping", false);
         }
 
         if (rb.linearVelocity.y > 0f)
@@ -150,6 +173,7 @@ public class PlayerMovement : MonoBehaviour
         if (jumpAction.WasReleasedThisFrame() && rb.linearVelocity.y > 0f)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y * fallStop - fallSpeed, rb.linearVelocity.z);
+            
         }
     }
 
@@ -157,6 +181,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Stamina -= dashCost;
         isDashing = true;
+        animator.SetBool("isDashing", isDashing);
         footstepAudio.SetDashing(true);
 
         Vector3 dashDirection = rb.linearVelocity;
@@ -185,10 +210,13 @@ public class PlayerMovement : MonoBehaviour
             rb.MovePosition(rb.position + dashDirection * dashSpeed * Time.deltaTime);
             elapsedTime += Time.deltaTime;
             yield return null;
+            Camera.main.fieldOfView += 0.3f;
         }
 
         isDashing = false;
+        animator.SetBool("isDashing", isDashing);
         footstepAudio.SetDashing(false);
+        StartCoroutine(EndDash());
 
         if (Gamepad.current != null)
         {
@@ -201,6 +229,7 @@ public class PlayerMovement : MonoBehaviour
         if (collision.gameObject.CompareTag("Wall"))
         {
             isDashing = false;
+            animator.SetBool("isDashing", isDashing);
             footstepAudio.SetDashing(false);
         }
     }
@@ -220,5 +249,15 @@ public class PlayerMovement : MonoBehaviour
         {
             staminaCanvasGroup.alpha -= Time.deltaTime * 0.5f;
         }
+    }
+
+    IEnumerator EndDash()
+    {
+        while (Camera.main.fieldOfView > 100)
+        {
+            Camera.main.fieldOfView -= 0.2f;
+            yield return null;
+        }
+        Camera.main.fieldOfView = 100;
     }
 }
