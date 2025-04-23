@@ -17,8 +17,10 @@ public class FlockingTest : MonoBehaviour
 
     void Start()
     {
+        saveSpeed = enemySpeed;
         StateMachine = new StateSwitcher();
         StateMachine.ChangeState(new Idle(this));
+        target = GameObject.FindGameObjectWithTag("Player").transform;
     }
 
     void Update()
@@ -28,7 +30,7 @@ public class FlockingTest : MonoBehaviour
 
     public void ApplyFlocking()
     {
-        enemySpeed = 5f;
+        enemySpeed = saveSpeed;
 
         Vector3 separation = Vector3.zero;
         Vector3 alignment = Vector3.zero;
@@ -67,11 +69,7 @@ public class FlockingTest : MonoBehaviour
 
         Vector3 toTarget = (target.position - transform.position).normalized;
 
-        Vector3 moveDir =
-              separation * separationWeight
-            + alignment.normalized * alignmentWeight
-            + cohesion.normalized * cohesionWeight
-            + toTarget * 0.5f;
+        Vector3 moveDir = separation * separationWeight + alignment.normalized * alignmentWeight + cohesion.normalized * cohesionWeight + toTarget * 0.5f;
 
         transform.forward = Vector3.Lerp(transform.forward, moveDir, Time.deltaTime * 5f);
         transform.position += transform.forward * enemySpeed * Time.deltaTime;
