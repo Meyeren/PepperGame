@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 9131633603160351105}
   - component: {fileID: 3106920838991440112}
   - component: {fileID: 2807867535645253029}
+  - component: {fileID: 8504659980121353618}
   m_Layer: 0
   m_Name: CubeFlock
   m_TagString: Untagged
@@ -146,8 +147,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   neighborRadius: 5
   separationDistance: 2
-  moveSpeed: 5
+  enemySpeed: 5
+  saveSpeed: 0
   separationWeight: 1.5
   alignmentWeight: 1
   cohesionWeight: 1
   target: {fileID: 0}
+--- !u!114 &8504659980121353618
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2657866084601152965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e4bd8f47276fd5408a3fef5e450b5ae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyHealth: 100
