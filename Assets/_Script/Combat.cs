@@ -48,7 +48,6 @@ public class Combat : MonoBehaviour
 
         if (attackAction.triggered && player.GetComponent<PlayerMovement>().IsGrounded() && !isAttacking)
         {
-            Debug.Log("atta");
             Attack();
         }
     }
@@ -57,14 +56,14 @@ public class Combat : MonoBehaviour
     {
         isAttacking = true;
         animator.SetBool("isAttacking", true);
-        Debug.Log("Sge");
-        Collider[] hitEnemies = Physics.OverlapSphere(sword.transform.position, attackRange, enemyLayer);
         Invoke("EndAttack", sAnimationLength);
+        Collider[] hitEnemies = Physics.OverlapSphere(sword.transform.position, attackRange, enemyLayer);
         foreach (Collider enemy in hitEnemies)
         {
             Destroy(enemy.gameObject);
-            
         }
+       
+        
         
     }
 
@@ -73,10 +72,4 @@ public class Combat : MonoBehaviour
         animator.SetBool("isAttacking", false);
         isAttacking = false;
     }
-
-    /*void OnDrawGizmo()
-    {
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(sword.transform.position, attackRange);
-    }*/
 }
