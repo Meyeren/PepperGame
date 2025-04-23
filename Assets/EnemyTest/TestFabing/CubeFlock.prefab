@@ -15,7 +15,7 @@ GameObject:
   - component: {fileID: 3106920838991440112}
   - component: {fileID: 2807867535645253029}
   - component: {fileID: 8504659980121353618}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: CubeFlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}

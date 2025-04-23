@@ -65,6 +65,7 @@ public class Combat : MonoBehaviour
         foreach (Collider enemy in hitEnemies)
         {
             enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
+            Debug.Log("Hit");
         }
        
         
@@ -76,23 +77,5 @@ public class Combat : MonoBehaviour
         isAttacking = false;
     }
 
-    private void OnDrawGizmos()
-    {
-        
-            // Definer kapselens start og slutposition
-            Vector3 capsuleStart = sword.transform.position;
-            Vector3 capsuleEnd = capsuleStart + sword.transform.forward * attackRange; // Justér længden af kapslen
-            float capsuleRadius = attackRange;
 
-            // Indstil farven for Gizmoen
-            Gizmos.color = Color.red;
-
-            // Tegn de to ender som små kugler (capsuleEnd og capsuleStart)
-            Gizmos.DrawWireSphere(capsuleStart, capsuleRadius);  // Startposition
-            Gizmos.DrawWireSphere(capsuleEnd, capsuleRadius);    // Slutposition
-
-            // Tegn forbindelseslinjen mellem de to kugler for at simulere kapselens "krop"
-            Gizmos.DrawLine(capsuleStart, capsuleEnd);
-        
-    }
 }
