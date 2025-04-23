@@ -5,8 +5,10 @@ using UnityEngine.UI;
 public class Combat : MonoBehaviour
 {
     public int playerHealth = 100;
+    public int MaxPlayerHealth = 100;
 
-    Slider Health;
+    Slider healthSlider;
+    CanvasGroup healthCanvas;
 
     Animator animator;
     PlayerInput input;
@@ -18,11 +20,9 @@ public class Combat : MonoBehaviour
     bool isAttacking;
     [SerializeField] float attackRange = 5f;
     [SerializeField] int basicDamage = 50;
-    [SerializeField] float capsuleHeight = 5f;
 
     LayerMask enemyLayer;
 
-    [SerializeField] float sAnimationLength = 1.0f;
 
 
 
@@ -30,12 +30,17 @@ public class Combat : MonoBehaviour
     {
         isAttacking = false;
 
+        
+
         player = GameObject.FindGameObjectWithTag("Player");
         sword = GameObject.FindGameObjectWithTag("Sword");
         animator = player.GetComponent<Animator>();
 
-        Health = GameObject.Find("Healthbar").GetComponent<Slider>();
-        Health.maxValue = playerHealth;
+        healthSlider = GameObject.Find("Healthbar").GetComponent<Slider>();
+        
+        healthCanvas = healthSlider.GetComponent<CanvasGroup>();
+        healthSlider.maxValue = MaxPlayerHealth;
+        healthCanvas.alpha = 0f;
 
         input = player.GetComponent<PlayerInput>();
         attackAction = input.actions.FindAction("Attack");
@@ -46,11 +51,20 @@ public class Combat : MonoBehaviour
 
     private void Update()
     {
-        Health.value = playerHealth;
+        healthSlider.value = playerHealth;
 
         if (attackAction.triggered && player.GetComponent<PlayerMovement>().IsGrounded() && !isAttacking)
         {
             Attack();
+        }
+
+        if (playerHealth == MaxPlayerHealth)
+        {
+            FadeOutHealth();
+        }
+        else
+        {
+            healthCanvas.alpha = 1f;
         }
     }
 
@@ -58,24 +72,33 @@ public class Combat : MonoBehaviour
     {
         isAttacking = true;
         animator.SetTrigger("isAttacking");
-        Invoke("EndAttack", sAnimationLength);
-        Vector3 capsuleStart = sword.transform.position;
-        Vector3 capsuleEnd = capsuleStart + sword.transform.position * capsuleHeight;
-        Collider[] hitEnemies = Physics.OverlapCapsule(capsuleStart, capsuleEnd, attackRange, enemyLayer);
+        
+        
+        
+        
+ 
+        
+        
+    }
+
+    void PerformHit()
+    {
+        Debug.Log("Attack performed");
+        Collider[] hitEnemies = Physics.OverlapSphere(sword.transform.position, attackRange, enemyLayer);
         foreach (Collider enemy in hitEnemies)
         {
             enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
-            Debug.Log("Hit");
+            
         }
-       
-        
-        
-    }
-
-    void EndAttack()
-    {
         isAttacking = false;
     }
 
+    void FadeOutHealth()
+    {
+        if (healthCanvas.alpha > 0f)
+        {
+            healthCanvas.alpha -= Time.deltaTime * 0.5f;
+        }
+    }
 
 }

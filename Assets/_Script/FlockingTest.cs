@@ -89,7 +89,7 @@ public class FlockingTest : MonoBehaviour
 
     public void DoAttack()
     {
-        Debug.Log("attacks");
+        target.GetComponent<Combat>().playerHealth -= 1;
     }
 
     public void StopMoving()
