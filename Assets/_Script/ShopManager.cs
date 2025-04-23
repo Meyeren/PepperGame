@@ -21,12 +21,20 @@ public class ShopManager : MonoBehaviour
     [Header("Transition Settings")]
     public float transitionDuration = 1f;
 
+    [Header("Highlight Settings")]
+    public Color normalColor = Color.white;
+    public Color highlightedColor = Color.yellow;
+    public float highlightScale = 1.2f;
+    [Range(0.1f, 1f)] public float scaleSpeed = 0.3f;
+
     private int selectedIndex = 0;
     private float inputCooldown = 0.3f;
     private float lastInputTime;
     private bool shopOpen = false;
-    private bool isReturningToPlayer = false; // NY: Tjekker om kamera er i gang med at returnere
+    private bool isReturningToPlayer = false;
     private Coroutine cameraTransition;
+    private Vector3[] originalScales;
+    private Coroutine[] scaleCoroutines;
 
     private Vector3 mainCamSavedPosition;
     private Quaternion mainCamSavedRotation;
@@ -34,6 +42,21 @@ public class ShopManager : MonoBehaviour
     void Start()
     {
         shopUI.SetActive(false);
+        InitializeHighlightSystem();
+    }
+
+    void InitializeHighlightSystem()
+    {
+        originalScales = new Vector3[shopItems.Length];
+        scaleCoroutines = new Coroutine[shopItems.Length];
+
+        for (int i = 0; i < shopItems.Length; i++)
+        {
+            if (shopItems[i] != null)
+            {
+                originalScales[i] = shopItems[i].transform.localScale;
+            }
+        }
     }
 
     void Update()
@@ -51,14 +74,12 @@ public class ShopManager : MonoBehaviour
         {
             if (nav.x > 0.5f)
             {
-                selectedIndex = (selectedIndex + 1) % shopItems.Length;
-                UpdateSelection();
+                ChangeSelection(1);
                 lastInputTime = Time.time;
             }
             else if (nav.x < -0.5f)
             {
-                selectedIndex = (selectedIndex - 1 + shopItems.Length) % shopItems.Length;
-                UpdateSelection();
+                ChangeSelection(-1);
                 lastInputTime = Time.time;
             }
         }
@@ -69,17 +90,21 @@ public class ShopManager : MonoBehaviour
         }
     }
 
+    void ChangeSelection(int direction)
+    {
+        selectedIndex = (selectedIndex + direction + shopItems.Length) % shopItems.Length;
+        UpdateSelection();
+    }
+
     public void OpenShop()
     {
         shopOpen = true;
         selectedIndex = 0;
         isReturningToPlayer = false;
 
-        // Gem kamera-position FØR bevægelse låses
         mainCamSavedPosition = mainCamera.transform.position;
         mainCamSavedRotation = mainCamera.transform.rotation;
 
-        // Frys spilleren HELT
         if (playerMovement != null)
         {
             playerMovement.FreezePlayerImmediately();
@@ -115,7 +140,7 @@ public class ShopManager : MonoBehaviour
     {
         shopOpen = false;
         shopUI.SetActive(false);
-        isReturningToPlayer = true; // Marker at vi returnerer
+        isReturningToPlayer = true;
 
         if (cameraTransition != null)
         {
@@ -129,16 +154,60 @@ public class ShopManager : MonoBehaviour
 
     private void UpdateSelection()
     {
-        for (int i = 0; i < highlightFrames.Length; i++)
+        // Stop alle igangværende skaleringseffekter
+        if (scaleCoroutines != null)
         {
-            highlightFrames[i].enabled = (i == selectedIndex);
+            foreach (var coroutine in scaleCoroutines)
+            {
+                if (coroutine != null) StopCoroutine(coroutine);
+            }
         }
 
+        for (int i = 0; i < shopItems.Length; i++)
+        {
+            if (shopItems[i] == null) continue;
+
+            bool isSelected = (i == selectedIndex);
+
+            // UI Highlight
+            if (i < highlightFrames.Length)
+            {
+                highlightFrames[i].enabled = isSelected;
+            }
+
+            // 3D Object Highlight
+            var renderers = shopItems[i].GetComponentsInChildren<Renderer>();
+            foreach (var renderer in renderers)
+            {
+                renderer.material.color = isSelected ? highlightedColor : normalColor;
+            }
+
+            // Skaleringsanimation
+            Vector3 targetScale = isSelected ? originalScales[i] * highlightScale : originalScales[i];
+            scaleCoroutines[i] = StartCoroutine(SmoothScale(shopItems[i].transform, targetScale));
+        }
+
+        // Opdater beskrivelse
         var item = shopItems[selectedIndex].GetComponent<ShopItem>();
         if (item != null)
         {
             descriptionText.text = item.description;
         }
+    }
+
+    private IEnumerator SmoothScale(Transform target, Vector3 endScale)
+    {
+        Vector3 startScale = target.localScale;
+        float elapsed = 0f;
+
+        while (elapsed < scaleSpeed)
+        {
+            target.localScale = Vector3.Lerp(startScale, endScale, elapsed / scaleSpeed);
+            elapsed += Time.deltaTime;
+            yield return null;
+        }
+
+        target.localScale = endScale;
     }
 
     private IEnumerator SmoothCameraTransition(Vector3 targetPos, Quaternion targetRot, bool isReturning)
@@ -159,7 +228,6 @@ public class ShopManager : MonoBehaviour
         mainCamera.transform.position = targetPos;
         mainCamera.transform.rotation = targetRot;
 
-        // Gendan kun bevægelse hvis vi er færdige med at returnere til spilleren
         if (isReturning && playerMovement != null)
         {
             playerMovement.SetCanMove(true);
