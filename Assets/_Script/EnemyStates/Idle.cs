@@ -1,6 +1,3 @@
-using Unity.VisualScripting;
-using UnityEngine;
-
 public class Idle : EnemyStates
 {
     public Idle(FlockingTest enemy) : base(enemy) { }
