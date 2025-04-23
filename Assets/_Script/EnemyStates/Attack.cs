@@ -5,7 +5,6 @@ public class Attack : EnemyStates
     public override void Enter()
     {
         enemy.StopMoving();
-        enemy.EnemyDeath();
     }
 
     public override void Exit() { }
