@@ -22,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float Speed = 8.0f;
     [SerializeField] float Stamina = 100f;
     [SerializeField] float sensitivity = 100f;
+    [SerializeField] float FOV = 80f;
     float Xrotation;
 
     [SerializeField] float jumpPower = 15.0f;
@@ -48,7 +49,7 @@ public class PlayerMovement : MonoBehaviour
         canMove = value;
     }
 
-    // NY METODE: Fryser spilleren øjeblikkeligt (kaldes fra ShopManager)
+    
     public void FreezePlayerImmediately()
     {
         if (rb != null)
@@ -57,7 +58,7 @@ public class PlayerMovement : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
         }
         canMove = false;
-        animator.SetFloat("speed", 0f); // Nulstil animationsparametre
+        animator.SetFloat("speed", 0f); 
         animator.SetFloat("sideSpeed", 0f);
         animator.SetBool("isIdling", true);
     }
@@ -67,6 +68,7 @@ public class PlayerMovement : MonoBehaviour
         staminaSlider = GameObject.Find("StaminaBar").GetComponent<Slider>();
         staminaCanvasGroup = staminaSlider.GetComponentInParent<CanvasGroup>();
         staminaCanvasGroup.alpha = 0f;
+        staminaSlider.maxValue = Stamina;
 
         animator = GetComponent<Animator>();
 
@@ -96,7 +98,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
-        if (!canMove) return; // Ignorer input hvis bevægelse er låst
+        if (!canMove) return;
 
         HandleJump();
 
@@ -129,7 +131,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (!canMove) return; // Stop fysik-håndtering hvis låst
+        if (!canMove) return; 
 
         MovePlayer();
         RotatePlayer();
@@ -167,7 +169,7 @@ public class PlayerMovement : MonoBehaviour
         cam.localRotation = Quaternion.Euler(Xrotation, 0f, 0f);
     }
 
-    bool IsGrounded()
+    public bool IsGrounded()
     {
         return Physics.OverlapSphere(groundCheck.position, 0.2f, groundLayer).Length > 0f;
     }
@@ -275,11 +277,11 @@ public class PlayerMovement : MonoBehaviour
 
     IEnumerator EndDash()
     {
-        while (Camera.main.fieldOfView > 100)
+        while (Camera.main.fieldOfView > FOV)
         {
             Camera.main.fieldOfView -= 0.2f;
             yield return null;
         }
-        Camera.main.fieldOfView = 100;
+        Camera.main.fieldOfView = FOV;
     }
 }
