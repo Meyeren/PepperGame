@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class FlockingTest : MonoBehaviour
 {
@@ -13,12 +14,17 @@ public class FlockingTest : MonoBehaviour
 
     public Transform target;
 
+    Rigidbody rb;
     public StateSwitcher StateMachine { get; private set; }
 
     void Start()
     {
+        saveSpeed = enemySpeed;
         StateMachine = new StateSwitcher();
         StateMachine.ChangeState(new Idle(this));
+        target = GameObject.FindGameObjectWithTag("Player").transform;
+
+        rb = GetComponent<Rigidbody>();
     }
 
     void Update()
@@ -28,7 +34,7 @@ public class FlockingTest : MonoBehaviour
 
     public void ApplyFlocking()
     {
-        enemySpeed = 5f;
+        enemySpeed = saveSpeed;
 
         Vector3 separation = Vector3.zero;
         Vector3 alignment = Vector3.zero;
@@ -67,11 +73,7 @@ public class FlockingTest : MonoBehaviour
 
         Vector3 toTarget = (target.position - transform.position).normalized;
 
-        Vector3 moveDir =
-              separation * separationWeight
-            + alignment.normalized * alignmentWeight
-            + cohesion.normalized * cohesionWeight
-            + toTarget * 0.5f;
+        Vector3 moveDir = separation * separationWeight + alignment.normalized * alignmentWeight + cohesion.normalized * cohesionWeight + toTarget * 0.5f;
 
         transform.forward = Vector3.Lerp(transform.forward, moveDir, Time.deltaTime * 5f);
         transform.position += transform.forward * enemySpeed * Time.deltaTime;
@@ -91,7 +93,11 @@ public class FlockingTest : MonoBehaviour
 
     public void DoAttack()
     {
-        Debug.Log("attacks");
+        if (!target.GetComponent<Combat>().isInvulnerable)
+        {
+            target.GetComponent<Combat>().playerHealth -= 1;
+        }
+            
     }
 
     public void StopMoving()
@@ -102,5 +108,14 @@ public class FlockingTest : MonoBehaviour
     public void EnemyDeath()
     {
         Destroy(gameObject);
+    }
+
+    public void KnockBack(Vector3 attackerPosition, float knockBackAmount)
+    {
+        Vector3 direction = (transform.position - attackerPosition).normalized;
+        direction.y = 0f;
+
+        rb.AddForce(direction * knockBackAmount, ForceMode.Impulse);
+        
     }
 }

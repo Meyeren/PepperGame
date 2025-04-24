@@ -19,8 +19,9 @@ public class PlayerMovement : MonoBehaviour
     LayerMask groundLayer;
     Transform cam;
 
-    [SerializeField] float Speed = 8.0f;
-    [SerializeField] float Stamina = 100f;
+    public float Speed = 8.0f;
+    public float Stamina = 100f;
+    public bool noStaminaRegen;
     [SerializeField] float sensitivity = 100f;
     [SerializeField] float FOV = 80f;
     float Xrotation;
@@ -35,7 +36,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float dashCost = 100f;
     [SerializeField] float dashSpeed = 20f;
     [SerializeField] float dashLength = 10f;
-    bool isDashing;
+    public bool isDashing;
 
     Slider staminaSlider;
     CanvasGroup staminaCanvasGroup;
@@ -43,6 +44,9 @@ public class PlayerMovement : MonoBehaviour
     FootstepAudio footstepAudio;
 
     private bool canMove = true;
+
+    bool isAttacking;
+    bool isGroundSlamming;
 
     public void SetCanMove(bool value)
     {
@@ -65,6 +69,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void Start()
     {
+        noStaminaRegen = false;
         staminaSlider = GameObject.Find("StaminaBar").GetComponent<Slider>();
         staminaCanvasGroup = staminaSlider.GetComponentInParent<CanvasGroup>();
         staminaCanvasGroup.alpha = 0f;
@@ -100,12 +105,29 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!canMove) return;
 
+        isAttacking = GetComponent<Combat>().isAttacking;
+        isGroundSlamming = GetComponent<Combat>().isGroundSlamming;
         HandleJump();
 
-        if (dashAction.triggered && Stamina >= dashCost && !isDashing)
+
+        if (dashAction.triggered && Stamina >= dashCost && !isDashing && IsGrounded() && !isGroundSlamming)
         {
-            StartDash();
+            if (!GetComponent<Combat>().isAttacking)
+            {
+                StartDash();
+            }
+            else if (GetComponent<Combat>().attackWhileDash && isAttacking)
+            {
+                StartDash();
+                GetComponent<Combat>().isInvulnerable = true;
+                GetComponent<Combat>().basicDamage += GetComponent<Combat>().dashAttackDamage;
+                Stamina = 0;
+                noStaminaRegen = true;
+                Invoke("EndDashInvul", 1f);
+            }
         }
+            
+
 
         staminaSlider.value = Stamina;
 
@@ -140,7 +162,11 @@ public class PlayerMovement : MonoBehaviour
     private void MovePlayer()
     {
         Vector2 direction = moveAction.ReadValue<Vector2>();
-        direction.Normalize();
+        if (Gamepad.current == null)
+        {
+            direction = direction.normalized;
+        }
+        
 
         Vector3 move = transform.right * direction.x + transform.forward * direction.y;
         rb.linearVelocity = new Vector3(move.x * Speed, rb.linearVelocity.y, move.z * Speed);
@@ -176,7 +202,7 @@ public class PlayerMovement : MonoBehaviour
 
     void HandleJump()
     {
-        if (IsGrounded() && jumpAction.triggered && Stamina >= jumpCost)
+        if (IsGrounded() && jumpAction.triggered && Stamina >= jumpCost && !isAttacking && !isGroundSlamming)
         {
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpPower, rb.linearVelocity.z);
             Stamina -= jumpCost;
@@ -260,7 +286,7 @@ public class PlayerMovement : MonoBehaviour
 
     void StaminaRegen()
     {
-        if (IsGrounded() && Stamina >= 0f && !isDashing)
+        if (IsGrounded() && Stamina >= 0f && !isDashing && !noStaminaRegen)
         {
             Stamina += staminaRegenAmount * Time.deltaTime;
             Stamina = Mathf.Clamp(Stamina, 0, 100);
@@ -283,5 +309,13 @@ public class PlayerMovement : MonoBehaviour
             yield return null;
         }
         Camera.main.fieldOfView = FOV;
+    }
+
+
+    public void EndDashInvul()
+    {
+        GetComponent<Combat>().isInvulnerable = false;
+        GetComponent<Combat>().basicDamage -= 50;
+        noStaminaRegen = false;
     }
 }

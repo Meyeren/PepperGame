@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: da3c8f311615582479cf66a0e064b72a
+guid: a66eb8abcf4792b4399a25abaded77c7
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -31,11 +31,11 @@ ModelImporter:
     extraUserProperties: []
     clipAnimations:
     - serializedVersion: 16
-      name: Attack
+      name: GroundSlam
       takeName: mixamo.com
       internalID: -203655887218126122
       firstFrame: 0
-      lastFrame: 35
+      lastFrame: 62
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
