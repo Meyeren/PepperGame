@@ -27601,7 +27601,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: attackRange
-      value: 3
+      value: 4.5
       objectReference: {fileID: 0}
     - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: specialDamage
@@ -27612,8 +27612,16 @@ PrefabInstance:
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: damageReduction
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: knockBackAmount
-      value: 25
+      value: 35
+      objectReference: {fileID: 0}
+    - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: specialAttackRange
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 4472932089832080893, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: m_SizeDelta.y
@@ -27642,6 +27650,34 @@ PrefabInstance:
     - target: {fileID: 5718231501293312219, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: dashLength
       value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990447108418400536, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: m_Color.b
+      value: 0.112528086
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990447108418400536, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: m_Color.g
+      value: 0.8392157
+      objectReference: {fileID: 0}
+    - target: {fileID: 5990447108418400536, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: m_Color.r
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6100782197758274348, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: m_Color.a
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6100782197758274348, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: m_Color.b
+      value: 0.038546614
+      objectReference: {fileID: 0}
+    - target: {fileID: 6100782197758274348, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7106918
+      objectReference: {fileID: 0}
+    - target: {fileID: 6100782197758274348, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: m_Color.r
+      value: 0.03352311
       objectReference: {fileID: 0}
     - target: {fileID: 6184413027887669035, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: m_AnchorMax.x
@@ -27690,6 +27726,10 @@ PrefabInstance:
     - target: {fileID: 6189235583834705369, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6403496454964932430, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: stepInterval
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6403496454964932430, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: groundCheckDistance

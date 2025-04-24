@@ -12,6 +12,8 @@ public class FlockingTest : MonoBehaviour
     public float alignmentWeight = 1.0f;
     public float cohesionWeight = 1.0f;
 
+    public int enemyDamage = 1;
+
     public Transform target;
 
     Rigidbody rb;
@@ -95,8 +97,18 @@ public class FlockingTest : MonoBehaviour
     {
         if (!target.GetComponent<Combat>().isInvulnerable)
         {
-            target.GetComponent<Combat>().playerHealth -= 1;
+            if (target.GetComponent<Combat>().hasDamageReduction)
+            {
+                target.GetComponent<Combat>().playerHealth -= enemyDamage * target.GetComponent<Combat>().damageReduction;
+                Debug.Log(enemyDamage * target.GetComponent<Combat>().damageReduction);
+            }
+            else
+            {
+                target.GetComponent<Combat>().playerHealth -= enemyDamage;
+            }
+
         }
+        
             
     }
 
@@ -116,6 +128,12 @@ public class FlockingTest : MonoBehaviour
         direction.y = 0f;
 
         rb.AddForce(direction * knockBackAmount, ForceMode.Impulse);
+        Invoke("ResetKnockBack",0.5f);
         
+    }
+
+    void ResetKnockBack()
+    {
+        rb.linearVelocity = new Vector3(0f, 0f, 0f);
     }
 }

@@ -153,6 +153,7 @@ MonoBehaviour:
   separationWeight: 1.5
   alignmentWeight: 1
   cohesionWeight: 1
+  enemyDamage: 1
   target: {fileID: 0}
 --- !u!114 &8504659980121353618
 MonoBehaviour:

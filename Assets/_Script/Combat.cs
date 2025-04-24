@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class Combat : MonoBehaviour
 {
-    public int playerHealth = 100;
-    public int MaxPlayerHealth = 100;
+    public float playerHealth = 100f;
+    public float MaxPlayerHealth = 100f;
 
     Slider healthSlider;
     CanvasGroup healthCanvas;
@@ -26,6 +26,8 @@ public class Combat : MonoBehaviour
     bool isGrounded;
     bool isDashing;
     public bool isGroundSlamming;
+    public float damageReduction = 0.5f;
+    public bool hasDamageReduction;
 
     float Stamina;
 
@@ -83,13 +85,25 @@ public class Combat : MonoBehaviour
     {
         if (isInvulnerable)
         {
-            fillImage.color = Color.yellow;
-            fillImage2.color = Color.yellow;
+            fillImage.color = new Color(0.6f, 0.2f, 0.8f);
+            fillImage2.color = new Color(0.6f, 0.2f, 0.8f);
+            Debug.Log("kronk");
         }
         else
         {
-            fillImage.color = Color.red;
-            fillImage2 .color = Color.red;
+            fillImage.color = new Color(0.1f, 0.35f, 0.15f, 0.5f);
+            fillImage2.color = new Color(0.25f, 0.7f, 0.3f);
+        }
+
+        if (hasDamageReduction)
+        {
+            fillImage.color = new Color(0.1f, 0.2f, 0.5f, 0.7f);
+            fillImage2.color = new Color(0.3f, 0.6f, 0.9f);
+        }
+        else
+        {
+            fillImage.color = new Color(0.1f, 0.35f, 0.15f, 0.5f);
+            fillImage2.color = new Color(0.25f, 0.7f, 0.3f);
         }
         
         if (Input.GetKeyDown(KeyCode.H))
@@ -135,7 +149,6 @@ public class Combat : MonoBehaviour
     {
         
         Collider[] hitEnemies = Physics.OverlapSphere(sword.transform.position, attackRange, enemyLayer);
-        Debug.Log(hitEnemies);
         if (hitEnemies.Length != 0 && Gamepad.current != null)
         {
             Gamepad.current.SetMotorSpeeds(0.1f, 0.2f);
@@ -155,6 +168,7 @@ public class Combat : MonoBehaviour
 
     void SpecialAttack()
     {
+        hasDamageReduction = true;
         isGroundSlamming = true;
         animator.SetTrigger("isGroundSlamming");
         GetComponent<PlayerMovement>().Speed -= speedReduction;
@@ -192,6 +206,7 @@ public class Combat : MonoBehaviour
 
     void EndSlam()
     {
+        hasDamageReduction = false;
         isGroundSlamming = false;
         GetComponent<PlayerMovement>().noStaminaRegen = false;
         GetComponent<PlayerMovement>().Speed += speedReduction;
