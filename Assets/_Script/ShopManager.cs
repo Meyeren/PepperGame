@@ -3,16 +3,23 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using TMPro;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 
 public class ShopManager : MonoBehaviour
 {
-    [Header("Shop Items")]
-    public GameObject[] shopItems;
+    [Header("Shop Item Prefabs")]
+    public GameObject[] allItemPrefabs;
+
+    [Header("Spawn Points")]
+    public Transform[] spawnPositions;
+
+    [Header("UI")]
     public Image[] highlightFrames;
     public TextMeshProUGUI descriptionText;
+    public GameObject shopUI;
 
     [Header("References")]
-    public GameObject shopUI;
     public Camera mainCamera;
     public Transform shopCameraTarget;
     public Transform shopSpawnPoint;
@@ -26,6 +33,9 @@ public class ShopManager : MonoBehaviour
     public Color highlightedColor = Color.yellow;
     public float highlightScale = 1.2f;
     [Range(0.1f, 1f)] public float scaleSpeed = 0.3f;
+
+    private List<GameObject> currentShopItems = new List<GameObject>();
+    private List<string> lastUsedItemNames = new List<string>();
 
     private int selectedIndex = 0;
     private float inputCooldown = 0.3f;
@@ -42,21 +52,8 @@ public class ShopManager : MonoBehaviour
     void Start()
     {
         shopUI.SetActive(false);
-        InitializeHighlightSystem();
-    }
-
-    void InitializeHighlightSystem()
-    {
-        originalScales = new Vector3[shopItems.Length];
-        scaleCoroutines = new Coroutine[shopItems.Length];
-
-        for (int i = 0; i < shopItems.Length; i++)
-        {
-            if (shopItems[i] != null)
-            {
-                originalScales[i] = shopItems[i].transform.localScale;
-            }
-        }
+        originalScales = new Vector3[3];
+        scaleCoroutines = new Coroutine[3];
     }
 
     void Update()
@@ -92,7 +89,7 @@ public class ShopManager : MonoBehaviour
 
     void ChangeSelection(int direction)
     {
-        selectedIndex = (selectedIndex + direction + shopItems.Length) % shopItems.Length;
+        selectedIndex = (selectedIndex + direction + currentShopItems.Count) % currentShopItems.Count;
         UpdateSelection();
     }
 
@@ -113,26 +110,47 @@ public class ShopManager : MonoBehaviour
         transform.position = shopSpawnPoint.position;
         shopUI.SetActive(true);
 
-        if (cameraTransition != null)
-        {
-            StopCoroutine(cameraTransition);
-        }
+        if (cameraTransition != null) StopCoroutine(cameraTransition);
         cameraTransition = StartCoroutine(SmoothCameraTransition(shopCameraTarget.position, shopCameraTarget.rotation, false));
 
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        foreach (var item in shopItems)
-        {
-            item.SetActive(true);
-        }
-
+        SpawnRandomItems();
         UpdateSelection();
+    }
+
+    void SpawnRandomItems()
+    {
+        foreach (var item in currentShopItems)
+        {
+            Destroy(item);
+        }
+        currentShopItems.Clear();
+
+        var possibleItems = allItemPrefabs
+            .Select(prefab => prefab.GetComponent<ShopItem>())
+            .Where(item => item != null && Random.value * 100f <= item.spawnChance)
+            .Where(item => item.canRepeat || !lastUsedItemNames.Contains(item.name))
+            .OrderBy(x => Random.value)
+            .Distinct()
+            .Take(3)
+            .ToList();
+
+        lastUsedItemNames.Clear();
+
+        for (int i = 0; i < possibleItems.Count && i < spawnPositions.Length; i++)
+        {
+            GameObject newItem = Instantiate(possibleItems[i].gameObject, spawnPositions[i].position, spawnPositions[i].rotation, transform);
+            currentShopItems.Add(newItem);
+            lastUsedItemNames.Add(possibleItems[i].name);
+            originalScales[i] = newItem.transform.localScale;
+        }
     }
 
     public void SelectItem()
     {
-        Debug.Log("Valgte: " + shopItems[selectedIndex].name);
+        Debug.Log("Valgte: " + currentShopItems[selectedIndex].name);
         CloseShop();
     }
 
@@ -142,10 +160,7 @@ public class ShopManager : MonoBehaviour
         shopUI.SetActive(false);
         isReturningToPlayer = true;
 
-        if (cameraTransition != null)
-        {
-            StopCoroutine(cameraTransition);
-        }
+        if (cameraTransition != null) StopCoroutine(cameraTransition);
         cameraTransition = StartCoroutine(SmoothCameraTransition(mainCamSavedPosition, mainCamSavedRotation, true));
 
         Cursor.lockState = CursorLockMode.Locked;
@@ -154,7 +169,6 @@ public class ShopManager : MonoBehaviour
 
     private void UpdateSelection()
     {
-        // Stop alle igangværende skaleringseffekter
         if (scaleCoroutines != null)
         {
             foreach (var coroutine in scaleCoroutines)
@@ -163,32 +177,26 @@ public class ShopManager : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < shopItems.Length; i++)
+        for (int i = 0; i < currentShopItems.Count; i++)
         {
-            if (shopItems[i] == null) continue;
-
             bool isSelected = (i == selectedIndex);
 
-            // UI Highlight
             if (i < highlightFrames.Length)
             {
                 highlightFrames[i].enabled = isSelected;
             }
 
-            // 3D Object Highlight
-            var renderers = shopItems[i].GetComponentsInChildren<Renderer>();
+            var renderers = currentShopItems[i].GetComponentsInChildren<Renderer>();
             foreach (var renderer in renderers)
             {
                 renderer.material.color = isSelected ? highlightedColor : normalColor;
             }
 
-            // Skaleringsanimation
             Vector3 targetScale = isSelected ? originalScales[i] * highlightScale : originalScales[i];
-            scaleCoroutines[i] = StartCoroutine(SmoothScale(shopItems[i].transform, targetScale));
+            scaleCoroutines[i] = StartCoroutine(SmoothScale(currentShopItems[i].transform, targetScale));
         }
 
-        // Opdater beskrivelse
-        var item = shopItems[selectedIndex].GetComponent<ShopItem>();
+        var item = currentShopItems[selectedIndex].GetComponent<ShopItem>();
         if (item != null)
         {
             descriptionText.text = item.description;

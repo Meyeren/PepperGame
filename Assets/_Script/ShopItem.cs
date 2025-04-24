@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class ShopItem : MonoBehaviour
 {
-    [TextArea]
+    [Header("Shop Info")]
     public string description;
+    [Range(0, 100)] public float spawnChance = 100f;
+    public bool canRepeat = false;
 }
