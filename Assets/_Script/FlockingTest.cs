@@ -3,21 +3,37 @@ using UnityEngine.Rendering.Universal;
 
 public class FlockingTest : MonoBehaviour
 {
+    [Header("Enemy Flocking Settings")]
     public float neighborRadius = 5f;
     public float separationDistance = 2f;
-    public float enemySpeed = 5f;
-    public float saveSpeed;
 
     public float separationWeight = 1.5f;
     public float alignmentWeight = 1.0f;
     public float cohesionWeight = 1.0f;
 
+    public float targetWeight = 0.5f;
+    public float randomMovementWeight = 0.2f;
+    public float avoidanceWeight = 2f; 
+    public LayerMask obstacleMask;
+
+    [Header("Enemy Behavior Settings")]
+    public float enemySpeed = 5f;
     public int enemyDamage = 1;
 
+    [Header("State Settings")]
+    public float chaseTransitionTime = 1f;
+    public float attackCooldown = 1.5f;
+
+    [Header("Flocking Variations")]
+    public float chaseFlockingRatio = 0.7f;
+
+    private float saveSpeed;
     public Transform target;
 
     Rigidbody rb;
     public StateSwitcher StateMachine { get; private set; }
+
+    private EnemyWaves waveManager;
 
     void Start()
     {
@@ -27,6 +43,8 @@ public class FlockingTest : MonoBehaviour
         target = GameObject.FindGameObjectWithTag("Player").transform;
 
         rb = GetComponent<Rigidbody>();
+
+        waveManager = FindObjectOfType<EnemyWaves>();
     }
 
     void Update()
@@ -34,31 +52,39 @@ public class FlockingTest : MonoBehaviour
         StateMachine.Update(); 
     }
 
-    public void ApplyFlocking()
+    public void ApplyFlocking(float flockingIntensity = 1f)
     {
         enemySpeed = saveSpeed;
 
         Vector3 separation = Vector3.zero;
         Vector3 alignment = Vector3.zero;
         Vector3 cohesion = Vector3.zero;
+        Vector3 avoidance = Vector3.zero;
 
         int neighborCount = 0;
+        int obstacleCount = 0;
 
         Collider[] neighbors = Physics.OverlapSphere(transform.position, neighborRadius);
 
-        foreach (var hit in neighbors)
+        if (Physics.SphereCast(transform.position, 0.5f, transform.forward, out RaycastHit hit, 3f, obstacleMask))
         {
-            if (hit.gameObject == gameObject || !hit.CompareTag(gameObject.tag)) continue;
+            avoidance += hit.normal * avoidanceWeight;
+            obstacleCount++;
+        }
 
-            Vector3 toNeighbor = transform.position - hit.transform.position;
+        foreach (var neighbor in neighbors)
+        {
+            if (neighbor.gameObject == gameObject || !neighbor.CompareTag(gameObject.tag)) continue;
+
+            Vector3 toNeighbor = transform.position - neighbor.transform.position;
             float distance = toNeighbor.magnitude;
 
             if (distance < separationDistance)
             {
-                separation += toNeighbor.normalized / distance;
+                separation += toNeighbor.normalized / Mathf.Max(distance, 0.1f);
             }
 
-            FlockingTest other = hit.GetComponent<FlockingTest>();
+            FlockingTest other = neighbor.GetComponent<FlockingTest>();
             if (other != null)
             {
                 alignment += other.transform.forward;
@@ -69,15 +95,25 @@ public class FlockingTest : MonoBehaviour
 
         if (neighborCount > 0)
         {
-            alignment /= neighborCount;
-            cohesion = (cohesion / neighborCount - transform.position);
+            alignment = (alignment / neighborCount).normalized;
+            cohesion = ((cohesion / neighborCount) - transform.position).normalized;
         }
 
-        Vector3 toTarget = (target.position - transform.position).normalized;
+        Vector3 toTarget = target != null ? (target.position - transform.position).normalized * (1f - flockingIntensity) : Vector3.zero;
 
-        Vector3 moveDir = separation * separationWeight + alignment.normalized * alignmentWeight + cohesion.normalized * cohesionWeight + toTarget * 0.5f;
+        Vector3 randomMovement = new Vector3(
+        Random.Range(-1f, 1f),
+        0,
+        Random.Range(-1f, 1f)).normalized * randomMovementWeight;
 
-        transform.forward = Vector3.Lerp(transform.forward, moveDir, Time.deltaTime * 5f);
+        Vector3 moveDir = (separation.normalized * separationWeight + alignment * alignmentWeight + cohesion * cohesionWeight + toTarget * targetWeight + randomMovement + avoidance).normalized;
+
+        if (moveDir != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(moveDir);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+        }
+
         transform.position += transform.forward * enemySpeed * Time.deltaTime;
     }
 
@@ -119,6 +155,11 @@ public class FlockingTest : MonoBehaviour
 
     public void EnemyDeath()
     {
+        if (waveManager != null)
+        {
+            waveManager.OnEnemyKilled();
+        }
+
         Destroy(gameObject);
     }
 

@@ -148,11 +148,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   neighborRadius: 5
   separationDistance: 2
-  enemySpeed: 5
-  saveSpeed: 0
   separationWeight: 1.5
   alignmentWeight: 1
   cohesionWeight: 1
+  targetWeight: 0.8
+  randomMovementWeight: 0.2
+  avoidanceWeight: 2
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 0
+  enemySpeed: 5
   enemyDamage: 1
   target: {fileID: 0}
 --- !u!114 &8504659980121353618
