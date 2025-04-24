@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 public class FlockingTest : MonoBehaviour
 {
@@ -13,6 +14,7 @@ public class FlockingTest : MonoBehaviour
 
     public Transform target;
 
+    Rigidbody rb;
     public StateSwitcher StateMachine { get; private set; }
 
     void Start()
@@ -21,6 +23,8 @@ public class FlockingTest : MonoBehaviour
         StateMachine = new StateSwitcher();
         StateMachine.ChangeState(new Idle(this));
         target = GameObject.FindGameObjectWithTag("Player").transform;
+
+        rb = GetComponent<Rigidbody>();
     }
 
     void Update()
@@ -89,7 +93,11 @@ public class FlockingTest : MonoBehaviour
 
     public void DoAttack()
     {
-        target.GetComponent<Combat>().playerHealth -= 1;
+        if (!target.GetComponent<Combat>().isInvulnerable)
+        {
+            target.GetComponent<Combat>().playerHealth -= 1;
+        }
+            
     }
 
     public void StopMoving()
@@ -100,5 +108,14 @@ public class FlockingTest : MonoBehaviour
     public void EnemyDeath()
     {
         Destroy(gameObject);
+    }
+
+    public void KnockBack(Vector3 attackerPosition, float knockBackAmount)
+    {
+        Vector3 direction = (transform.position - attackerPosition).normalized;
+        direction.y = 0f;
+
+        rb.AddForce(direction * knockBackAmount, ForceMode.Impulse);
+        
     }
 }
