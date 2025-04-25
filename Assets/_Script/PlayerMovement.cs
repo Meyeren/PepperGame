@@ -55,6 +55,11 @@ public class PlayerMovement : MonoBehaviour
     public VisualEffect landEffect;
     public GameObject dashEffectPrefab;
 
+    [Header("Audio")]
+    public AudioClip jumpSound;
+    public AudioClip dashSound;
+    private AudioSource audioSource;
+
     public void SetCanMove(bool value)
     {
         canMove = value;
@@ -101,9 +106,16 @@ public class PlayerMovement : MonoBehaviour
         isDashing = false;
 
         footstepAudio = GetComponentInChildren<FootstepAudio>();
+
         if (Gamepad.current != null)
         {
             sensitivity += 1f;
+        }
+
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
+        {
+            audioSource = gameObject.AddComponent<AudioSource>();
         }
 
         wasGroundedLastFrame = IsGrounded();
@@ -156,7 +168,6 @@ public class PlayerMovement : MonoBehaviour
             footstepAudio.SetJumping(false);
         }
 
-        // LANDING-EFFEKT
         if (!wasGroundedLastFrame && IsGrounded())
         {
             if (landEffect != null)
@@ -222,6 +233,12 @@ public class PlayerMovement : MonoBehaviour
                 jumpEffect.transform.position = groundCheck.position;
                 jumpEffect.Play();
             }
+
+            // Afspil hop lyd
+            if (jumpSound != null)
+            {
+                audioSource.PlayOneShot(jumpSound);
+            }
         }
         else
         {
@@ -252,11 +269,16 @@ public class PlayerMovement : MonoBehaviour
         }
         dashDirection.y = 0f;
 
-        // Visuel dash effekt med rotation
         if (dashEffectPrefab != null)
         {
             GameObject dashVFX = Instantiate(dashEffectPrefab, transform.position, Quaternion.LookRotation(dashDirection));
-            Destroy(dashVFX, 2f); // Ryd op efter 2 sek.
+            Destroy(dashVFX, 2f);
+        }
+
+        // Afspil dash lyd
+        if (dashSound != null)
+        {
+            audioSource.PlayOneShot(dashSound);
         }
 
         StartCoroutine(Dash(dashDirection));
