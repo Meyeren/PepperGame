@@ -111,8 +111,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1.1805823, y: 1, z: 1.1934683}
+  m_Center: {x: 0.016570488, y: 0, z: -0.009850003}
 --- !u!195 &8509928177342077343
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -160,6 +160,7 @@ MonoBehaviour:
     m_Bits: 1
   enemySpeed: 5
   enemyDamage: 1
+  enemyAttackRange: 2.5
   chaseTransitionTime: 1
   attackCooldown: 1.5
   chaseFlockingRatio: 0.7
