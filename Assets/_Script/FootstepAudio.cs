@@ -91,6 +91,8 @@ public class FootstepAudio : MonoBehaviour
     {
         audioSource.pitch = Random.Range(minPitch, maxPitch);
         audioSource.PlayOneShot(footstepClip);
+        
+        
     }
 
     public bool IsGrounded()
@@ -109,7 +111,15 @@ public class FootstepAudio : MonoBehaviour
 
     public void SetDashing(bool state)
     {
-        // Optional: can disable footsteps here if needed
+        if (state)
+        {
+            audioSource.mute = true;
+        }
+        else
+        {
+            audioSource.mute = false;
+        }
+        
     }
 
     

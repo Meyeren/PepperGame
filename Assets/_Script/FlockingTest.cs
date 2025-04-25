@@ -33,7 +33,7 @@ public class FlockingTest : MonoBehaviour
     Rigidbody rb;
     public StateSwitcher StateMachine { get; private set; }
 
-    private EnemyWaves waveManager;
+    EnemyWaves waveManager;
 
     Animator animator;
 
@@ -46,7 +46,7 @@ public class FlockingTest : MonoBehaviour
 
         rb = GetComponent<Rigidbody>();
 
-        waveManager = FindObjectOfType<EnemyWaves>();
+        waveManager = GameObject.Find("WaveManager").GetComponent<EnemyWaves>();
 
         animator = GetComponentInChildren<Animator>();
     }
