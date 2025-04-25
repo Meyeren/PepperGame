@@ -124,7 +124,7 @@ public class FlockingTest : MonoBehaviour
     public bool IsPlayerNearby()
     {
         if (target == null) return false;
-        return Vector3.Distance(transform.position, target.position) < 20f; 
+        return Vector3.Distance(transform.position, target.position) < 400f; 
     }
 
     public bool IsInAttackRange()

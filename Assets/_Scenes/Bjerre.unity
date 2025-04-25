@@ -797,7 +797,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4859982813529744830, guid: 4a73f4fe49d8b8e4e80d4067af45858e, type: 3}
       propertyPath: 'weakWaves.Array.data[0].enemyCounts.Array.data[0]'
-      value: 100
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4859982813529744830, guid: 4a73f4fe49d8b8e4e80d4067af45858e, type: 3}
       propertyPath: 'weakWaves.Array.data[0].enemyPrefabs.Array.data[0]'
