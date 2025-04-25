@@ -19,6 +19,7 @@ public class FlockingTest : MonoBehaviour
     [Header("Enemy Behavior Settings")]
     public float enemySpeed = 5f;
     public int enemyDamage = 1;
+    public float enemyAttackRange = 2f;
 
     [Header("State Settings")]
     public float chaseTransitionTime = 1f;
@@ -130,7 +131,7 @@ public class FlockingTest : MonoBehaviour
     public bool IsInAttackRange()
     {
         if (target == null) return false;
-        return Vector3.Distance(transform.position, target.position) < 2f; 
+        return Vector3.Distance(transform.position, target.position) < enemyAttackRange; 
     }
 
     public void DoAttack()

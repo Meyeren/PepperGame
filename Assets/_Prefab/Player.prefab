@@ -795,16 +795,19 @@ MonoBehaviour:
   MaxPlayerHealth: 100
   isAttacking: 0
   isGroundSlamming: 0
+  damageReduction: 0.5
+  hasDamageReduction: 0
   attackWhileDash: 0
   isInvulnerable: 0
   basicDamage: 50
   dashAttackDamage: 50
-  attackRange: 3
+  attackRange: 5
   specialAttackRange: 5
   specialDamage: 50
-  knockBackAmount: 25
+  knockBackAmount: 50
   speedReduction: 3
   specialAttackCost: 100
+  basicKnockbackAmount: 15
 --- !u!82 &1811714496711296304
 AudioSource:
   m_ObjectHideFlags: 0
