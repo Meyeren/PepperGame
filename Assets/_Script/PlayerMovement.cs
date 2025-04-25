@@ -3,6 +3,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
+using UnityEngine.VFX;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -47,13 +48,18 @@ public class PlayerMovement : MonoBehaviour
 
     bool isAttacking;
     bool isGroundSlamming;
+    bool wasGroundedLastFrame;
+
+    [Header("VFX")]
+    public VisualEffect jumpEffect;
+    public VisualEffect landEffect;
+    public GameObject dashEffectPrefab;
 
     public void SetCanMove(bool value)
     {
         canMove = value;
     }
 
-    
     public void FreezePlayerImmediately()
     {
         if (rb != null)
@@ -62,7 +68,7 @@ public class PlayerMovement : MonoBehaviour
             rb.angularVelocity = Vector3.zero;
         }
         canMove = false;
-        animator.SetFloat("speed", 0f); 
+        animator.SetFloat("speed", 0f);
         animator.SetFloat("sideSpeed", 0f);
         animator.SetBool("isIdling", true);
     }
@@ -99,6 +105,8 @@ public class PlayerMovement : MonoBehaviour
         {
             sensitivity += 1f;
         }
+
+        wasGroundedLastFrame = IsGrounded();
     }
 
     private void Update()
@@ -107,16 +115,16 @@ public class PlayerMovement : MonoBehaviour
 
         isAttacking = GetComponent<Combat>().isAttacking;
         isGroundSlamming = GetComponent<Combat>().isGroundSlamming;
-        HandleJump();
 
+        HandleJump();
 
         if (dashAction.triggered && Stamina >= dashCost && !isDashing && IsGrounded() && !isGroundSlamming)
         {
-            if (!GetComponent<Combat>().isAttacking)
+            if (!isAttacking)
             {
                 StartDash();
             }
-            else if (GetComponent<Combat>().attackWhileDash && isAttacking)
+            else if (GetComponent<Combat>().attackWhileDash)
             {
                 StartDash();
                 GetComponent<Combat>().isInvulnerable = true;
@@ -126,8 +134,6 @@ public class PlayerMovement : MonoBehaviour
                 Invoke("EndDashInvul", 1f);
             }
         }
-            
-
 
         staminaSlider.value = Stamina;
 
@@ -149,11 +155,23 @@ public class PlayerMovement : MonoBehaviour
         {
             footstepAudio.SetJumping(false);
         }
+
+        // LANDING-EFFEKT
+        if (!wasGroundedLastFrame && IsGrounded())
+        {
+            if (landEffect != null)
+            {
+                landEffect.transform.position = groundCheck.position;
+                landEffect.Play();
+            }
+        }
+
+        wasGroundedLastFrame = IsGrounded();
     }
 
     private void FixedUpdate()
     {
-        if (!canMove) return; 
+        if (!canMove) return;
 
         MovePlayer();
         RotatePlayer();
@@ -166,32 +184,22 @@ public class PlayerMovement : MonoBehaviour
         {
             direction = direction.normalized;
         }
-        
 
         Vector3 move = transform.right * direction.x + transform.forward * direction.y;
         rb.linearVelocity = new Vector3(move.x * Speed, rb.linearVelocity.y, move.z * Speed);
         animator.SetFloat("speed", direction.y);
         animator.SetFloat("sideSpeed", direction.x);
 
-        if (direction.y == 0 && direction.x == 0)
-        {
-            animator.SetBool("isIdling", true);
-        }
-        else
-        {
-            animator.SetBool("isIdling", false);
-        }
+        animator.SetBool("isIdling", direction == Vector2.zero);
     }
 
     void RotatePlayer()
     {
         Vector2 rotation = lookAction.ReadValue<Vector2>();
-
         transform.Rotate(Vector3.up * rotation.x * sensitivity);
 
         Xrotation -= rotation.y * sensitivity;
         Xrotation = Mathf.Clamp(Xrotation, -20f, 20f);
-
         cam.localRotation = Quaternion.Euler(Xrotation, 0f, 0f);
     }
 
@@ -208,20 +216,21 @@ public class PlayerMovement : MonoBehaviour
             Stamina -= jumpCost;
             footstepAudio.SetJumping(true);
             animator.SetBool("Jumping", true);
+
+            if (jumpEffect != null)
+            {
+                jumpEffect.transform.position = groundCheck.position;
+                jumpEffect.Play();
+            }
         }
         else
         {
             animator.SetBool("Jumping", false);
         }
 
-        if (rb.linearVelocity.y > 0f)
-        {
-            Physics.gravity = new Vector3(0, -fallgravity, 0);
-        }
-        else
-        {
-            Physics.gravity = new Vector3(0, -9.81f, 0);
-        }
+        Physics.gravity = rb.linearVelocity.y > 0f
+            ? new Vector3(0, -fallgravity, 0)
+            : new Vector3(0, -9.81f, 0);
 
         if (jumpAction.WasReleasedThisFrame() && rb.linearVelocity.y > 0f)
         {
@@ -241,8 +250,15 @@ public class PlayerMovement : MonoBehaviour
         {
             dashDirection = transform.forward;
         }
-
         dashDirection.y = 0f;
+
+        // Visuel dash effekt med rotation
+        if (dashEffectPrefab != null)
+        {
+            GameObject dashVFX = Instantiate(dashEffectPrefab, transform.position, Quaternion.LookRotation(dashDirection));
+            Destroy(dashVFX, 2f); // Ryd op efter 2 sek.
+        }
+
         StartCoroutine(Dash(dashDirection));
 
         if (Gamepad.current != null)
@@ -310,7 +326,6 @@ public class PlayerMovement : MonoBehaviour
         }
         Camera.main.fieldOfView = FOV;
     }
-
 
     public void EndDashInvul()
     {
