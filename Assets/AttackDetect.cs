@@ -12,6 +12,7 @@ public class AttackDetect : MonoBehaviour
 
     void DoAttack()
     {
+        if (enemy == null) return;
         enemy.GetComponent<FlockingTest>().DoAttack();
     }
 }
