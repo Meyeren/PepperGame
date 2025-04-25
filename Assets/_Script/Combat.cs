@@ -85,25 +85,19 @@ public class Combat : MonoBehaviour
     {
         if (isInvulnerable)
         {
-            fillImage.color = new Color(0.6f, 0.2f, 0.8f);
-            fillImage2.color = new Color(0.6f, 0.2f, 0.8f);
+            fillImage.color = new Color(0.6f, 0.2f, 0.8f, 1f);
+            fillImage2.color = new Color(0.6f, 0.2f, 0.8f, 1f);
             Debug.Log("kronk");
         }
-        else
+        else if (hasDamageReduction)
         {
-            fillImage.color = new Color(0.1f, 0.35f, 0.15f, 0.5f);
-            fillImage2.color = new Color(0.25f, 0.7f, 0.3f);
-        }
-
-        if (hasDamageReduction)
-        {
-            fillImage.color = new Color(0.1f, 0.2f, 0.5f, 0.7f);
-            fillImage2.color = new Color(0.3f, 0.6f, 0.9f);
+            fillImage2.color = new Color(0.1f, 0.2f, 0.5f, 0.7f);
+            fillImage.color = new Color(0.3f, 0.6f, 0.9f);
         }
         else
         {
-            fillImage.color = new Color(0.1f, 0.35f, 0.15f, 0.5f);
-            fillImage2.color = new Color(0.25f, 0.7f, 0.3f);
+            fillImage2.color = new Color(0.1f, 0.35f, 0.15f, 0.5f);
+            fillImage.color = new Color(0.25f, 0.7f, 0.3f);
         }
         
         if (Input.GetKeyDown(KeyCode.H))
