@@ -35,6 +35,8 @@ public class FlockingTest : MonoBehaviour
 
     private EnemyWaves waveManager;
 
+    Animator animator;
+
     void Start()
     {
         saveSpeed = enemySpeed;
@@ -45,6 +47,8 @@ public class FlockingTest : MonoBehaviour
         rb = GetComponent<Rigidbody>();
 
         waveManager = FindObjectOfType<EnemyWaves>();
+
+        animator = GetComponentInChildren<Animator>();
     }
 
     void Update()
@@ -131,6 +135,7 @@ public class FlockingTest : MonoBehaviour
 
     public void DoAttack()
     {
+        animator.SetBool("isAttacking", true);
         if (!target.GetComponent<Combat>().isInvulnerable)
         {
             if (target.GetComponent<Combat>().hasDamageReduction)
@@ -155,6 +160,8 @@ public class FlockingTest : MonoBehaviour
 
     public void EnemyDeath()
     {
+        
+        
         if (waveManager != null)
         {
             waveManager.OnEnemyKilled();
@@ -176,5 +183,15 @@ public class FlockingTest : MonoBehaviour
     void ResetKnockBack()
     {
         rb.linearVelocity = new Vector3(0f, 0f, 0f);
+    }
+
+    public void EndAttackAnimation()
+    {
+        animator.SetBool("isAttacking", false);
+    }
+
+    public void StartDeathAnimation()
+    {
+        animator.SetTrigger("Death");
     }
 }

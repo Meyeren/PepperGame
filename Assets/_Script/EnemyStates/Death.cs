@@ -15,6 +15,7 @@ public class Death : EnemyStates
 
     private IEnumerator DeathRoutine()
     {
+        enemy.StartDeathAnimation();
         yield return new WaitForSeconds(1f); 
         enemy.EnemyDeath();
     }

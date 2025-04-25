@@ -43,6 +43,7 @@ public class Combat : MonoBehaviour
     [SerializeField] float knockBackAmount = 5f;
     [SerializeField] float speedReduction = 5f;
     [SerializeField] float specialAttackCost = 100f;
+    [SerializeField] float basicKnockbackAmount = 2f;
 
     LayerMask enemyLayer;
 
@@ -118,9 +119,10 @@ public class Combat : MonoBehaviour
             
         }
 
-        if (playerHealth == MaxPlayerHealth && !isInvulnerable)
+        if (playerHealth == MaxPlayerHealth && !isInvulnerable && !hasDamageReduction)
         {
             FadeOutHealth();
+            Debug.Log("Fadeout");
         }
         else
         {
@@ -146,12 +148,14 @@ public class Combat : MonoBehaviour
         if (hitEnemies.Length != 0 && Gamepad.current != null)
         {
             Gamepad.current.SetMotorSpeeds(0.1f, 0.2f);
+            
             StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.15f, 0.1f));
             Invoke("EndVibration", 0.2f);
         }
         foreach (Collider enemy in hitEnemies)
         {
             enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
+            enemy.GetComponent<FlockingTest>().KnockBack(transform.position, basicKnockbackAmount);
             Debug.Log(basicDamage);
             
 

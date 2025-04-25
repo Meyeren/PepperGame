@@ -5,10 +5,13 @@ public class Attack : EnemyStates
     private float attackCooldown = 1f;
     private float lastAttackTime;
 
+    Animator animator;
+
     public Attack(FlockingTest enemy) : base(enemy) { }
 
     public override void Enter()
     {
+        
         base.Enter();
         enemy.StopMoving();
     }
@@ -25,6 +28,7 @@ public class Attack : EnemyStates
         if (!enemy.IsInAttackRange())
         {
             enemy.StateMachine.ChangeState(new Chase(enemy));
+            enemy.EndAttackAnimation();
         }
     }
 }
