@@ -151,14 +151,17 @@ MonoBehaviour:
   separationWeight: 1.5
   alignmentWeight: 1
   cohesionWeight: 1
-  targetWeight: 0.8
+  targetWeight: 1
   randomMovementWeight: 0.2
   avoidanceWeight: 2
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 1
   enemySpeed: 5
   enemyDamage: 1
+  chaseTransitionTime: 1
+  attackCooldown: 1.5
+  chaseFlockingRatio: 0.7
   target: {fileID: 0}
 --- !u!114 &8504659980121353618
 MonoBehaviour:
