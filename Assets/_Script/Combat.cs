@@ -4,8 +4,8 @@ using UnityEngine.UI;
 
 public class Combat : MonoBehaviour
 {
-    public int playerHealth = 100;
-    public int MaxPlayerHealth = 100;
+    public float playerHealth = 100f;
+    public float MaxPlayerHealth = 100f;
 
     Slider healthSlider;
     CanvasGroup healthCanvas;
@@ -26,6 +26,8 @@ public class Combat : MonoBehaviour
     bool isGrounded;
     bool isDashing;
     public bool isGroundSlamming;
+    public float damageReduction = 0.5f;
+    public bool hasDamageReduction;
 
     float Stamina;
 
@@ -41,6 +43,7 @@ public class Combat : MonoBehaviour
     [SerializeField] float knockBackAmount = 5f;
     [SerializeField] float speedReduction = 5f;
     [SerializeField] float specialAttackCost = 100f;
+    [SerializeField] float basicKnockbackAmount = 2f;
 
     LayerMask enemyLayer;
 
@@ -83,13 +86,19 @@ public class Combat : MonoBehaviour
     {
         if (isInvulnerable)
         {
-            fillImage.color = Color.yellow;
-            fillImage2.color = Color.yellow;
+            fillImage.color = new Color(0.6f, 0.2f, 0.8f, 1f);
+            fillImage2.color = new Color(0.6f, 0.2f, 0.8f, 1f);
+            Debug.Log("kronk");
+        }
+        else if (hasDamageReduction)
+        {
+            fillImage2.color = new Color(0.1f, 0.2f, 0.5f, 0.7f);
+            fillImage.color = new Color(0.3f, 0.6f, 0.9f);
         }
         else
         {
-            fillImage.color = Color.red;
-            fillImage2 .color = Color.red;
+            fillImage2.color = new Color(0.1f, 0.35f, 0.15f, 0.5f);
+            fillImage.color = new Color(0.25f, 0.7f, 0.3f);
         }
         
         if (Input.GetKeyDown(KeyCode.H))
@@ -110,9 +119,10 @@ public class Combat : MonoBehaviour
             
         }
 
-        if (playerHealth == MaxPlayerHealth && !isInvulnerable)
+        if (playerHealth == MaxPlayerHealth && !isInvulnerable && !hasDamageReduction)
         {
             FadeOutHealth();
+            Debug.Log("Fadeout");
         }
         else
         {
@@ -135,16 +145,17 @@ public class Combat : MonoBehaviour
     {
         
         Collider[] hitEnemies = Physics.OverlapSphere(sword.transform.position, attackRange, enemyLayer);
-        Debug.Log(hitEnemies);
         if (hitEnemies.Length != 0 && Gamepad.current != null)
         {
             Gamepad.current.SetMotorSpeeds(0.1f, 0.2f);
+            
             StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.15f, 0.1f));
             Invoke("EndVibration", 0.2f);
         }
         foreach (Collider enemy in hitEnemies)
         {
             enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
+            enemy.GetComponent<FlockingTest>().KnockBack(transform.position, basicKnockbackAmount);
             Debug.Log(basicDamage);
             
 
@@ -155,6 +166,7 @@ public class Combat : MonoBehaviour
 
     void SpecialAttack()
     {
+        hasDamageReduction = true;
         isGroundSlamming = true;
         animator.SetTrigger("isGroundSlamming");
         GetComponent<PlayerMovement>().Speed -= speedReduction;
@@ -192,6 +204,7 @@ public class Combat : MonoBehaviour
 
     void EndSlam()
     {
+        hasDamageReduction = false;
         isGroundSlamming = false;
         GetComponent<PlayerMovement>().noStaminaRegen = false;
         GetComponent<PlayerMovement>().Speed += speedReduction;
