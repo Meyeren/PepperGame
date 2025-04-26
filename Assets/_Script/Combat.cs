@@ -30,6 +30,7 @@ public class Combat : MonoBehaviour
     float Stamina;
 
     public bool attackWhileDash;
+    public bool hasGroundSlam;
     public bool isInvulnerable;
 
     public int basicDamage = 50;
@@ -64,6 +65,7 @@ public class Combat : MonoBehaviour
         attackWhileDash = false;
         isInvulnerable = false;
         isGroundSlamming = false;
+        hasGroundSlam = false;
 
         sword = GameObject.FindGameObjectWithTag("Sword");
         animator = GetComponent<Animator>();
@@ -112,6 +114,8 @@ public class Combat : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.H))
         {
             attackWhileDash = true;
+            hasGroundSlam = true;
+            GetComponent<PlayerMovement>().allowDoubleJump = true;
         }
 
         isGrounded = GetComponent<PlayerMovement>().IsGrounded();
@@ -136,7 +140,7 @@ public class Combat : MonoBehaviour
             healthCanvas.alpha = 1f;
         }
 
-        if (specialAttackAction.triggered && isGrounded && !isAttacking && !isGroundSlamming && Stamina >= specialAttackCost)
+        if (specialAttackAction.triggered && isGrounded && !isAttacking && !isGroundSlamming && Stamina >= specialAttackCost && hasGroundSlam)
         {
             SpecialAttack();
         }
@@ -194,9 +198,14 @@ public class Combat : MonoBehaviour
         {
             Gamepad.current.SetMotorSpeeds(0.5f, 1f);
         }
+        
         StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.3f, 1f));
 
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position, specialAttackRange, enemyLayer);
+        if (hitEnemies.Length >= 8)
+        {
+            GetComponent<PlayerMovement>().Stamina += 25f;
+        }
         foreach (Collider enemy in hitEnemies)
         {
             enemy.GetComponent<EnemyHealth>().TakeDamage(specialDamage);

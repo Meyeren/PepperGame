@@ -136,20 +136,23 @@ public class FlockingTest : MonoBehaviour
 
     public void DoAttack()
     {
-        animator.SetBool("isAttacking", true);
-        if (!target.GetComponent<Combat>().isInvulnerable)
+        if (IsInAttackRange())
         {
-            if (target.GetComponent<Combat>().hasDamageReduction)
+            animator.SetBool("isAttacking", true);
+            if (!target.GetComponent<Combat>().isInvulnerable)
             {
-                target.GetComponent<Combat>().playerHealth -= enemyDamage * target.GetComponent<Combat>().damageReduction;
-                Debug.Log(enemyDamage * target.GetComponent<Combat>().damageReduction);
-            }
-            else
-            {
-                target.GetComponent<Combat>().playerHealth -= enemyDamage;
-            }
+                if (target.GetComponent<Combat>().hasDamageReduction)
+                {
+                    target.GetComponent<Combat>().playerHealth -= enemyDamage * target.GetComponent<Combat>().damageReduction;
+                }
+                else
+                {
+                    target.GetComponent<Combat>().playerHealth -= enemyDamage;
+                }
 
+            }
         }
+        
         
             
     }

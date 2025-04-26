@@ -143,6 +143,15 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Gyro"",
+                    ""type"": ""Value"",
+                    ""id"": ""164b2047-0a95-4b5a-a164-312f2ea0b895"",
+                    ""expectedControlType"": ""Vector3"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -594,6 +603,17 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": """",
                     ""action"": ""SpecialAttack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""550abd98-9b10-45b2-9819-b5e5633e4ee5"",
+                    ""path"": ""<Gyroscope>/angularVelocity"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Gyro"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1194,6 +1214,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Submit = m_Player.FindAction("Submit", throwIfNotFound: true);
         m_Player_Navigate = m_Player.FindAction("Navigate", throwIfNotFound: true);
         m_Player_SpecialAttack = m_Player.FindAction("SpecialAttack", throwIfNotFound: true);
+        m_Player_Gyro = m_Player.FindAction("Gyro", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1286,6 +1307,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Submit;
     private readonly InputAction m_Player_Navigate;
     private readonly InputAction m_Player_SpecialAttack;
+    private readonly InputAction m_Player_Gyro;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -1303,6 +1325,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Submit => m_Wrapper.m_Player_Submit;
         public InputAction @Navigate => m_Wrapper.m_Player_Navigate;
         public InputAction @SpecialAttack => m_Wrapper.m_Player_SpecialAttack;
+        public InputAction @Gyro => m_Wrapper.m_Player_Gyro;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1351,6 +1374,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @SpecialAttack.started += instance.OnSpecialAttack;
             @SpecialAttack.performed += instance.OnSpecialAttack;
             @SpecialAttack.canceled += instance.OnSpecialAttack;
+            @Gyro.started += instance.OnGyro;
+            @Gyro.performed += instance.OnGyro;
+            @Gyro.canceled += instance.OnGyro;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1394,6 +1420,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @SpecialAttack.started -= instance.OnSpecialAttack;
             @SpecialAttack.performed -= instance.OnSpecialAttack;
             @SpecialAttack.canceled -= instance.OnSpecialAttack;
+            @Gyro.started -= instance.OnGyro;
+            @Gyro.performed -= instance.OnGyro;
+            @Gyro.canceled -= instance.OnGyro;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1589,6 +1618,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnSubmit(InputAction.CallbackContext context);
         void OnNavigate(InputAction.CallbackContext context);
         void OnSpecialAttack(InputAction.CallbackContext context);
+        void OnGyro(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

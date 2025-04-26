@@ -34,10 +34,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float staminaRegenAmount = 10f;
     [SerializeField] float fallgravity = 15f;
 
-    [SerializeField] float dashCost = 100f;
+    public float dashCost = 100f;
     [SerializeField] float dashSpeed = 20f;
     [SerializeField] float dashLength = 10f;
     public bool isDashing;
+    public bool doubleJump;
+    public bool allowDoubleJump;
 
     Slider staminaSlider;
     CanvasGroup staminaCanvasGroup;
@@ -81,6 +83,8 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         noStaminaRegen = false;
+        doubleJump = false;
+        allowDoubleJump = false;
         staminaSlider = GameObject.Find("StaminaBar").GetComponent<Slider>();
         staminaCanvasGroup = staminaSlider.GetComponentInParent<CanvasGroup>();
         staminaCanvasGroup.alpha = 0f;
@@ -135,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
             if (!isAttacking)
             {
                 StartDash();
+                
             }
             else if (GetComponent<Combat>().attackWhileDash)
             {
@@ -146,6 +151,7 @@ public class PlayerMovement : MonoBehaviour
                 Invoke("EndDashInvul", 1f);
             }
         }
+        
 
         staminaSlider.value = Stamina;
 
@@ -234,15 +240,41 @@ public class PlayerMovement : MonoBehaviour
                 jumpEffect.Play();
             }
 
-            // Afspil hop lyd
+            
             if (jumpSound != null)
             {
                 audioSource.PlayOneShot(jumpSound);
             }
+            if (allowDoubleJump)
+            {
+                doubleJump = true;
+            }
         }
+        else if (jumpAction.triggered && doubleJump && allowDoubleJump)
+        {
+            doubleJump = false;
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpPower, rb.linearVelocity.z);
+            footstepAudio.SetJumping(true);
+            animator.SetBool("Jumping", true);
+
+            if (jumpEffect != null)
+            {
+                jumpEffect.transform.position = groundCheck.position;
+                jumpEffect.Play();
+            }
+
+
+            if (jumpSound != null)
+            {
+                audioSource.PlayOneShot(jumpSound);
+            }
+            
+        }
+      
         else
         {
             animator.SetBool("Jumping", false);
+
         }
 
         Physics.gravity = rb.linearVelocity.y > 0f
