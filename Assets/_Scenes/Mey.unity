@@ -27734,18 +27734,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2245757569264895010, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
-      propertyPath: m_ActionEvents.Array.size
-      value: 24
-      objectReference: {fileID: 0}
-    - target: {fileID: 2245757569264895010, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
-      propertyPath: m_ActionEvents.Array.data[23].m_ActionId
-      value: 164b2047-0a95-4b5a-a164-312f2ea0b895
-      objectReference: {fileID: 0}
-    - target: {fileID: 2245757569264895010, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
-      propertyPath: m_ActionEvents.Array.data[23].m_ActionName
-      value: Player/Gyro
-      objectReference: {fileID: 0}
     - target: {fileID: 4113169107202744185, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: m_Name
       value: Player
@@ -27758,6 +27746,14 @@ PrefabInstance:
       propertyPath: lifeStealAmount
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 5718231501293312219, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: dashSound
+      value: 
+      objectReference: {fileID: 8300000, guid: 42a199ed28425418a93d419795749848, type: 3}
+    - target: {fileID: 5718231501293312219, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: jumpSound
+      value: 
+      objectReference: {fileID: 8300000, guid: d48fd51c9c6ea4e018ec07459deacb4b, type: 3}
     - target: {fileID: 5718231501293312219, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: jumpEffect
       value: 
@@ -27829,10 +27825,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 4113169107202744185, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1415363920}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
 --- !u!1 &832575517
 GameObject:
@@ -28059,36 +28052,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1415363906 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4113169107202744185, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
-  m_PrefabInstance: {fileID: 723517919}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1415363920
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1415363906}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dcdc93561afbff5499700f9b69e47677, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hasTankClass: 0
-  hasLifeSteal: 0
-  hasRunner: 0
-  hasNormal: 0
-  normalSpeed: 8
-  normalDamage: 50
-  normalHealth: 100
-  tankHealth: 200
-  tankSpeed: 6
-  lifeStealHealh: 20
-  runnerHealth: 50
-  runnerSpeed: 10
-  runnerDamage: 20
 --- !u!1 &1608404967
 GameObject:
   m_ObjectHideFlags: 0

@@ -48,6 +48,8 @@ public class PlayerMovement : MonoBehaviour
 
     private bool canMove = true;
 
+    public bool canRotate = true;
+
     bool isAttacking;
     bool isGroundSlamming;
     bool wasGroundedLastFrame;
@@ -61,6 +63,8 @@ public class PlayerMovement : MonoBehaviour
     public AudioClip jumpSound;
     public AudioClip dashSound;
     private AudioSource audioSource;
+
+    
 
     public void SetCanMove(bool value)
     {
@@ -89,6 +93,7 @@ public class PlayerMovement : MonoBehaviour
         staminaCanvasGroup = staminaSlider.GetComponentInParent<CanvasGroup>();
         staminaCanvasGroup.alpha = 0f;
         staminaSlider.maxValue = Stamina;
+        canRotate = true;
 
         animator = GetComponent<Animator>();
 
@@ -212,12 +217,16 @@ public class PlayerMovement : MonoBehaviour
 
     void RotatePlayer()
     {
-        Vector2 rotation = lookAction.ReadValue<Vector2>();
-        transform.Rotate(Vector3.up * rotation.x * sensitivity);
+        if (canRotate)
+        {
+            Vector2 rotation = lookAction.ReadValue<Vector2>();
+            transform.Rotate(Vector3.up * rotation.x * sensitivity);
 
-        Xrotation -= rotation.y * sensitivity;
-        Xrotation = Mathf.Clamp(Xrotation, -20f, 20f);
-        cam.localRotation = Quaternion.Euler(Xrotation, 0f, 0f);
+            Xrotation -= rotation.y * sensitivity;
+            Xrotation = Mathf.Clamp(Xrotation, -20f, 20f);
+            cam.localRotation = Quaternion.Euler(Xrotation, 0f, 0f);
+        }
+
     }
 
     public bool IsGrounded()

@@ -299,10 +299,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
   m_MatchWidthOrHeight: 0
   m_PhysicalUnit: 3
@@ -348,6 +348,7 @@ GameObject:
   - component: {fileID: 4153272475544662992}
   - component: {fileID: 1811714496711296304}
   - component: {fileID: 3752857194594230190}
+  - component: {fileID: 1935823947616722541}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -466,7 +467,7 @@ MonoBehaviour:
   Speed: 8
   Stamina: 100
   noStaminaRegen: 0
-  sensitivity: 0.25
+  sensitivity: 0.5
   FOV: 80
   jumpPower: 9
   fallStop: 0.8
@@ -478,9 +479,14 @@ MonoBehaviour:
   dashSpeed: 8
   dashLength: 0.35
   isDashing: 1
+  doubleJump: 0
+  allowDoubleJump: 0
+  canRotate: 1
   jumpEffect: {fileID: 0}
   landEffect: {fileID: 0}
   dashEffectPrefab: {fileID: 0}
+  jumpSound: {fileID: 8300000, guid: d48fd51c9c6ea4e018ec07459deacb4b, type: 3}
+  dashSound: {fileID: 8300000, guid: 42a199ed28425418a93d419795749848, type: 3}
 --- !u!54 &2657752924298218969
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -625,6 +631,10 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: ff9568c6-537f-453f-9c96-fe14db4d6d00
     m_ActionName: 'Player/SpecialAttack[/Keyboard/e,/DualSenseGamepadHID/buttonNorth]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 164b2047-0a95-4b5a-a164-312f2ea0b895
+    m_ActionName: Player/Gyro
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -794,20 +804,31 @@ MonoBehaviour:
   playerHealth: 100
   MaxPlayerHealth: 100
   isAttacking: 0
+  isGrounded: 0
+  isDashing: 0
   isGroundSlamming: 0
-  damageReduction: 0.5
+  attackRange: 5.5
   hasDamageReduction: 0
   attackWhileDash: 0
+  hasGroundSlam: 0
   isInvulnerable: 0
+  hasInvulnerableAbility: 0
+  damageReduction: 0.5
   basicDamage: 50
   dashAttackDamage: 50
-  attackRange: 4.5
   specialAttackRange: 8
   specialDamage: 50
   knockBackAmount: 30
   speedReduction: 3
   specialAttackCost: 100
   basicKnockbackAmount: 15
+  lifeStealAmount: 0.1
+  swingSound: {fileID: 0}
+  hitEnemySound: {fileID: 0}
+  specialAttackSound: {fileID: 0}
+  playerHurtSound: {fileID: 0}
+  hitEnemyEffectPrefab: {fileID: 0}
+  playerHurtEffectPrefab: {fileID: 0}
 --- !u!82 &1811714496711296304
 AudioSource:
   m_ObjectHideFlags: 0
@@ -935,6 +956,31 @@ MonoBehaviour:
   landVibrationIntensity: 0.4
   landVibrationDuration: 0.2
   isJumping: 0
+--- !u!114 &1935823947616722541
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4113169107202744185}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dcdc93561afbff5499700f9b69e47677, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hasTankClass: 0
+  hasLifeSteal: 0
+  hasRunner: 0
+  hasNormal: 0
+  normalSpeed: 8
+  normalDamage: 50
+  normalHealth: 100
+  tankHealth: 200
+  tankSpeed: 6
+  lifeStealHealh: 20
+  runnerHealth: 50
+  runnerSpeed: 10
+  runnerDamage: 20
 --- !u!1 &5191113996900904676
 GameObject:
   m_ObjectHideFlags: 0
