@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using System.Collections; // <- Vigtigt! Til IEnumerator
+using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class Combat : MonoBehaviour
 {
@@ -143,6 +144,11 @@ public class Combat : MonoBehaviour
         if (specialAttackAction.triggered && isGrounded && !isAttacking && !isGroundSlamming && Stamina >= specialAttackCost && hasGroundSlam)
         {
             SpecialAttack();
+        }
+
+        if (playerHealth == 0)
+        {
+            SceneManager.LoadScene("Hubben");
         }
     }
 
