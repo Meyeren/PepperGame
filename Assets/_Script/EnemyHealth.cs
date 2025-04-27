@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyHealth : MonoBehaviour
 {
-    public int enemyHealth = 100;
+    public float enemyHealth = 100f;
 
     private FlockingTest flockingTest;
 
@@ -20,7 +20,7 @@ public class EnemyHealth : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int Damage)
+    public void TakeDamage(float Damage)
     {
         enemyHealth -= Damage;
     }

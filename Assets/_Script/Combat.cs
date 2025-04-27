@@ -6,6 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class Combat : MonoBehaviour
 {
+    [Header("Player")]
     public float playerHealth = 100f;
     public float MaxPlayerHealth = 100f;
 
@@ -20,30 +21,40 @@ public class Combat : MonoBehaviour
     InputAction attackAction;
     InputAction specialAttackAction;
 
+    PlayerClass playerClass;
+
     GameObject sword;
 
+    [Header("Attacking")]
     public bool isAttacking;
-    bool isGrounded;
-    bool isDashing;
+    [SerializeField]bool isGrounded;
+    [SerializeField]bool isDashing;
     public bool isGroundSlamming;
-    public float damageReduction = 0.5f;
-    public bool hasDamageReduction;
-    float Stamina;
+    [SerializeField] float attackRange = 5f;
 
+    public bool hasDamageReduction;
     public bool attackWhileDash;
     public bool hasGroundSlam;
     public bool isInvulnerable;
+    public bool hasInvulnerableAbility;
 
-    public int basicDamage = 50;
-    public int dashAttackDamage = 50;
+    float Stamina;
+    public float damageReduction = 0.5f;
 
-    [SerializeField] float attackRange = 5f;
+    float invulAbilityCost = 100f;
+
+
+    public float basicDamage = 50f;
+    public float dashAttackDamage = 50f;
+
     [SerializeField] float specialAttackRange = 5f;
     [SerializeField] int specialDamage = 100;
     [SerializeField] float knockBackAmount = 5f;
     [SerializeField] float speedReduction = 5f;
     [SerializeField] float specialAttackCost = 100f;
     [SerializeField] float basicKnockbackAmount = 2f;
+
+    [SerializeField] float lifeStealAmount = 0.5f;
 
     LayerMask enemyLayer;
 
@@ -67,6 +78,8 @@ public class Combat : MonoBehaviour
         isInvulnerable = false;
         isGroundSlamming = false;
         hasGroundSlam = false;
+        hasInvulnerableAbility = false;
+
 
         sword = GameObject.FindGameObjectWithTag("Sword");
         animator = GetComponent<Animator>();
@@ -85,6 +98,8 @@ public class Combat : MonoBehaviour
 
         enemyLayer = LayerMask.GetMask("Enemy");
         cam = Camera.main;
+
+        playerClass = GetComponent<PlayerClass>();
 
         renderers = GetComponentsInChildren<SkinnedMeshRenderer>();
         originalColors = new Color[renderers.Length];
@@ -114,9 +129,12 @@ public class Combat : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.H))
         {
-            attackWhileDash = true;
-            hasGroundSlam = true;
-            GetComponent<PlayerMovement>().allowDoubleJump = true;
+            //attackWhileDash = true;
+            //hasGroundSlam = true;
+           // GetComponent<PlayerMovement>().allowDoubleJump = true;
+            //hasInvulnerableAbility = true;
+            
+            
         }
 
         isGrounded = GetComponent<PlayerMovement>().IsGrounded();
@@ -132,7 +150,7 @@ public class Combat : MonoBehaviour
             }
         }
 
-        if (playerHealth == MaxPlayerHealth && !isInvulnerable && !hasDamageReduction)
+        if (playerHealth >= MaxPlayerHealth && !isInvulnerable && !hasDamageReduction)
         {
             FadeOutHealth();
         }
@@ -146,7 +164,17 @@ public class Combat : MonoBehaviour
             SpecialAttack();
         }
 
-        if (playerHealth == 0)
+        if (specialAttackAction.triggered && Stamina >= invulAbilityCost && hasInvulnerableAbility)
+        {
+            isInvulnerable = true;
+            Invoke("EndInvul",2f);
+            GetComponent<PlayerMovement>().Stamina -= invulAbilityCost;
+            GetComponent<PlayerMovement>().noStaminaRegen = true;
+        }
+
+
+
+        if (playerHealth <= 0)
         {
             SceneManager.LoadScene("Hubben");
         }
@@ -171,12 +199,19 @@ public class Combat : MonoBehaviour
             }
             StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.15f, 0.1f));
             if (hitEnemySound) hitEnemySound.Play();
-
             foreach (Collider enemy in hitEnemies)
             {
                 enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
                 enemy.GetComponent<FlockingTest>().KnockBack(transform.position, basicKnockbackAmount);
 
+                if (playerClass.hasLifeSteal && playerHealth <= playerClass.lifeStealHealh)
+                {
+                    playerHealth += lifeStealAmount;
+                }
+                else if (playerHealth > playerClass.lifeStealHealh)
+                {
+                    playerHealth = playerClass.lifeStealHealh;
+                }
                 if (hitEnemyEffectPrefab)
                 {
                     Instantiate(hitEnemyEffectPrefab, enemy.transform.position, Quaternion.identity);
@@ -279,5 +314,11 @@ public class Combat : MonoBehaviour
     void EndVibration()
     {
         Gamepad.current.SetMotorSpeeds(0f, 0f);
+    }
+
+    void EndInvul()
+    {
+        isInvulnerable = false;
+        GetComponent<PlayerMovement>().noStaminaRegen = false;
     }
 }
