@@ -241,10 +241,13 @@ public class skillTreeManager : MonoBehaviour
             playerClass.hasRunner = true;
 
             ColorBlock colorBlock = Normal.colors;
+            ColorBlock colorBlock2 = Normal.colors;
 
             colorBlock.disabledColor = Color.cyan;
+            colorBlock2.disabledColor = Color.gray;
 
             Runner[0].colors = colorBlock;
+            Runner[2].colors = colorBlock2;
             Runner[0].interactable = false;
             Runner[2].interactable = false;
             if (skillPoint >= 3)
@@ -311,19 +314,24 @@ public class skillTreeManager : MonoBehaviour
         player.GetComponent<Combat>().attackWhileDash = false;
         player.GetComponent<Combat>().hasInvulnerableAbility = false;
         player.GetComponent<Combat>().hasGroundSlam = false;
+        ColorBlock colorBlock = Normal.colors;
 
+        colorBlock.disabledColor = Color.cyan;
         Normal.interactable = true;
         foreach (Button button in Runner)
         {
             button.interactable = true;
+            button.colors = colorBlock;
         }
         foreach (Button button in Warrior)
         {
             button.interactable = true;
+            button.colors = colorBlock;
         }
         foreach (Button button in Tank)
         {
             button.interactable = true;
+            button.colors = colorBlock;
         }
 
 
@@ -342,6 +350,7 @@ public class skillTreeManager : MonoBehaviour
             colorBlock.disabledColor = Color.cyan;
 
             Warrior[0].colors = colorBlock;
+            
             Warrior[0].interactable = false;
             if (skillPoint >= 5)
             {
@@ -382,6 +391,7 @@ public class skillTreeManager : MonoBehaviour
             colorBlock.disabledColor = Color.cyan;
 
             Tank[0].colors = colorBlock;
+            
             Tank[0].interactable = false;
             if (skillPoint >= 5)
             {
