@@ -57,7 +57,7 @@ public class EnemyWaves : MonoBehaviour
     private EnemyWave currentWave;
 
     private int enemiesRemainingToSpawn = 0;
-    private int enemiesAlive = 0;
+    public int enemiesAlive = 0;
 
     private int spawnSubIndex = 0;
     private bool isSpawning = false;
@@ -141,11 +141,12 @@ public class EnemyWaves : MonoBehaviour
 
         if (enemiesAlive <= 0 && !isSpawning)
         {
-            StartNextWave();
+            //StartNextWave();
+            return;
         }
     }
 
-    void StartNextWave()
+    public void StartNextWave()
     {
         if (patternIndex >= waveTypePattern.Count)
         {
