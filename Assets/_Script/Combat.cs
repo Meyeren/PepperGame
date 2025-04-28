@@ -43,7 +43,6 @@ public class Combat : MonoBehaviour
 
     float invulAbilityCost = 100f;
 
-
     public float basicDamage = 50f;
     public float dashAttackDamage = 50f;
 
@@ -58,11 +57,19 @@ public class Combat : MonoBehaviour
 
     LayerMask enemyLayer;
 
-    [Header("Audio Sources")]
-    public AudioSource swingSound;
-    public AudioSource hitEnemySound;
-    public AudioSource specialAttackSound;
-    public AudioSource playerHurtSound;
+    [Header("Audio Clips")]
+    public AudioClip swingSoundClip;
+    public AudioClip hitEnemySoundClip;
+    public AudioClip specialAttackSoundClip;
+    public AudioClip playerHurtSoundClip;
+
+    [Header("Audio Delays (seconds)")]
+    public float swingSoundDelay = 0f;  // Delay for swing sound
+    public float hitEnemySoundDelay = 0f;  // Delay for hit enemy sound
+    public float specialAttackSoundDelay = 0f;  // Delay for special attack sound
+    public float playerHurtSoundDelay = 0f;  // Delay for player hurt sound
+
+    private AudioSource audioSource;
 
     [Header("VFX Prefabs")]
     public GameObject hitEnemyEffectPrefab;
@@ -79,7 +86,6 @@ public class Combat : MonoBehaviour
         isGroundSlamming = false;
         hasGroundSlam = false;
         hasInvulnerableAbility = false;
-
 
         sword = GameObject.FindGameObjectWithTag("Sword");
         animator = GetComponent<Animator>();
@@ -107,6 +113,8 @@ public class Combat : MonoBehaviour
         {
             originalColors[i] = renderers[i].material.color;
         }
+
+        audioSource = GetComponent<AudioSource>();  // Initialize the AudioSource
     }
 
     private void Update()
@@ -125,16 +133,6 @@ public class Combat : MonoBehaviour
         {
             fillImage2.color = new Color(0.1f, 0.35f, 0.15f, 0.5f);
             fillImage.color = new Color(0.25f, 0.7f, 0.3f);
-        }
-
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            //attackWhileDash = true;
-            //hasGroundSlam = true;
-            // GetComponent<PlayerMovement>().allowDoubleJump = true;
-            //hasInvulnerableAbility = true;
-
-
         }
 
         isGrounded = GetComponent<PlayerMovement>().IsGrounded();
@@ -172,8 +170,6 @@ public class Combat : MonoBehaviour
             GetComponent<PlayerMovement>().noStaminaRegen = true;
         }
 
-
-
         if (playerHealth <= 0)
         {
             SceneManager.LoadScene("Hubben");
@@ -184,7 +180,7 @@ public class Combat : MonoBehaviour
     {
         isAttacking = true;
         animator.SetTrigger("isAttacking");
-        if (swingSound) swingSound.Play();
+        PlaySound(swingSoundClip, swingSoundDelay);  // Play the swing sound with delay
     }
 
     void PerformHit()
@@ -198,7 +194,7 @@ public class Combat : MonoBehaviour
                 Invoke("EndVibration", 0.2f);
             }
             StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.15f, 0.1f));
-            if (hitEnemySound) hitEnemySound.Play();
+            PlaySound(hitEnemySoundClip, hitEnemySoundDelay);  // Play the hit enemy sound with delay
             foreach (Collider enemy in hitEnemies)
             {
                 enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
@@ -212,10 +208,12 @@ public class Combat : MonoBehaviour
                 {
                     playerHealth = playerClass.lifeStealHealh;
                 }
+
                 if (hitEnemyEffectPrefab)
                 {
                     Instantiate(hitEnemyEffectPrefab, enemy.transform.position, Quaternion.identity);
                 }
+                StartCoroutine(FlashRed(enemy));
             }
         }
         isAttacking = false;
@@ -230,7 +228,7 @@ public class Combat : MonoBehaviour
         GetComponent<PlayerMovement>().Stamina -= 100f;
         GetComponent<PlayerMovement>().noStaminaRegen = true;
 
-        if (specialAttackSound) specialAttackSound.Play();
+        PlaySound(specialAttackSoundClip, specialAttackSoundDelay);  // Play the special attack sound with delay
     }
 
     void PerformSpecialAttackHit()
@@ -256,6 +254,7 @@ public class Combat : MonoBehaviour
             {
                 Instantiate(hitEnemyEffectPrefab, enemy.transform.position, Quaternion.identity);
             }
+            StartCoroutine(FlashRed(enemy));
         }
     }
 
@@ -263,7 +262,7 @@ public class Combat : MonoBehaviour
     {
         playerHealth -= damage;
 
-        if (playerHurtSound) playerHurtSound.Play();
+        PlaySound(playerHurtSoundClip, playerHurtSoundDelay);  // Play the player hurt sound with delay
         if (playerHurtEffectPrefab)
         {
             Instantiate(playerHurtEffectPrefab, transform.position, Quaternion.identity);
@@ -277,17 +276,39 @@ public class Combat : MonoBehaviour
         }
     }
 
-    IEnumerator FlashRed()
+    IEnumerator FlashRed(Collider enemy = null)
     {
-        foreach (var r in renderers)
+        if (enemy != null)
         {
-            r.material.color = Color.red;
+            var enemyRenderer = enemy.GetComponent<SkinnedMeshRenderer>();
+            if (enemyRenderer)
+            {
+                enemyRenderer.material.color = Color.red;
+            }
+        }
+        else
+        {
+            foreach (var r in renderers)
+            {
+                r.material.color = Color.red;
+            }
         }
         yield return new WaitForSeconds(0.2f);
 
-        for (int i = 0; i < renderers.Length; i++)
+        if (enemy != null)
         {
-            renderers[i].material.color = originalColors[i];
+            var enemyRenderer = enemy.GetComponent<SkinnedMeshRenderer>();
+            if (enemyRenderer)
+            {
+                enemyRenderer.material.color = originalColors[0]; // Adjust for multiple materials if needed
+            }
+        }
+        else
+        {
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                renderers[i].material.color = originalColors[i];
+            }
         }
     }
 
@@ -320,5 +341,25 @@ public class Combat : MonoBehaviour
     {
         isInvulnerable = false;
         GetComponent<PlayerMovement>().noStaminaRegen = false;
+    }
+
+    // Helper method to play a sound with delay
+    void PlaySound(AudioClip clip, float delay)
+    {
+        if (delay > 0f)  // Check if there is a delay
+        {
+            StartCoroutine(PlaySoundWithDelay(clip, delay));  // Start coroutine to play sound with delay
+        }
+        else
+        {
+            audioSource.PlayOneShot(clip);  // Play sound immediately if no delay
+        }
+    }
+
+    // Coroutine to play sound with a specified delay
+    IEnumerator PlaySoundWithDelay(AudioClip clip, float delay)
+    {
+        yield return new WaitForSeconds(delay);  // Wait for the specified delay
+        audioSource.PlayOneShot(clip);  // Play the sound after the delay
     }
 }
