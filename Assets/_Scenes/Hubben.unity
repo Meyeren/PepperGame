@@ -780,6 +780,7 @@ MonoBehaviour:
   skillTree: {fileID: 133020893}
   skillTreeText: {fileID: 0}
   skillPointText: {fileID: 979690933}
+  NormalObject: {fileID: 2143305957}
   Runner:
   - {fileID: 197987654}
   - {fileID: 465791069}

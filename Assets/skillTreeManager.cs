@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine.InputSystem;
 using TMPro.Examples;
+using UnityEngine.EventSystems;
 
 public class skillTreeManager : MonoBehaviour
 {
@@ -24,6 +25,7 @@ public class skillTreeManager : MonoBehaviour
     public Canvas skillTree;
     public TextMeshProUGUI skillTreeText;
     public TextMeshProUGUI skillPointText;
+    public GameObject NormalObject;
 
 
 
@@ -47,7 +49,6 @@ public class skillTreeManager : MonoBehaviour
         skillTree.enabled = false;
         hasClass = false;
 
-        skillPoint = PlayerPrefs.GetInt("SkillPoint");
         
 
 
@@ -216,6 +217,8 @@ public class skillTreeManager : MonoBehaviour
 
     void OpenTree()
     {
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(NormalObject);
         if (Gamepad.current == null)
         {
             Cursor.lockState = CursorLockMode.None;
