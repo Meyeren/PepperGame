@@ -3,9 +3,16 @@ using UnityEngine.SceneManagement;
 
 public class StartLevel : MonoBehaviour
 {
-    [SerializeField] string arenaName;
+    PlayerClass playerClass;
+
+    
+
     private void OnTriggerEnter(Collider other)
     {
-        SceneManager.LoadScene(arenaName);
+        if (other.CompareTag("Player"))
+        {
+            
+            other.transform.position = new Vector3(0f, -2f, 0f);
+        }
     }
 }

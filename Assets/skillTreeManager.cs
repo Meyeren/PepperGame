@@ -5,6 +5,9 @@ using TMPro;
 using UnityEngine.InputSystem;
 using TMPro.Examples;
 using UnityEngine.EventSystems;
+using System;
+using UnityEditorInternal;
+using Mono.Cecil;
 
 public class skillTreeManager : MonoBehaviour
 {
@@ -82,13 +85,23 @@ public class skillTreeManager : MonoBehaviour
         {
             Vector2 navi = naviInput.ReadValue<Vector2>();
 
+            // Læs musens nuværende position
             Vector2 currentPos = Mouse.current.position.ReadValue();
+
+            // Beregn bevægelsen baseret på joystick input (Skaleret)
             Vector2 move = navi * 20f;
 
+            // Opdater musens position
+            Vector2 newPos = currentPos + move;
 
-            Mouse.current.WarpCursorPosition(currentPos + move);
+            // Sørg for, at cursoren ikke går uden for skærmens grænser (valgfrit)
+            newPos.x = Mathf.Clamp(newPos.x, 0, Screen.width);
+            newPos.y = Mathf.Clamp(newPos.y, 0, Screen.height);
+
+            // Flyt musen til den nye position
+            Mouse.current.WarpCursorPosition(newPos);
         }
-        
+
         skillPointText.text = skillPoint.ToString();
         if (hasClass)
         {
