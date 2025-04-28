@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using System.Collections;
 
 public class Combat : MonoBehaviour
 {
@@ -14,10 +13,13 @@ public class Combat : MonoBehaviour
     Image fillImage2;
 
     Camera cam;
+
     Animator animator;
+
     PlayerInput input;
     InputAction attackAction;
     InputAction specialAttackAction;
+
     GameObject sword;
 
     public bool isAttacking;
@@ -45,28 +47,8 @@ public class Combat : MonoBehaviour
 
     LayerMask enemyLayer;
 
-    // Audio
-    public AudioClip attackMissClip;
-    public AudioClip attackHitClip;
-    public AudioClip playerHurtClip;
-    public AudioClip enemyHurtClip;
-    public AudioClip specialAttackClip;
-    private AudioSource audioSource;
 
-    [Header("Sound Delays")]
-    [SerializeField] private float attackMissDelay = 0f;
-    [SerializeField] private float attackHitDelay = 0f;
-    [SerializeField] private float playerHurtDelay = 0f;
-    [SerializeField] private float enemyHurtDelay = 0f;
-    [SerializeField] private float specialAttackDelay = 0f;
 
-    // Animation triggers
-    [SerializeField] private string playerHurtTrigger = "Hurt";
-    [SerializeField] private string enemyHurtTrigger = "Hurt";
-    [SerializeField] private string specialAbilityTrigger = "SpecialAbility";
-
-    // Health flash
-    [SerializeField] private float flashDuration = 0.1f;
 
     private void Start()
     {
@@ -94,11 +76,10 @@ public class Combat : MonoBehaviour
 
         cam = Camera.main;
 
-        audioSource = GetComponent<AudioSource>();
-        if (audioSource == null)
-        {
-            audioSource = gameObject.AddComponent<AudioSource>();
-        }
+
+
+
+
     }
 
     private void Update()
@@ -107,6 +88,7 @@ public class Combat : MonoBehaviour
         {
             fillImage.color = new Color(0.6f, 0.2f, 0.8f, 1f);
             fillImage2.color = new Color(0.6f, 0.2f, 0.8f, 1f);
+            Debug.Log("kronk");
         }
         else if (hasDamageReduction)
         {
@@ -134,11 +116,13 @@ public class Combat : MonoBehaviour
             {
                 Attack();
             }
+
         }
 
         if (playerHealth == MaxPlayerHealth && !isInvulnerable && !hasDamageReduction)
         {
             FadeOutHealth();
+            Debug.Log("Fadeout");
         }
         else
         {
@@ -159,36 +143,22 @@ public class Combat : MonoBehaviour
 
     void PerformHit()
     {
+
         Collider[] hitEnemies = Physics.OverlapSphere(sword.transform.position, attackRange, enemyLayer);
-
-        if (hitEnemies.Length != 0)
+        if (hitEnemies.Length != 0 && Gamepad.current != null)
         {
-            PlaySoundWithDelay(attackHitClip, attackHitDelay);
+            Gamepad.current.SetMotorSpeeds(0.1f, 0.2f);
 
-            if (Gamepad.current != null)
-            {
-                Gamepad.current.SetMotorSpeeds(0.1f, 0.2f);
-                StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.15f, 0.1f));
-                Invoke("EndVibration", 0.2f);
-            }
-
-            foreach (Collider enemy in hitEnemies)
-            {
-                enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
-                enemy.GetComponent<FlockingTest>().KnockBack(transform.position, basicKnockbackAmount);
-
-                Animator enemyAnimator = enemy.GetComponent<Animator>();
-                if (enemyAnimator != null)
-                {
-                    enemyAnimator.SetTrigger(enemyHurtTrigger);
-                }
-
-                StartCoroutine(FlashHealth(enemy.GetComponentInChildren<Slider>()));
-            }
+            StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.15f, 0.1f));
+            Invoke("EndVibration", 0.2f);
         }
-        else
+        foreach (Collider enemy in hitEnemies)
         {
-            PlaySoundWithDelay(attackMissClip, attackMissDelay);
+            enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
+            enemy.GetComponent<FlockingTest>().KnockBack(transform.position, basicKnockbackAmount);
+            Debug.Log(basicDamage);
+
+
         }
 
         isAttacking = false;
@@ -199,12 +169,11 @@ public class Combat : MonoBehaviour
         hasDamageReduction = true;
         isGroundSlamming = true;
         animator.SetTrigger("isGroundSlamming");
-        animator.SetTrigger(specialAbilityTrigger);
-        PlaySoundWithDelay(specialAttackClip, specialAttackDelay);
-
         GetComponent<PlayerMovement>().Speed -= speedReduction;
         GetComponent<PlayerMovement>().Stamina -= 100f;
         GetComponent<PlayerMovement>().noStaminaRegen = true;
+
+
     }
 
     void PerformSpecialAttackHit()
@@ -214,42 +183,16 @@ public class Combat : MonoBehaviour
             Gamepad.current.SetMotorSpeeds(0.5f, 1f);
         }
         StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.3f, 1f));
-
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position, specialAttackRange, enemyLayer);
         foreach (Collider enemy in hitEnemies)
         {
             enemy.GetComponent<EnemyHealth>().TakeDamage(specialDamage);
             enemy.GetComponent<FlockingTest>().KnockBack(transform.position, knockBackAmount);
 
-            Animator enemyAnimator = enemy.GetComponent<Animator>();
-            if (enemyAnimator != null)
-            {
-                enemyAnimator.SetTrigger(enemyHurtTrigger);
-            }
-
-            StartCoroutine(FlashHealth(enemy.GetComponentInChildren<Slider>()));
         }
+
     }
 
-    public void TakeDamage(float damage)
-    {
-        if (isInvulnerable) return;
-
-        playerHealth -= damage;
-        PlaySoundWithDelay(playerHurtClip, playerHurtDelay);
-
-        if (animator != null)
-        {
-            animator.SetTrigger(playerHurtTrigger);
-        }
-
-        StartCoroutine(FlashHealth(healthSlider));
-
-        if (playerHealth <= 0)
-        {
-            Die();
-        }
-    }
 
     void FadeOutHealth()
     {
@@ -265,7 +208,6 @@ public class Combat : MonoBehaviour
         isGroundSlamming = false;
         GetComponent<PlayerMovement>().noStaminaRegen = false;
         GetComponent<PlayerMovement>().Speed += speedReduction;
-
         if (Gamepad.current != null)
         {
             EndVibration();
@@ -277,33 +219,4 @@ public class Combat : MonoBehaviour
         Gamepad.current.SetMotorSpeeds(0f, 0f);
     }
 
-    void PlaySoundWithDelay(AudioClip clip, float delay)
-    {
-        if (clip == null) return;
-        StartCoroutine(PlayDelayed(clip, delay));
-    }
-
-    IEnumerator PlayDelayed(AudioClip clip, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        audioSource.PlayOneShot(clip);
-    }
-
-    IEnumerator FlashHealth(Slider healthbar)
-    {
-        if (healthbar == null) yield break;
-
-        Image fill = healthbar.fillRect.GetComponentInChildren<Image>();
-        Color originalColor = fill.color;
-
-        fill.color = Color.red;
-        yield return new WaitForSeconds(flashDuration);
-        fill.color = originalColor;
-    }
-
-    void Die()
-    {
-        Debug.Log("Player is dead.");
-        // TODO: Tilføj død-animation og logik
-    }
 }
