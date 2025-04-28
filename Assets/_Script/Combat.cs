@@ -204,7 +204,7 @@ public class Combat : MonoBehaviour
                 {
                     playerHealth += lifeStealAmount;
                 }
-                else if (playerHealth > playerClass.lifeStealHealh)
+                else if (playerHealth > playerClass.lifeStealHealh && playerClass.hasLifeSteal)
                 {
                     playerHealth = playerClass.lifeStealHealh;
                 }
