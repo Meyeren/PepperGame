@@ -37,6 +37,11 @@ public class PlayerClass : MonoBehaviour
         combat = GetComponent<Combat>();
         move = GetComponent<PlayerMovement>();
 
+        
+    }
+
+    public void ForceClass()
+    {
         if (hasNormal)
         {
             combat.playerHealth = normalHealth;
@@ -67,6 +72,6 @@ public class PlayerClass : MonoBehaviour
             combat.MaxPlayerHealth = runnerHealth;
             move.Speed = runnerSpeed;
             combat.basicDamage = runnerDamage;
-        } 
+        }
     }
 }
