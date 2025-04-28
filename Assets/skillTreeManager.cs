@@ -8,11 +8,14 @@ using TMPro.Examples;
 public class skillTreeManager : MonoBehaviour
 {
     PlayerInput input;
+
+
     GameObject player;
     GameObject target;
 
     PlayerClass playerClass;
 
+    [Header("Player")]
     public bool hasClass;
 
     public int skillPoint;
@@ -20,6 +23,7 @@ public class skillTreeManager : MonoBehaviour
     [Header("UI")]
     public Canvas skillTree;
     public TextMeshProUGUI skillTreeText;
+    public TextMeshProUGUI skillPointText;
 
 
 
@@ -43,6 +47,8 @@ public class skillTreeManager : MonoBehaviour
         skillTree.enabled = false;
         hasClass = false;
 
+        skillPoint = PlayerPrefs.GetInt("SkillPoint");
+        
 
 
         foreach (Button button in Runner)
@@ -67,6 +73,7 @@ public class skillTreeManager : MonoBehaviour
 
     private void Update()
     {
+        skillPointText.text = skillPoint.ToString();
         if (hasClass)
         {
             ColorBlock colorBlock = Normal.colors;
@@ -95,6 +102,7 @@ public class skillTreeManager : MonoBehaviour
             {
                 Normal.colors = colorBlock;
                 Normal.interactable = false;
+                if (!player.GetComponent<Combat>().hasInvulnerableAbility) Warrior[1].colors = colorBlock;
                 foreach (Button button in Runner)
                 {
                     button.interactable = false;
@@ -126,6 +134,7 @@ public class skillTreeManager : MonoBehaviour
             {
                 Normal.colors = colorBlock;
                 Normal.interactable = false;
+                if (!player.GetComponent<Combat>().hasGroundSlam) Tank[1].colors = colorBlock;
                 
                 foreach (Button button in Runner)
                 {
@@ -316,23 +325,27 @@ public class skillTreeManager : MonoBehaviour
         player.GetComponent<Combat>().hasGroundSlam = false;
         ColorBlock colorBlock = Normal.colors;
 
-        colorBlock.disabledColor = Color.cyan;
+        colorBlock.disabledColor = Color.gray;
         Normal.interactable = true;
         foreach (Button button in Runner)
         {
-            button.interactable = true;
+            button.interactable = false;
             button.colors = colorBlock;
         }
         foreach (Button button in Warrior)
         {
-            button.interactable = true;
+            button.interactable = false;
             button.colors = colorBlock;
         }
         foreach (Button button in Tank)
         {
-            button.interactable = true;
+            button.interactable = false;
             button.colors = colorBlock;
         }
+        Warrior[0].interactable = true;
+        Tank[0].interactable = true;
+        Runner[0].interactable = true;
+
 
 
     }
