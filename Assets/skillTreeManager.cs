@@ -217,8 +217,12 @@ public class skillTreeManager : MonoBehaviour
 
     void OpenTree()
     {
-        EventSystem.current.SetSelectedGameObject(null);
-        EventSystem.current.SetSelectedGameObject(NormalObject);
+        if (Gamepad.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+            EventSystem.current.SetSelectedGameObject(NormalObject);
+        }
+
         if (Gamepad.current == null)
         {
             Cursor.lockState = CursorLockMode.None;
@@ -227,7 +231,7 @@ public class skillTreeManager : MonoBehaviour
         else if (Gamepad.current != null)
         {
             Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.lockState = CursorLockMode.None;
         }
         player.GetComponent<PlayerMovement>().canRotate = false;
         skillTree.enabled = true;
