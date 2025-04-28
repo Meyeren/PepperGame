@@ -2,11 +2,9 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Collections;
-using UnityEngine.SceneManagement;
 
 public class Combat : MonoBehaviour
 {
-    [Header("Player")]
     public float playerHealth = 100f;
     public float MaxPlayerHealth = 100f;
 
@@ -20,33 +18,24 @@ public class Combat : MonoBehaviour
     PlayerInput input;
     InputAction attackAction;
     InputAction specialAttackAction;
-
-    PlayerClass playerClass;
-
     GameObject sword;
 
-    [Header("Attacking")]
     public bool isAttacking;
-    [SerializeField]bool isGrounded;
-    [SerializeField]bool isDashing;
+    bool isGrounded;
+    bool isDashing;
     public bool isGroundSlamming;
-    [SerializeField] float attackRange = 5f;
-
+    public float damageReduction = 0.5f;
     public bool hasDamageReduction;
-    public bool attackWhileDash;
-    public bool hasGroundSlam;
-    public bool isInvulnerable;
-    public bool hasInvulnerableAbility;
 
     float Stamina;
-    public float damageReduction = 0.5f;
 
-    float invulAbilityCost = 100f;
+    public bool attackWhileDash;
+    public bool isInvulnerable;
 
+    public int basicDamage = 50;
+    public int dashAttackDamage = 50;
 
-    public float basicDamage = 50f;
-    public float dashAttackDamage = 50f;
-
+    [SerializeField] float attackRange = 5f;
     [SerializeField] float specialAttackRange = 5f;
     [SerializeField] int specialDamage = 100;
     [SerializeField] float knockBackAmount = 5f;
@@ -54,22 +43,30 @@ public class Combat : MonoBehaviour
     [SerializeField] float specialAttackCost = 100f;
     [SerializeField] float basicKnockbackAmount = 2f;
 
-    [SerializeField] float lifeStealAmount = 0.5f;
-
     LayerMask enemyLayer;
 
-    [Header("Audio Sources")]
-    public AudioSource swingSound;
-    public AudioSource hitEnemySound;
-    public AudioSource specialAttackSound;
-    public AudioSource playerHurtSound;
+    // Audio
+    public AudioClip attackMissClip;
+    public AudioClip attackHitClip;
+    public AudioClip playerHurtClip;
+    public AudioClip enemyHurtClip;
+    public AudioClip specialAttackClip;
+    private AudioSource audioSource;
 
-    [Header("VFX Prefabs")]
-    public GameObject hitEnemyEffectPrefab;
-    public GameObject playerHurtEffectPrefab;
+    [Header("Sound Delays")]
+    [SerializeField] private float attackMissDelay = 0f;
+    [SerializeField] private float attackHitDelay = 0f;
+    [SerializeField] private float playerHurtDelay = 0f;
+    [SerializeField] private float enemyHurtDelay = 0f;
+    [SerializeField] private float specialAttackDelay = 0f;
 
-    SkinnedMeshRenderer[] renderers;
-    Color[] originalColors;
+    // Animation triggers
+    [SerializeField] private string playerHurtTrigger = "Hurt";
+    [SerializeField] private string enemyHurtTrigger = "Hurt";
+    [SerializeField] private string specialAbilityTrigger = "SpecialAbility";
+
+    // Health flash
+    [SerializeField] private float flashDuration = 0.1f;
 
     private void Start()
     {
@@ -77,9 +74,6 @@ public class Combat : MonoBehaviour
         attackWhileDash = false;
         isInvulnerable = false;
         isGroundSlamming = false;
-        hasGroundSlam = false;
-        hasInvulnerableAbility = false;
-
 
         sword = GameObject.FindGameObjectWithTag("Sword");
         animator = GetComponent<Animator>();
@@ -97,15 +91,13 @@ public class Combat : MonoBehaviour
         specialAttackAction = input.actions.FindAction("SpecialAttack");
 
         enemyLayer = LayerMask.GetMask("Enemy");
+
         cam = Camera.main;
 
-        playerClass = GetComponent<PlayerClass>();
-
-        renderers = GetComponentsInChildren<SkinnedMeshRenderer>();
-        originalColors = new Color[renderers.Length];
-        for (int i = 0; i < renderers.Length; i++)
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null)
         {
-            originalColors[i] = renderers[i].material.color;
+            audioSource = gameObject.AddComponent<AudioSource>();
         }
     }
 
@@ -129,14 +121,8 @@ public class Combat : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.H))
         {
-            //attackWhileDash = true;
-            //hasGroundSlam = true;
-           // GetComponent<PlayerMovement>().allowDoubleJump = true;
-            //hasInvulnerableAbility = true;
-            
-            
+            attackWhileDash = true;
         }
-
         isGrounded = GetComponent<PlayerMovement>().IsGrounded();
         isDashing = GetComponent<PlayerMovement>().isDashing;
         healthSlider.value = playerHealth;
@@ -150,7 +136,7 @@ public class Combat : MonoBehaviour
             }
         }
 
-        if (playerHealth >= MaxPlayerHealth && !isInvulnerable && !hasDamageReduction)
+        if (playerHealth == MaxPlayerHealth && !isInvulnerable && !hasDamageReduction)
         {
             FadeOutHealth();
         }
@@ -159,24 +145,9 @@ public class Combat : MonoBehaviour
             healthCanvas.alpha = 1f;
         }
 
-        if (specialAttackAction.triggered && isGrounded && !isAttacking && !isGroundSlamming && Stamina >= specialAttackCost && hasGroundSlam)
+        if (specialAttackAction.triggered && isGrounded && !isAttacking && !isGroundSlamming && Stamina >= specialAttackCost)
         {
             SpecialAttack();
-        }
-
-        if (specialAttackAction.triggered && Stamina >= invulAbilityCost && hasInvulnerableAbility)
-        {
-            isInvulnerable = true;
-            Invoke("EndInvul",2f);
-            GetComponent<PlayerMovement>().Stamina -= invulAbilityCost;
-            GetComponent<PlayerMovement>().noStaminaRegen = true;
-        }
-
-
-
-        if (playerHealth <= 0)
-        {
-            SceneManager.LoadScene("Hubben");
         }
     }
 
@@ -184,40 +155,42 @@ public class Combat : MonoBehaviour
     {
         isAttacking = true;
         animator.SetTrigger("isAttacking");
-        if (swingSound) swingSound.Play();
     }
 
     void PerformHit()
     {
         Collider[] hitEnemies = Physics.OverlapSphere(sword.transform.position, attackRange, enemyLayer);
+
         if (hitEnemies.Length != 0)
         {
+            PlaySoundWithDelay(attackHitClip, attackHitDelay);
+
             if (Gamepad.current != null)
             {
                 Gamepad.current.SetMotorSpeeds(0.1f, 0.2f);
+                StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.15f, 0.1f));
                 Invoke("EndVibration", 0.2f);
             }
-            StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.15f, 0.1f));
-            if (hitEnemySound) hitEnemySound.Play();
+
             foreach (Collider enemy in hitEnemies)
             {
                 enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
                 enemy.GetComponent<FlockingTest>().KnockBack(transform.position, basicKnockbackAmount);
 
-                if (playerClass.hasLifeSteal && playerHealth <= playerClass.lifeStealHealh)
+                Animator enemyAnimator = enemy.GetComponent<Animator>();
+                if (enemyAnimator != null)
                 {
-                    playerHealth += lifeStealAmount;
+                    enemyAnimator.SetTrigger(enemyHurtTrigger);
                 }
-                else if (playerHealth > playerClass.lifeStealHealh)
-                {
-                    playerHealth = playerClass.lifeStealHealh;
-                }
-                if (hitEnemyEffectPrefab)
-                {
-                    Instantiate(hitEnemyEffectPrefab, enemy.transform.position, Quaternion.identity);
-                }
+
+                StartCoroutine(FlashHealth(enemy.GetComponentInChildren<Slider>()));
             }
         }
+        else
+        {
+            PlaySoundWithDelay(attackMissClip, attackMissDelay);
+        }
+
         isAttacking = false;
     }
 
@@ -226,11 +199,12 @@ public class Combat : MonoBehaviour
         hasDamageReduction = true;
         isGroundSlamming = true;
         animator.SetTrigger("isGroundSlamming");
+        animator.SetTrigger(specialAbilityTrigger);
+        PlaySoundWithDelay(specialAttackClip, specialAttackDelay);
+
         GetComponent<PlayerMovement>().Speed -= speedReduction;
         GetComponent<PlayerMovement>().Stamina -= 100f;
         GetComponent<PlayerMovement>().noStaminaRegen = true;
-
-        if (specialAttackSound) specialAttackSound.Play();
     }
 
     void PerformSpecialAttackHit()
@@ -239,55 +213,41 @@ public class Combat : MonoBehaviour
         {
             Gamepad.current.SetMotorSpeeds(0.5f, 1f);
         }
-        
         StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.3f, 1f));
 
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position, specialAttackRange, enemyLayer);
-        if (hitEnemies.Length >= 8)
-        {
-            GetComponent<PlayerMovement>().Stamina += 25f;
-        }
         foreach (Collider enemy in hitEnemies)
         {
             enemy.GetComponent<EnemyHealth>().TakeDamage(specialDamage);
             enemy.GetComponent<FlockingTest>().KnockBack(transform.position, knockBackAmount);
 
-            if (hitEnemyEffectPrefab)
+            Animator enemyAnimator = enemy.GetComponent<Animator>();
+            if (enemyAnimator != null)
             {
-                Instantiate(hitEnemyEffectPrefab, enemy.transform.position, Quaternion.identity);
+                enemyAnimator.SetTrigger(enemyHurtTrigger);
             }
+
+            StartCoroutine(FlashHealth(enemy.GetComponentInChildren<Slider>()));
         }
     }
 
     public void TakeDamage(float damage)
     {
+        if (isInvulnerable) return;
+
         playerHealth -= damage;
+        PlaySoundWithDelay(playerHurtClip, playerHurtDelay);
 
-        if (playerHurtSound) playerHurtSound.Play();
-        if (playerHurtEffectPrefab)
+        if (animator != null)
         {
-            Instantiate(playerHurtEffectPrefab, transform.position, Quaternion.identity);
+            animator.SetTrigger(playerHurtTrigger);
         }
 
-        StartCoroutine(FlashRed());
+        StartCoroutine(FlashHealth(healthSlider));
 
-        if (playerHealth <= 0f)
+        if (playerHealth <= 0)
         {
-            // Death logic
-        }
-    }
-
-    IEnumerator FlashRed()
-    {
-        foreach (var r in renderers)
-        {
-            r.material.color = Color.red;
-        }
-        yield return new WaitForSeconds(0.2f);
-
-        for (int i = 0; i < renderers.Length; i++)
-        {
-            renderers[i].material.color = originalColors[i];
+            Die();
         }
     }
 
@@ -305,6 +265,7 @@ public class Combat : MonoBehaviour
         isGroundSlamming = false;
         GetComponent<PlayerMovement>().noStaminaRegen = false;
         GetComponent<PlayerMovement>().Speed += speedReduction;
+
         if (Gamepad.current != null)
         {
             EndVibration();
@@ -316,9 +277,33 @@ public class Combat : MonoBehaviour
         Gamepad.current.SetMotorSpeeds(0f, 0f);
     }
 
-    void EndInvul()
+    void PlaySoundWithDelay(AudioClip clip, float delay)
     {
-        isInvulnerable = false;
-        GetComponent<PlayerMovement>().noStaminaRegen = false;
+        if (clip == null) return;
+        StartCoroutine(PlayDelayed(clip, delay));
+    }
+
+    IEnumerator PlayDelayed(AudioClip clip, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        audioSource.PlayOneShot(clip);
+    }
+
+    IEnumerator FlashHealth(Slider healthbar)
+    {
+        if (healthbar == null) yield break;
+
+        Image fill = healthbar.fillRect.GetComponentInChildren<Image>();
+        Color originalColor = fill.color;
+
+        fill.color = Color.red;
+        yield return new WaitForSeconds(flashDuration);
+        fill.color = originalColor;
+    }
+
+    void Die()
+    {
+        Debug.Log("Player is dead.");
+        // TODO: Tilføj død-animation og logik
     }
 }
