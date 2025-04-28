@@ -73,7 +73,7 @@ public class Combat : MonoBehaviour
 
     [Header("VFX Prefabs")]
     public GameObject hitEnemyEffectPrefab;
-    public ParticleSystem playerHurtEffectPrefab;
+    public GameObject playerHurtEffectPrefab;
 
     SkinnedMeshRenderer[] renderers;
     Color[] originalColors;
@@ -263,24 +263,41 @@ public class Combat : MonoBehaviour
         playerHealth -= damage;
 
         PlaySound(playerHurtSoundClip, playerHurtSoundDelay);  // Play the player hurt sound with delay
-        if (playerHurtEffectPrefab)
+
+        if (playerHurtEffectPrefab != null)
         {
-            playerHurtEffectPrefab.Play();
-            //Instantiate(playerHurtEffectPrefab, transform.position, Quaternion.identity);
+            GameObject bloodEffect = Instantiate(playerHurtEffectPrefab, transform.position + Vector3.up * 1f, Quaternion.identity);
+
+            // Find ParticleSystem
+            ParticleSystem ps = bloodEffect.GetComponent<ParticleSystem>();
+            if (ps == null)
+            {
+                ps = bloodEffect.GetComponentInChildren<ParticleSystem>();
+            }
+
+            if (ps != null)
+            {
+                ps.Play();
+            }
+            else
+            {
+                Debug.LogWarning("No ParticleSystem found on bloodEffect prefab!");
+            }
+
+            // Destroy efter 2 sekunder for cleanup
+            Destroy(bloodEffect, 2f);
         }
 
-        // Start the red flash effect on player when taking damage
         StartCoroutine(FlashRed());
 
         if (playerHealth <= 0f)
         {
-            // Death logic
+            // Death logic here
         }
     }
 
     IEnumerator FlashRed(Collider enemy = null)
     {
-        // If enemy is null, apply to player
         if (enemy == null)
         {
             var playerRenderer = GetComponent<SkinnedMeshRenderer>();
@@ -346,7 +363,6 @@ public class Combat : MonoBehaviour
         GetComponent<PlayerMovement>().noStaminaRegen = false;
     }
 
-    // Helper method to play a sound with delay
     void PlaySound(AudioClip clip, float delay)
     {
         if (delay > 0f)  // Check if there is a delay
@@ -359,7 +375,6 @@ public class Combat : MonoBehaviour
         }
     }
 
-    // Coroutine to play sound with a specified delay
     IEnumerator PlaySoundWithDelay(AudioClip clip, float delay)
     {
         yield return new WaitForSeconds(delay);  // Wait for the specified delay
