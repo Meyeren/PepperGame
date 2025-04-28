@@ -73,7 +73,7 @@ public class Combat : MonoBehaviour
 
     [Header("VFX Prefabs")]
     public GameObject hitEnemyEffectPrefab;
-    public GameObject playerHurtEffectPrefab;
+    public ParticleSystem playerHurtEffectPrefab;
 
     SkinnedMeshRenderer[] renderers;
     Color[] originalColors;
@@ -265,7 +265,8 @@ public class Combat : MonoBehaviour
         PlaySound(playerHurtSoundClip, playerHurtSoundDelay);  // Play the player hurt sound with delay
         if (playerHurtEffectPrefab)
         {
-            Instantiate(playerHurtEffectPrefab, transform.position, Quaternion.identity);
+            playerHurtEffectPrefab.Play();
+            //Instantiate(playerHurtEffectPrefab, transform.position, Quaternion.identity);
         }
 
         // Start the red flash effect on player when taking damage
