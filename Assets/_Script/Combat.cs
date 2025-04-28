@@ -268,6 +268,7 @@ public class Combat : MonoBehaviour
             Instantiate(playerHurtEffectPrefab, transform.position, Quaternion.identity);
         }
 
+        // Start the red flash effect on player when taking damage
         StartCoroutine(FlashRed());
 
         if (playerHealth <= 0f)
@@ -278,36 +279,37 @@ public class Combat : MonoBehaviour
 
     IEnumerator FlashRed(Collider enemy = null)
     {
-        if (enemy != null)
+        // If enemy is null, apply to player
+        if (enemy == null)
+        {
+            var playerRenderer = GetComponent<SkinnedMeshRenderer>();
+            Color flameRed = new Color(1f, 0f, 0f, 1f); // Bright red
+            if (playerRenderer)
+            {
+                playerRenderer.material.color = flameRed; // Change to flame red
+            }
+
+            yield return new WaitForSeconds(0.2f);  // Wait for 0.2 seconds with the flame red color
+
+            // After the wait, return to the original color
+            if (playerRenderer)
+            {
+                playerRenderer.material.color = originalColors[0]; // Return to the original color
+            }
+        }
+        else
         {
             var enemyRenderer = enemy.GetComponent<SkinnedMeshRenderer>();
             if (enemyRenderer)
             {
                 enemyRenderer.material.color = Color.red;
             }
-        }
-        else
-        {
-            foreach (var r in renderers)
-            {
-                r.material.color = Color.red;
-            }
-        }
-        yield return new WaitForSeconds(0.2f);
 
-        if (enemy != null)
-        {
-            var enemyRenderer = enemy.GetComponent<SkinnedMeshRenderer>();
+            yield return new WaitForSeconds(0.2f);
+
             if (enemyRenderer)
             {
                 enemyRenderer.material.color = originalColors[0]; // Adjust for multiple materials if needed
-            }
-        }
-        else
-        {
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                renderers[i].material.color = originalColors[i];
             }
         }
     }
