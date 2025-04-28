@@ -178,6 +178,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 100
+  flashDuration: 0.5
+  flashCount: 3
+  flashMaterial: {fileID: 2100000, guid: f64182465349e4733908cacd186879e2, type: 2}
 --- !u!54 &6803548502839182584
 Rigidbody:
   m_ObjectHideFlags: 0

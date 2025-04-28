@@ -263,51 +263,71 @@ public class Combat : MonoBehaviour
         playerHealth -= damage;
 
         PlaySound(playerHurtSoundClip, playerHurtSoundDelay);  // Play the player hurt sound with delay
-        if (playerHurtEffectPrefab)
+
+        if (playerHurtEffectPrefab != null)
         {
-            Instantiate(playerHurtEffectPrefab, transform.position, Quaternion.identity);
+            GameObject bloodEffect = Instantiate(playerHurtEffectPrefab, transform.position + Vector3.up * 1f, Quaternion.identity);
+
+            // Find ParticleSystem
+            ParticleSystem ps = bloodEffect.GetComponent<ParticleSystem>();
+            if (ps == null)
+            {
+                ps = bloodEffect.GetComponentInChildren<ParticleSystem>();
+            }
+
+            if (ps != null)
+            {
+                ps.Play();
+            }
+            else
+            {
+                Debug.LogWarning("No ParticleSystem found on bloodEffect prefab!");
+            }
+
+            // Destroy efter 2 sekunder for cleanup
+            Destroy(bloodEffect, 2f);
         }
 
         StartCoroutine(FlashRed());
 
         if (playerHealth <= 0f)
         {
-            // Death logic
+            // Death logic here
         }
     }
 
     IEnumerator FlashRed(Collider enemy = null)
     {
-        if (enemy != null)
+        if (enemy == null)
+        {
+            var playerRenderer = GetComponent<SkinnedMeshRenderer>();
+            Color flameRed = new Color(1f, 0f, 0f, 1f); // Bright red
+            if (playerRenderer)
+            {
+                playerRenderer.material.color = flameRed; // Change to flame red
+            }
+
+            yield return new WaitForSeconds(0.2f);  // Wait for 0.2 seconds with the flame red color
+
+            // After the wait, return to the original color
+            if (playerRenderer)
+            {
+                playerRenderer.material.color = originalColors[0]; // Return to the original color
+            }
+        }
+        else
         {
             var enemyRenderer = enemy.GetComponent<SkinnedMeshRenderer>();
             if (enemyRenderer)
             {
                 enemyRenderer.material.color = Color.red;
             }
-        }
-        else
-        {
-            foreach (var r in renderers)
-            {
-                r.material.color = Color.red;
-            }
-        }
-        yield return new WaitForSeconds(0.2f);
 
-        if (enemy != null)
-        {
-            var enemyRenderer = enemy.GetComponent<SkinnedMeshRenderer>();
+            yield return new WaitForSeconds(0.2f);
+
             if (enemyRenderer)
             {
                 enemyRenderer.material.color = originalColors[0]; // Adjust for multiple materials if needed
-            }
-        }
-        else
-        {
-            for (int i = 0; i < renderers.Length; i++)
-            {
-                renderers[i].material.color = originalColors[i];
             }
         }
     }
@@ -343,7 +363,6 @@ public class Combat : MonoBehaviour
         GetComponent<PlayerMovement>().noStaminaRegen = false;
     }
 
-    // Helper method to play a sound with delay
     void PlaySound(AudioClip clip, float delay)
     {
         if (delay > 0f)  // Check if there is a delay
@@ -356,7 +375,6 @@ public class Combat : MonoBehaviour
         }
     }
 
-    // Coroutine to play sound with a specified delay
     IEnumerator PlaySoundWithDelay(AudioClip clip, float delay)
     {
         yield return new WaitForSeconds(delay);  // Wait for the specified delay
