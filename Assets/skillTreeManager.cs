@@ -9,7 +9,8 @@ using UnityEngine.EventSystems;
 public class skillTreeManager : MonoBehaviour
 {
     PlayerInput input;
-
+    InputAction naviInput;
+    InputAction clickInput;
 
     GameObject player;
     GameObject target;
@@ -18,7 +19,7 @@ public class skillTreeManager : MonoBehaviour
 
     [Header("Player")]
     public bool hasClass;
-
+    public bool openSkillTree;
     public int skillPoint;
 
     [Header("UI")]
@@ -46,8 +47,11 @@ public class skillTreeManager : MonoBehaviour
         input = player.GetComponent<PlayerInput>();
         playerClass = player.GetComponent<PlayerClass>();
 
+        naviInput = input.actions.FindAction("Look");
+
         skillTree.enabled = false;
         hasClass = false;
+        openSkillTree = false;
 
         
 
@@ -74,6 +78,17 @@ public class skillTreeManager : MonoBehaviour
 
     private void Update()
     {
+        if (openSkillTree && Gamepad.current != null)
+        {
+            Vector2 navi = naviInput.ReadValue<Vector2>();
+
+            Vector2 currentPos = Mouse.current.position.ReadValue();
+            Vector2 move = navi * 20f;
+
+
+            Mouse.current.WarpCursorPosition(currentPos + move);
+        }
+        
         skillPointText.text = skillPoint.ToString();
         if (hasClass)
         {
@@ -190,15 +205,11 @@ public class skillTreeManager : MonoBehaviour
             {
                 OpenTree();
             }
-            else
+            else 
             {
-                if (Gamepad.current == null)
-                {
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Cursor.visible = false;
-                }
-                
-
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+                openSkillTree = false;
                 player.GetComponent<PlayerMovement>().canRotate = true;
                 skillTree.enabled = false;
             }
@@ -217,22 +228,11 @@ public class skillTreeManager : MonoBehaviour
 
     void OpenTree()
     {
-        if (Gamepad.current != null)
-        {
-            EventSystem.current.SetSelectedGameObject(null);
-            EventSystem.current.SetSelectedGameObject(NormalObject);
-        }
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        openSkillTree = true;
+        
 
-        if (Gamepad.current == null)
-        {
-            Cursor.lockState = CursorLockMode.None;
-            Cursor.visible = true;
-        }
-        else if (Gamepad.current != null)
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.None;
-        }
         player.GetComponent<PlayerMovement>().canRotate = false;
         skillTree.enabled = true;
     }
