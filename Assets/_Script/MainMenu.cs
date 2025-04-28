@@ -7,17 +7,40 @@ using System.Drawing;
 
 public class MainMenu : MonoBehaviour
 {
+    public bool isButtonClickable;
     public void newGame()
     {
-        SceneManager.LoadScene(0);
+        if (!isButtonClickable)
+        {
+            return;
+        }
+        else
+        {
+            SceneManager.LoadScene(5);
+        }
     }
 
     public void closeGame() 
     {
-        Application.Quit();
+        if (!isButtonClickable)
+        {
+            return;
+        }
+        else
+        {
+            Application.Quit();
 
 #if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;
+            UnityEditor.EditorApplication.isPlaying = false;
 #endif
+        }
+    }
+
+    public void noClick()
+    {
+        if (!isButtonClickable)
+        {
+            return;
+        }
     }
 }
