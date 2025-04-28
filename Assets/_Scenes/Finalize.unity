@@ -23867,6 +23867,7 @@ MonoBehaviour:
   - {fileID: 2144739223}
   - {fileID: 1175425956}
   - {fileID: 2077916063}
+  enemiesAlive: 0
 --- !u!4 &1483679469
 Transform:
   m_ObjectHideFlags: 0
@@ -30315,7 +30316,7 @@ GameObject:
   - component: {fileID: 2086856274}
   - component: {fileID: 2086856273}
   m_Layer: 0
-  m_Name: SkillPlace
+  m_Name: SkillTreeObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

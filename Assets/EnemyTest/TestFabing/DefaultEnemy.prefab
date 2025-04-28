@@ -32,7 +32,7 @@ Transform:
   m_GameObject: {fileID: 4021158041154224646}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.7833, y: -0.9411, z: 6.0674}
+  m_LocalPosition: {x: -1.7833, y: -0.9411, z: 6.39}
   m_LocalScale: {x: 1.7260071, y: 2.4432747, z: 1.720946}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -111,8 +111,8 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 1.1805823, y: 1, z: 1.1934683}
-  m_Center: {x: 0.016570488, y: 0, z: -0.009850003}
+  m_Size: {x: 1.0590132, y: 1, z: 0.96007156}
+  m_Center: {x: -0.04421298, y: 0, z: 0.023210313}
 --- !u!195 &8509928177342077343
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -178,6 +178,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyHealth: 100
+  enemyRenderer: {fileID: 0}
 --- !u!54 &6803548502839182584
 Rigidbody:
   m_ObjectHideFlags: 0
