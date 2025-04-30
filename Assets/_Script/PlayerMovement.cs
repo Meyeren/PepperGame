@@ -189,6 +189,8 @@ public class PlayerMovement : MonoBehaviour
         }
 
         wasGroundedLastFrame = IsGrounded();
+
+        if (!canMove || input.currentActionMap.name == "UI") return;
     }
 
     private void FixedUpdate()

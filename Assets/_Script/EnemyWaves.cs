@@ -83,7 +83,7 @@ public class EnemyWaves : MonoBehaviour
         InitializeAllWaves(strongWaves);
         InitializeAllWaves(bossWaves);
 
-        StartNextWave();
+        //StartNextWave();
     }
 
     void InitializeAllWaves(List<EnemyWave> waves)

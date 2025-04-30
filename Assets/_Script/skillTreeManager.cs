@@ -12,8 +12,8 @@ using Mono.Cecil;
 public class skillTreeManager : MonoBehaviour
 {
     PlayerInput input;
-    InputAction naviInput;
-    InputAction clickInput;
+    //InputAction naviInput;
+    InputAction interactAction;
 
     GameObject player;
     GameObject target;
@@ -30,6 +30,7 @@ public class skillTreeManager : MonoBehaviour
     public TextMeshProUGUI skillTreeText;
     public TextMeshProUGUI skillPointText;
     public GameObject NormalObject;
+    public EventSystem eventSystem;
 
 
 
@@ -41,6 +42,11 @@ public class skillTreeManager : MonoBehaviour
     public Button Reset;
 
 
+    private InputActionMap playerActionMap;
+    private InputActionMap uiActionMap;
+    private int skillPointsSpend;
+    private GameObject lastSelectedButton;
+    InputAction Interact;
 
     private void Start()
     {
@@ -50,13 +56,17 @@ public class skillTreeManager : MonoBehaviour
         input = player.GetComponent<PlayerInput>();
         playerClass = player.GetComponent<PlayerClass>();
 
-        naviInput = input.actions.FindAction("Look");
+        //naviInput = input.actions.FindAction("Look");
+
+        playerActionMap = input.actions.FindActionMap("Player");
+        uiActionMap = input.actions.FindActionMap("UI");
+
 
         skillTree.enabled = false;
         hasClass = false;
         openSkillTree = false;
 
-        
+
 
 
         foreach (Button button in Runner)
@@ -81,7 +91,7 @@ public class skillTreeManager : MonoBehaviour
 
     private void Update()
     {
-        if (openSkillTree && Gamepad.current != null)
+        /*if (openSkillTree && Gamepad.current != null)
         {
             Vector2 navi = naviInput.ReadValue<Vector2>();
 
@@ -100,7 +110,7 @@ public class skillTreeManager : MonoBehaviour
 
             // Flyt musen til den nye position
             Mouse.current.WarpCursorPosition(newPos);
-        }
+        }*/
 
         skillPointText.text = skillPoint.ToString();
         if (hasClass)
@@ -189,7 +199,7 @@ public class skillTreeManager : MonoBehaviour
             ColorBlock colorBlock = Normal.colors;
             colorBlock.disabledColor = Color.gray;
             Normal.colors = colorBlock;
-            Reset.interactable = false;
+            Reset.interactable = true;
             Normal.interactable = true;
 
             foreach (Button button in Runner)
@@ -208,29 +218,51 @@ public class skillTreeManager : MonoBehaviour
                 button.colors = colorBlock;
             }
         }
-        
-        
-        
+
+
+
         Collider[] hit = Physics.OverlapSphere(target.transform.position, 5f);
+        bool playerInRange = false;
+
+        bool interactPressed = Keyboard.current.eKey.wasPressedThisFrame ||
+                               (Gamepad.current != null && Gamepad.current.rightShoulder.wasPressedThisFrame);
+
         foreach (var collider in hit)
         {
             if (collider.CompareTag("Player"))
             {
-                OpenTree();
+                playerInRange = true;
+                if (!skillTree.enabled && interactPressed)
+                {
+                    OpenTree();
+                }
             }
-            else 
+        }
+
+        bool backPressed = Keyboard.current.eKey.wasPressedThisFrame ||
+                        (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame);
+
+        if (skillTree.enabled && backPressed)
+        {
+            CloseTree();
+        }
+
+        if (skillTree.enabled && Gamepad.current != null)
+        {
+            if (EventSystem.current.currentSelectedGameObject == null)
             {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-                openSkillTree = false;
-                player.GetComponent<PlayerMovement>().canRotate = true;
-                skillTree.enabled = false;
+                GameObject objectToSelect = lastSelectedButton != null ? lastSelectedButton : NormalObject;
+                EventSystem.current.SetSelectedGameObject(objectToSelect);
+            }
+            else if (EventSystem.current.currentSelectedGameObject != lastSelectedButton)
+            {
+                lastSelectedButton = EventSystem.current.currentSelectedGameObject;
             }
         }
 
         if (!hasClass)
         {
-            Reset.interactable = false;
+            Reset.interactable = true;
         }
         else if (hasClass)
         {
@@ -241,13 +273,46 @@ public class skillTreeManager : MonoBehaviour
 
     void OpenTree()
     {
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-        openSkillTree = true;
-        
+        playerActionMap.Disable();
+        uiActionMap.Enable();
+
+        skillTree.enabled = true;
+        EventSystem.current.SetSelectedGameObject(NormalObject);
+        lastSelectedButton = NormalObject;
 
         player.GetComponent<PlayerMovement>().canRotate = false;
-        skillTree.enabled = true;
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+
+        if (Gamepad.current != null)
+        {
+            Cursor.visible = false;
+            input.SwitchCurrentActionMap("UI");
+        }
+
+        /*if (Gamepad.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(NormalObject);
+            EventSystem.current.SetSelectedGameObject(null); 
+            EventSystem.current.SetSelectedGameObject(NormalObject);
+        }*/
+    }
+
+    void CloseTree()
+    {
+        uiActionMap.Disable();
+        playerActionMap.Enable();
+
+        skillTree.enabled = false;
+
+        player.GetComponent<PlayerMovement>().canRotate = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        if (Gamepad.current != null)
+        {
+            input.SwitchCurrentActionMap("Player");
+        }
     }
 
     public void ChooseNormalClass()
@@ -258,10 +323,11 @@ public class skillTreeManager : MonoBehaviour
             playerClass.hasNormal = true;
             ColorBlock colorBlock = Normal.colors;
 
-            colorBlock.disabledColor = Color.cyan;
+            colorBlock.disabledColor = Color.white;
 
             Normal.colors = colorBlock;
             Normal.interactable = false;
+            EventSystem.current.SetSelectedGameObject(NormalObject);
 
         }
         
@@ -272,26 +338,31 @@ public class skillTreeManager : MonoBehaviour
         if (!hasClass && skillPoint >= 1)
         {
             skillPoint -= 1;
+            skillPointsSpend += 1;
             hasClass = true;
             playerClass.hasRunner = true;
 
             ColorBlock colorBlock = Normal.colors;
             ColorBlock colorBlock2 = Normal.colors;
 
-            colorBlock.disabledColor = Color.cyan;
+            colorBlock.disabledColor = Color.yellow;
             colorBlock2.disabledColor = Color.gray;
 
             Runner[0].colors = colorBlock;
             Runner[2].colors = colorBlock2;
             Runner[0].interactable = false;
             Runner[2].interactable = false;
+
+
             if (skillPoint >= 3)
             {
                 Runner[1].interactable = true;
+                Runner[2].interactable = true;
             }
             else
             {
                 Runner[1].interactable = false;
+                Runner[2].interactable = false;
             }
             
         }
@@ -301,20 +372,25 @@ public class skillTreeManager : MonoBehaviour
     {
         if (skillPoint >= 3)
         {
-            ColorBlock colorBlock = Normal.colors;
+            if(playerClass.hasRunner == true)
+            {
+                ColorBlock colorBlock = Normal.colors;
 
-            colorBlock.disabledColor = Color.cyan;
-            Runner[1].colors = colorBlock;
-            skillPoint -= 3;
-            Runner[1].interactable = false;
-            player.GetComponent<PlayerMovement>().allowDoubleJump = true;
-            if (skillPoint >= 5)
-            {
-                Runner[2].interactable = true;
-            }
-            else
-            {
-                Runner[2].interactable = false;
+                colorBlock.disabledColor = Color.yellow;
+                Runner[1].colors = colorBlock;
+                skillPoint -= 3;
+                skillPointsSpend += 3;
+                Runner[1].interactable = false;
+
+                player.GetComponent<PlayerMovement>().allowDoubleJump = true;
+                if (skillPoint >= 5)
+                {
+                    Runner[2].interactable = true;
+                }
+                else
+                {
+                    Runner[2].interactable = false;
+                }
             }
         }
     }
@@ -323,57 +399,64 @@ public class skillTreeManager : MonoBehaviour
     {
         if (skillPoint >= 5)
         {
-            ColorBlock colorBlock = Normal.colors;
+            if (playerClass.hasRunner == true)
+            {
+                ColorBlock colorBlock = Normal.colors;
 
-            colorBlock.disabledColor = Color.cyan;
-            Runner[2].colors = colorBlock;
-            skillPoint -= 5;
-            Runner[2].interactable = false;
-            player.GetComponent<Combat>().attackWhileDash = true;
+                colorBlock.disabledColor = Color.yellow;
+                Runner[2].colors = colorBlock;
+                skillPoint -= 5;
+                skillPointsSpend += 5;
+                Runner[2].interactable = false;
+
+
+                player.GetComponent<Combat>().attackWhileDash = true;
+            }
         }
     }
 
 
     public void ResetSkill()
     {
-        hasClass = false;
-        if (!playerClass.hasNormal)
+        if(hasClass == true)
         {
-            skillPoint += 1;
-        }
-        playerClass.hasNormal = false;
-        playerClass.hasLifeSteal = false;
-        playerClass.hasTankClass = false;
-        playerClass.hasRunner = false;
-        player.GetComponent<PlayerMovement>().allowDoubleJump = false;
-        player.GetComponent<Combat>().attackWhileDash = false;
-        player.GetComponent<Combat>().hasInvulnerableAbility = false;
-        player.GetComponent<Combat>().hasGroundSlam = false;
-        ColorBlock colorBlock = Normal.colors;
+            hasClass = false;
+            if (!playerClass.hasNormal)
+            {
+                skillPoint += skillPointsSpend;
+                skillPointsSpend = 0;
+            }
+            playerClass.hasNormal = false;
+            playerClass.hasLifeSteal = false;
+            playerClass.hasTankClass = false;
+            playerClass.hasRunner = false;
+            player.GetComponent<PlayerMovement>().allowDoubleJump = false;
+            player.GetComponent<Combat>().attackWhileDash = false;
+            player.GetComponent<Combat>().hasInvulnerableAbility = false;
+            player.GetComponent<Combat>().hasGroundSlam = false;
+            ColorBlock colorBlock = Normal.colors;
 
-        colorBlock.disabledColor = Color.gray;
-        Normal.interactable = true;
-        foreach (Button button in Runner)
-        {
-            button.interactable = false;
-            button.colors = colorBlock;
+            colorBlock.disabledColor = Color.gray;
+            Normal.interactable = true;
+            foreach (Button button in Runner)
+            {
+                button.interactable = false;
+                button.colors = colorBlock;
+            }
+            foreach (Button button in Warrior)
+            {
+                button.interactable = false;
+                button.colors = colorBlock;
+            }
+            foreach (Button button in Tank)
+            {
+                button.interactable = false;
+                button.colors = colorBlock;
+            }
+            Warrior[0].interactable = true;
+            Tank[0].interactable = true;
+            Runner[0].interactable = true;
         }
-        foreach (Button button in Warrior)
-        {
-            button.interactable = false;
-            button.colors = colorBlock;
-        }
-        foreach (Button button in Tank)
-        {
-            button.interactable = false;
-            button.colors = colorBlock;
-        }
-        Warrior[0].interactable = true;
-        Tank[0].interactable = true;
-        Runner[0].interactable = true;
-
-
-
     }
 
     public void ChooseWarrior()
@@ -381,12 +464,13 @@ public class skillTreeManager : MonoBehaviour
         if (!hasClass && skillPoint >= 1)
         {
             skillPoint -= 1;
+            skillPointsSpend += 1;
             hasClass = true;
             playerClass.hasLifeSteal = true;
 
             ColorBlock colorBlock = Normal.colors;
 
-            colorBlock.disabledColor = Color.cyan;
+            colorBlock.disabledColor = Color.red;
 
             Warrior[0].colors = colorBlock;
             
@@ -407,13 +491,17 @@ public class skillTreeManager : MonoBehaviour
     {
         if (skillPoint >= 5)
         {
-            ColorBlock colorBlock = Normal.colors;
+            if(playerClass.hasLifeSteal == true)
+            {
+                ColorBlock colorBlock = Normal.colors;
 
-            colorBlock.disabledColor = Color.cyan;
-            skillPoint -= 5;
-            Warrior[1].colors = colorBlock;
-            Warrior[1].interactable = false;
-            player.GetComponent<Combat>().hasInvulnerableAbility = true;
+                colorBlock.disabledColor = Color.red;
+                skillPoint -= 5;
+                skillPointsSpend += 5;
+                Warrior[1].colors = colorBlock;
+                Warrior[1].interactable = false;
+                player.GetComponent<Combat>().hasInvulnerableAbility = true;
+            }
         }
     }
 
@@ -422,12 +510,13 @@ public class skillTreeManager : MonoBehaviour
         if (!hasClass && skillPoint >= 1)
         {
             skillPoint -= 1;
+            skillPointsSpend += 1;
             hasClass = true;
             playerClass.hasTankClass = true;
 
             ColorBlock colorBlock = Normal.colors;
 
-            colorBlock.disabledColor = Color.cyan;
+            colorBlock.disabledColor = Color.blue;
 
             Tank[0].colors = colorBlock;
             
@@ -448,13 +537,17 @@ public class skillTreeManager : MonoBehaviour
     {
         if (skillPoint >= 5)
         {
-            ColorBlock colorBlock = Normal.colors;
+            if (playerClass.hasTankClass == true)
+            {
+                ColorBlock colorBlock = Normal.colors;
 
-            colorBlock.disabledColor = Color.cyan;
-            Tank[1].colors = colorBlock;
-            skillPoint -= 5;
-            Tank[1].interactable = false;
-            player.GetComponent<Combat>().hasGroundSlam = true;
+                colorBlock.disabledColor = Color.blue;
+                Tank[1].colors = colorBlock;
+                skillPoint -= 5;
+                skillPointsSpend += 5;
+                Tank[1].interactable = false;
+                player.GetComponent<Combat>().hasGroundSlam = true;
+            }
         }
     }
 }
