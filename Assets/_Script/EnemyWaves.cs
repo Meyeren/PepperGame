@@ -44,7 +44,10 @@ public class EnemyWaves : MonoBehaviour
     [Header("Spawn Points")]
     public List<Transform> spawnPoints;
 
-    private List<WaveType> waveTypePattern = new List<WaveType> // wave vælger 
+    [Header("Spawn Effect")]
+    public GameObject spawnEffectPrefab; // ? Tilf?jet effekt prefab
+
+    private List<WaveType> waveTypePattern = new List<WaveType>
     {
         WaveType.Weak,
         WaveType.Weak,
@@ -64,7 +67,6 @@ public class EnemyWaves : MonoBehaviour
 
     private float[] spawnTimers;
 
-
     void Start()
     {
         if (spawnPoints.Count == 0)
@@ -83,7 +85,7 @@ public class EnemyWaves : MonoBehaviour
         InitializeAllWaves(strongWaves);
         InitializeAllWaves(bossWaves);
 
-        //StartNextWave();
+        StartNextWave();
     }
 
     void InitializeAllWaves(List<EnemyWave> waves)
@@ -123,7 +125,7 @@ public class EnemyWaves : MonoBehaviour
                 {
                     isSpawning = false;
                     currentWave.ResetCounts();
-                    break; 
+                    break;
                 }
             }
         }
@@ -133,6 +135,12 @@ public class EnemyWaves : MonoBehaviour
     {
         Instantiate(prefab, spawnPoint.position, Quaternion.identity);
         enemiesAlive++;
+
+        if (spawnEffectPrefab != null)
+        {
+            GameObject effect = Instantiate(spawnEffectPrefab, spawnPoint.position, Quaternion.identity);
+            Destroy(effect, 2f); // Fjern effekt efter 2 sekunder
+        }
     }
 
     public void OnEnemyKilled()
@@ -141,7 +149,6 @@ public class EnemyWaves : MonoBehaviour
 
         if (enemiesAlive <= 0 && !isSpawning)
         {
-            //StartNextWave();
             return;
         }
     }
@@ -180,17 +187,6 @@ public class EnemyWaves : MonoBehaviour
         }
 
         isSpawning = true;
-
-
-        //switch (wave.waveType) ændre ting ved forskellige typer waves
-        //{
-        //case WaveType.Weak:
-        //  break;
-        //case WaveType.Strong:
-        //  break;
-        //case WaveType.Boss:
-        //    break;
-        //}
     }
 
     List<EnemyWave> GetWavePool(WaveType type)
