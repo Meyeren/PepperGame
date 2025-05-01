@@ -10,9 +10,14 @@ public class StartWave : MonoBehaviour
 
     private bool whenStartWave;
 
+    Renderer mat;
+    Color orgin;
+
     private void Start()
     {
         whenStartWave = false;
+        mat = button.GetComponent<Renderer>();
+        orgin = mat.material.color;
     }
 
     void Update()
@@ -29,7 +34,7 @@ public class StartWave : MonoBehaviour
             button.SetActive(false);
         }
 
-        Collider[] hit = Physics.OverlapSphere(target.transform.position, 5f);
+        Collider[] hit = Physics.OverlapSphere(target.transform.position, 10f);
 
         bool interactPressed = Keyboard.current.eKey.wasPressedThisFrame ||
        (Gamepad.current != null && Gamepad.current.rightShoulder.wasPressedThisFrame);
@@ -38,10 +43,15 @@ public class StartWave : MonoBehaviour
         {
             if (collider.CompareTag("Player"))
             {
+                mat.material.color = Color.red;
                 if (interactPressed && whenStartWave == true)
                 {
                     Waves.GetComponent<EnemyWaves>().StartNextWave();
                 }
+            }
+            else
+            {
+                mat.material.color = Color.grey;
             }
         }
     }
