@@ -7,8 +7,12 @@ public class StartWave : MonoBehaviour
     public GameObject button;
 
     public GameObject Waves;
+    public GameObject shop;
+
+    public float range = 5f;
 
     private bool whenStartWave;
+    private bool shopExtra;
 
     Renderer mat;
     Color orgin;
@@ -34,7 +38,9 @@ public class StartWave : MonoBehaviour
             button.SetActive(false);
         }
 
-        Collider[] hit = Physics.OverlapSphere(target.transform.position, 10f);
+        shopExtra = shop.GetComponent<ShopManager>().canOpenShop;
+
+        Collider[] hit = Physics.OverlapSphere(target.transform.position, range);
 
         bool interactPressed = Keyboard.current.eKey.wasPressedThisFrame ||
        (Gamepad.current != null && Gamepad.current.rightShoulder.wasPressedThisFrame);
@@ -43,11 +49,23 @@ public class StartWave : MonoBehaviour
         {
             if (collider.CompareTag("Player"))
             {
-                mat.material.color = Color.red;
-                if (interactPressed && whenStartWave == true)
+                if(shopExtra == true)
+                {
+                    mat.material.color = Color.blue;
+                }
+                else
+                {
+                    mat.material.color = Color.red;
+                }
+                if (interactPressed && whenStartWave == true && shopExtra == true)
+                {
+                    shop.GetComponent<ShopManager>().OpenShop();
+                }
+                else if (interactPressed && whenStartWave == true && shopExtra == false)
                 {
                     Waves.GetComponent<EnemyWaves>().StartNextWave();
                 }
+                else { return; }
             }
             else
             {

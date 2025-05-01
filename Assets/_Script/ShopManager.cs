@@ -49,6 +49,8 @@ public class ShopManager : MonoBehaviour
     private Vector3 mainCamSavedPosition;
     private Quaternion mainCamSavedRotation;
 
+    public bool canOpenShop;
+
     void Start()
     {
         shopUI.SetActive(false);
