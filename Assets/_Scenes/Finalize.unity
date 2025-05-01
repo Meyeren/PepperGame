@@ -24696,9 +24696,9 @@ MonoBehaviour:
   weakWaves:
   - waveType: 0
     enemyPrefabs:
-    - {fileID: 4021158041154224646, guid: 657a86209305a9d40850f3b843b513f7, type: 3}
+    - {fileID: 4021158041154224646, guid: 8d4f2664262f31247a7fa96435eaddc2, type: 3}
     enemyCounts: 14000000
-    spawnInterval: 4
+    spawnInterval: 2
   strongWaves: []
   bossWaves: []
   spawnPoints:
