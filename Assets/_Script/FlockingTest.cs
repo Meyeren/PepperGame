@@ -1,3 +1,4 @@
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -38,6 +39,10 @@ public class FlockingTest : MonoBehaviour
 
     Animator animator;
 
+    Color originalColor;
+
+    Renderer playerMat;
+
     void Start()
     {
         saveSpeed = enemySpeed;
@@ -50,6 +55,12 @@ public class FlockingTest : MonoBehaviour
         waveManager = GameObject.Find("WaveManager").GetComponent<EnemyWaves>();
 
         animator = GetComponentInChildren<Animator>();
+
+        playerMat = target.GetComponentInChildren<SkinnedMeshRenderer>();
+        originalColor = target.GetComponentInChildren<SkinnedMeshRenderer>().material.color;
+
+
+        
     }
 
     void Update()
@@ -144,12 +155,24 @@ public class FlockingTest : MonoBehaviour
                 if (target.GetComponent<Combat>().hasDamageReduction)
                 {
                     target.GetComponent<Combat>().playerHealth -= enemyDamage * target.GetComponent<Combat>().damageReduction;
+                    playerMat.material.color = Color.blue;
+                    Invoke("EndColor", 0.1f);
+                    
                 }
                 else
                 {
                     target.GetComponent<Combat>().playerHealth -= enemyDamage;
+                    playerMat.material.color = Color.red;
+                    Invoke("EndColor", 0.1f);
+                    
                 }
 
+            }
+            else if (target.GetComponent<Combat>().isInvulnerable)
+            {
+                playerMat.material.color = new Color(0.6f, 0.2f, 0.8f);
+                Invoke("EndColor", 0.1f);
+                
             }
         }
         
@@ -197,5 +220,11 @@ public class FlockingTest : MonoBehaviour
     public void StartDeathAnimation()
     {
         animator.SetTrigger("Death");
+    }
+
+    void EndColor()
+    {
+        playerMat.material.color = originalColor;
+        
     }
 }
