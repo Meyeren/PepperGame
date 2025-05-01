@@ -60,10 +60,6 @@ public class ShopManager : MonoBehaviour
 
     void Update()
     {
-        if (Keyboard.current.lKey.wasPressedThisFrame && !shopOpen && !isReturningToPlayer)
-        {
-            OpenShop();
-        }
 
         if (!shopOpen) return;
 
@@ -98,6 +94,7 @@ public class ShopManager : MonoBehaviour
     public void OpenShop()
     {
         shopOpen = true;
+        canOpenShop = false;
         selectedIndex = 0;
         isReturningToPlayer = false;
 

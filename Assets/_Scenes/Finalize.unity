@@ -18354,15 +18354,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   allItemPrefabs:
-  - {fileID: 8047075464458178429, guid: 7d0f5bad585d34a239cc9f68ef24a8de, type: 3}
-  - {fileID: 9051941505049538125, guid: 683ef513343454f3596a6d58c85c6d40, type: 3}
-  - {fileID: 1166139348445151752, guid: 6d9d78ead42dd422f8ba2dd9f9b8b600, type: 3}
-  - {fileID: 2912881336072699078, guid: 734016e4d3ee745ad82fad80cacaab5a, type: 3}
-  - {fileID: 8685535482679491281, guid: af54e1aad7b6449fda733eb28ca77541, type: 3}
-  - {fileID: 7481206167207413390, guid: 8fbddeff454404e26a2c345edc68ae97, type: 3}
-  - {fileID: 7044878399662073396, guid: a4afbeda102fb4f8e91d187c13660656, type: 3}
-  - {fileID: 3009970389413141266, guid: 4117b91dc8aea4f73a9573a92adbd30e, type: 3}
-  - {fileID: 2005951325080429338, guid: 9d60c9e86e4ee41319ed614bad443336, type: 3}
+  - {fileID: 7558155540995903393, guid: b624d20ec1108412883504096bdd7fc9, type: 3}
+  - {fileID: -7891322159778418712, guid: b624d20ec1108412883504096bdd7fc9, type: 3}
+  - {fileID: -8758816754068022064, guid: b624d20ec1108412883504096bdd7fc9, type: 3}
   spawnPositions:
   - {fileID: 1646529493}
   - {fileID: 11375589}
@@ -24705,6 +24699,7 @@ MonoBehaviour:
   - {fileID: 2144739223}
   - {fileID: 1175425956}
   - {fileID: 2077916063}
+  spawnEffectPrefab: {fileID: 0}
   enemiesAlive: 0
 --- !u!4 &1483679469
 Transform:
