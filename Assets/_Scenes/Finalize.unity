@@ -25159,7 +25159,7 @@ MonoBehaviour:
   - {fileID: 2144739223}
   - {fileID: 1175425956}
   - {fileID: 2077916063}
-  spawnEffectPrefab: {fileID: 0}
+  spawnEffectPrefab: {fileID: 1120639551}
   enemiesAlive: 0
 --- !u!4 &1483679469
 Transform:

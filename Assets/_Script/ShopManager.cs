@@ -97,6 +97,11 @@ public class ShopManager : MonoBehaviour
 
     public void OpenShop()
     {
+        if (Gamepad.current == null)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
         shopOpen = true;
         canOpenShop = false;
         selectedIndex = 0;
@@ -169,6 +174,11 @@ public class ShopManager : MonoBehaviour
 
     public void CloseShop()
     {
+        if (Gamepad.current == null)
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
         shopOpen = false;
         shopUI.SetActive(false);
         isReturningToPlayer = true;
