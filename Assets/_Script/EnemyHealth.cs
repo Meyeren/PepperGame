@@ -6,9 +6,14 @@ public class EnemyHealth : MonoBehaviour
 
     private FlockingTest flockingTest;
 
+    Renderer mat;
+    Color originalMatColor;
+
     private void Start()
     {
         flockingTest = GetComponent<FlockingTest>();
+        mat = GetComponentInChildren<SkinnedMeshRenderer>();
+        originalMatColor = mat.material.color;
     }
 
     private void Update()
@@ -23,5 +28,15 @@ public class EnemyHealth : MonoBehaviour
     public void TakeDamage(float Damage)
     {
         enemyHealth -= Damage;
+        
+        mat.material.color = Color.red;
+        Debug.Log("Color");
+        Invoke("StopColor", 0.1f);
+    }
+
+    void StopColor()
+    {
+        mat.material.color = originalMatColor;
+        Debug.Log("Stopcolor");
     }
 }

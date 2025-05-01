@@ -61,19 +61,24 @@ public class Combat : MonoBehaviour
     public AudioClip swingSoundClip;
     public AudioClip hitEnemySoundClip;
     public AudioClip specialAttackSoundClip;
+    public AudioClip specialAttackHitSoundClip; // ✅ ny lyd
     public AudioClip playerHurtSoundClip;
 
     [Header("Audio Delays (seconds)")]
-    public float swingSoundDelay = 0f;  // Delay for swing sound
-    public float hitEnemySoundDelay = 0f;  // Delay for hit enemy sound
-    public float specialAttackSoundDelay = 0f;  // Delay for special attack sound
-    public float playerHurtSoundDelay = 0f;  // Delay for player hurt sound
+    public float swingSoundDelay = 0f;
+    public float hitEnemySoundDelay = 0f;
+    public float specialAttackSoundDelay = 0f;
+    public float specialAttackHitSoundDelay = 0f; // ✅ ny delay
+    public float playerHurtSoundDelay = 0f;
 
     private AudioSource audioSource;
 
     [Header("VFX Prefabs")]
     public GameObject hitEnemyEffectPrefab;
     public GameObject playerHurtEffectPrefab;
+
+    [Header("Special Ability VFX")]
+    public GameObject specialAttackEffectPrefab;
 
     SkinnedMeshRenderer[] renderers;
     Color[] originalColors;
@@ -114,7 +119,7 @@ public class Combat : MonoBehaviour
             originalColors[i] = renderers[i].material.color;
         }
 
-        audioSource = GetComponent<AudioSource>();  // Initialize the AudioSource
+        audioSource = GetComponent<AudioSource>();
     }
 
     private void Update()
@@ -180,7 +185,7 @@ public class Combat : MonoBehaviour
     {
         isAttacking = true;
         animator.SetTrigger("isAttacking");
-        PlaySound(swingSoundClip, swingSoundDelay);  // Play the swing sound with delay
+        PlaySound(swingSoundClip, swingSoundDelay);
     }
 
     void PerformHit()
@@ -194,7 +199,7 @@ public class Combat : MonoBehaviour
                 Invoke("EndVibration", 0.2f);
             }
             StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.15f, 0.1f));
-            PlaySound(hitEnemySoundClip, hitEnemySoundDelay);  // Play the hit enemy sound with delay
+            PlaySound(hitEnemySoundClip, hitEnemySoundDelay);
             foreach (Collider enemy in hitEnemies)
             {
                 enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
@@ -228,17 +233,24 @@ public class Combat : MonoBehaviour
         GetComponent<PlayerMovement>().Stamina -= 100f;
         GetComponent<PlayerMovement>().noStaminaRegen = true;
 
-        PlaySound(specialAttackSoundClip, specialAttackSoundDelay);  // Play the special attack sound with delay
+        PlaySound(specialAttackSoundClip, specialAttackSoundDelay); // ✅ lyd ved aktivering
     }
 
     void PerformSpecialAttackHit()
     {
+        PlaySound(specialAttackHitSoundClip, specialAttackHitSoundDelay); // ✅ lyd ved hit
+
         if (Gamepad.current != null)
         {
             Gamepad.current.SetMotorSpeeds(0.5f, 1f);
         }
 
         StartCoroutine(cam.GetComponent<CameraShake>().Shake(0.3f, 1f));
+
+        if (specialAttackEffectPrefab)
+        {
+            Instantiate(specialAttackEffectPrefab, transform.position, Quaternion.identity);
+        }
 
         Collider[] hitEnemies = Physics.OverlapSphere(transform.position, specialAttackRange, enemyLayer);
         if (hitEnemies.Length >= 8)
@@ -262,29 +274,18 @@ public class Combat : MonoBehaviour
     {
         playerHealth -= damage;
 
-        PlaySound(playerHurtSoundClip, playerHurtSoundDelay);  // Play the player hurt sound with delay
+        PlaySound(playerHurtSoundClip, playerHurtSoundDelay);
 
         if (playerHurtEffectPrefab != null)
         {
             GameObject bloodEffect = Instantiate(playerHurtEffectPrefab, transform.position + Vector3.up * 1f, Quaternion.identity);
-
-            // Find ParticleSystem
-            ParticleSystem ps = bloodEffect.GetComponent<ParticleSystem>();
-            if (ps == null)
-            {
-                ps = bloodEffect.GetComponentInChildren<ParticleSystem>();
-            }
+            ParticleSystem ps = bloodEffect.GetComponent<ParticleSystem>() ?? bloodEffect.GetComponentInChildren<ParticleSystem>();
 
             if (ps != null)
             {
                 ps.Play();
             }
-            else
-            {
-                Debug.LogWarning("No ParticleSystem found on bloodEffect prefab!");
-            }
 
-            // Destroy efter 2 sekunder for cleanup
             Destroy(bloodEffect, 2f);
         }
 
@@ -301,34 +302,17 @@ public class Combat : MonoBehaviour
         if (enemy == null)
         {
             var playerRenderer = GetComponent<SkinnedMeshRenderer>();
-            Color flameRed = new Color(1f, 0f, 0f, 1f); // Bright red
-            if (playerRenderer)
-            {
-                playerRenderer.material.color = flameRed; // Change to flame red
-            }
-
-            yield return new WaitForSeconds(0.2f);  // Wait for 0.2 seconds with the flame red color
-
-            // After the wait, return to the original color
-            if (playerRenderer)
-            {
-                playerRenderer.material.color = originalColors[0]; // Return to the original color
-            }
+            Color flameRed = new Color(1f, 0f, 0f, 1f);
+            if (playerRenderer) playerRenderer.material.color = flameRed;
+            yield return new WaitForSeconds(0.2f);
+            if (playerRenderer) playerRenderer.material.color = originalColors[0];
         }
         else
         {
             var enemyRenderer = enemy.GetComponent<SkinnedMeshRenderer>();
-            if (enemyRenderer)
-            {
-                enemyRenderer.material.color = Color.red;
-            }
-
+            if (enemyRenderer) enemyRenderer.material.color = Color.red;
             yield return new WaitForSeconds(0.2f);
-
-            if (enemyRenderer)
-            {
-                enemyRenderer.material.color = originalColors[0]; // Adjust for multiple materials if needed
-            }
+            if (enemyRenderer) enemyRenderer.material.color = originalColors[0];
         }
     }
 
@@ -365,19 +349,20 @@ public class Combat : MonoBehaviour
 
     void PlaySound(AudioClip clip, float delay)
     {
-        if (delay > 0f)  // Check if there is a delay
+        if (clip == null) return;
+        if (delay > 0f)
         {
-            StartCoroutine(PlaySoundWithDelay(clip, delay));  // Start coroutine to play sound with delay
+            StartCoroutine(PlaySoundWithDelay(clip, delay));
         }
         else
         {
-            audioSource.PlayOneShot(clip);  // Play sound immediately if no delay
+            audioSource.PlayOneShot(clip);
         }
     }
 
     IEnumerator PlaySoundWithDelay(AudioClip clip, float delay)
     {
-        yield return new WaitForSeconds(delay);  // Wait for the specified delay
-        audioSource.PlayOneShot(clip);  // Play the sound after the delay
+        yield return new WaitForSeconds(delay);
+        audioSource.PlayOneShot(clip);
     }
 }
