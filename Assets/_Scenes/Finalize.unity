@@ -18379,6 +18379,7 @@ MonoBehaviour:
   highlightedColor: {r: 0.71602345, g: 0, b: 1, a: 1}
   highlightScale: 1.2
   scaleSpeed: 0.3
+  canOpenShop: 0
 --- !u!1001 &1102117585
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -28240,6 +28241,8 @@ MonoBehaviour:
   target: {fileID: 1717008987}
   button: {fileID: 601535117}
   Waves: {fileID: 1483679467}
+  shop: {fileID: 1072484158}
+  range: 7
 --- !u!136 &1717008989
 CapsuleCollider:
   m_ObjectHideFlags: 0
