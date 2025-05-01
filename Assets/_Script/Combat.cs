@@ -100,7 +100,7 @@ public class Combat : MonoBehaviour
         fillImage2 = healthSlider.GetComponentInChildren<Image>();
 
         healthCanvas = healthSlider.GetComponent<CanvasGroup>();
-        healthSlider.maxValue = MaxPlayerHealth;
+        
         healthCanvas.alpha = 0f;
 
         input = GetComponent<PlayerInput>();
@@ -124,6 +124,7 @@ public class Combat : MonoBehaviour
 
     private void Update()
     {
+        healthSlider.maxValue = MaxPlayerHealth;
         if (isInvulnerable)
         {
             fillImage.color = new Color(0.6f, 0.2f, 0.8f, 1f);
@@ -175,10 +176,11 @@ public class Combat : MonoBehaviour
             GetComponent<PlayerMovement>().noStaminaRegen = true;
         }
 
-        if (playerHealth <= 0)
+        /*if (playerHealth <= 0)
         {
-            SceneManager.LoadScene("Hubben");
-        }
+            playerHealth = MaxPlayerHealth;
+            transform.position = new Vector3(-40f, 42, 0);
+        }*/
     }
 
     void Attack()
@@ -205,13 +207,13 @@ public class Combat : MonoBehaviour
                 enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
                 enemy.GetComponent<FlockingTest>().KnockBack(transform.position, basicKnockbackAmount);
 
-                if (playerClass.hasLifeSteal && playerHealth <= playerClass.lifeStealHealh)
+                if (playerClass.hasLifeSteal && playerHealth <= MaxPlayerHealth)
                 {
                     playerHealth += lifeStealAmount;
                 }
-                else if (playerHealth > playerClass.lifeStealHealh && playerClass.hasLifeSteal)
+                else if (playerHealth > MaxPlayerHealth && playerClass.hasLifeSteal)
                 {
-                    playerHealth = playerClass.lifeStealHealh;
+                    playerHealth = MaxPlayerHealth;
                 }
 
                 if (hitEnemyEffectPrefab)

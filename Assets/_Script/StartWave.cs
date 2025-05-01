@@ -22,14 +22,17 @@ public class StartWave : MonoBehaviour
         whenStartWave = false;
         mat = button.GetComponent<Renderer>();
         orgin = mat.material.color;
+        
     }
 
     void Update()
     {
-        if(Waves.GetComponent<EnemyWaves>().enemiesAlive == 0)
+        shopExtra = shop.GetComponent<ShopManager>().canOpenShop;
+        if (Waves.GetComponent<EnemyWaves>().enemiesAlive == 0)
         {
             whenStartWave = true;
             button.SetActive(true);
+            
 
         }
         else
@@ -38,7 +41,7 @@ public class StartWave : MonoBehaviour
             button.SetActive(false);
         }
 
-        shopExtra = shop.GetComponent<ShopManager>().canOpenShop;
+       
 
         Collider[] hit = Physics.OverlapSphere(target.transform.position, range);
 
@@ -64,6 +67,7 @@ public class StartWave : MonoBehaviour
                 else if (interactPressed && whenStartWave == true && shopExtra == false)
                 {
                     Waves.GetComponent<EnemyWaves>().StartNextWave();
+                    shopExtra = true;
                 }
                 else { return; }
             }

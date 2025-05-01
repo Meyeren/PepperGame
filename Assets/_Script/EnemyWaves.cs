@@ -84,8 +84,6 @@ public class EnemyWaves : MonoBehaviour
         InitializeAllWaves(weakWaves);
         InitializeAllWaves(strongWaves);
         InitializeAllWaves(bossWaves);
-
-        StartNextWave();
     }
 
     void InitializeAllWaves(List<EnemyWave> waves)
@@ -157,7 +155,7 @@ public class EnemyWaves : MonoBehaviour
     {
         if (patternIndex >= waveTypePattern.Count)
         {
-            Debug.Log("Gooning Complete");
+            
             return;
         }
 
@@ -167,7 +165,7 @@ public class EnemyWaves : MonoBehaviour
         List<EnemyWave> pool = GetWavePool(currentType);
         if (pool == null || pool.Count == 0)
         {
-            Debug.Log("U are cooked");
+            
             return;
         }
 

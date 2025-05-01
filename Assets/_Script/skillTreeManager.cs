@@ -6,8 +6,6 @@ using UnityEngine.InputSystem;
 using TMPro.Examples;
 using UnityEngine.EventSystems;
 using System;
-using UnityEditorInternal;
-using Mono.Cecil;
 
 public class skillTreeManager : MonoBehaviour
 {
@@ -50,6 +48,8 @@ public class skillTreeManager : MonoBehaviour
 
     public bool skillTreeHasBeenOpened;
 
+    bool isSkilltreeOpen;
+
     private void Start()
     {
         
@@ -71,6 +71,8 @@ public class skillTreeManager : MonoBehaviour
         interactAction = input.actions.FindAction("Interact");
 
         skillTreeHasBeenOpened = false;
+
+        isSkilltreeOpen = false;
 
 
         foreach (Button button in Runner)
@@ -275,6 +277,7 @@ public class skillTreeManager : MonoBehaviour
 
     void OpenTree()
     {
+        isSkilltreeOpen = true;
         playerActionMap.Disable();
         uiActionMap.Enable();
 
@@ -307,6 +310,8 @@ public class skillTreeManager : MonoBehaviour
         uiActionMap.Disable();
         playerActionMap.Enable();
 
+        isSkilltreeOpen = false;
+
         skillTree.enabled = false;
 
         player.GetComponent<PlayerMovement>().canRotate = true;
@@ -323,7 +328,7 @@ public class skillTreeManager : MonoBehaviour
 
     public void ChooseNormalClass()
     {
-        if (!hasClass)
+        if (!hasClass && isSkilltreeOpen)
         {
             hasClass = true;
             playerClass.hasNormal = true;
@@ -341,7 +346,7 @@ public class skillTreeManager : MonoBehaviour
 
     public void ChooseRunnerClass()
     {
-        if (!hasClass && skillPoint >= 1)
+        if (!hasClass && skillPoint >= 1 && isSkilltreeOpen)
         {
             skillPoint -= 1;
             skillPointsSpend += 1;
@@ -376,7 +381,7 @@ public class skillTreeManager : MonoBehaviour
 
     public void ChooseJD()
     {
-        if (skillPoint >= 3)
+        if (skillPoint >= 3 && isSkilltreeOpen)
         {
             if(playerClass.hasRunner == true)
             {
@@ -403,7 +408,7 @@ public class skillTreeManager : MonoBehaviour
 
     public void ChooseDA()
     {
-        if (skillPoint >= 5)
+        if (skillPoint >= 5 && isSkilltreeOpen)
         {
             if (playerClass.hasRunner == true)
             {
@@ -424,7 +429,7 @@ public class skillTreeManager : MonoBehaviour
 
     public void ResetSkill()
     {
-        if(hasClass == true)
+        if(hasClass == true && isSkilltreeOpen)
         {
             hasClass = false;
             if (!playerClass.hasNormal)
@@ -467,7 +472,7 @@ public class skillTreeManager : MonoBehaviour
 
     public void ChooseWarrior()
     {
-        if (!hasClass && skillPoint >= 1)
+        if (!hasClass && skillPoint >= 1 && isSkilltreeOpen)
         {
             skillPoint -= 1;
             skillPointsSpend += 1;
@@ -495,7 +500,7 @@ public class skillTreeManager : MonoBehaviour
 
     public void ChooseInvul()
     {
-        if (skillPoint >= 5)
+        if (skillPoint >= 5 && isSkilltreeOpen)
         {
             if(playerClass.hasLifeSteal == true)
             {
@@ -513,7 +518,7 @@ public class skillTreeManager : MonoBehaviour
 
     public void ChooseTank()
     {
-        if (!hasClass && skillPoint >= 1)
+        if (!hasClass && skillPoint >= 1 && isSkilltreeOpen)
         {
             skillPoint -= 1;
             skillPointsSpend += 1;
@@ -541,7 +546,7 @@ public class skillTreeManager : MonoBehaviour
 
     public void ChooseSLAM()
     {
-        if (skillPoint >= 5)
+        if (skillPoint >= 5 && isSkilltreeOpen)
         {
             if (playerClass.hasTankClass == true)
             {

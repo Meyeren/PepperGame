@@ -22,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
 
     public float Speed = 8.0f;
     public float Stamina = 100f;
+    public float maxStamina;
     public bool noStaminaRegen;
     [SerializeField] float sensitivity = 100f;
     [SerializeField] float FOV = 80f;
@@ -94,6 +95,7 @@ public class PlayerMovement : MonoBehaviour
         staminaCanvasGroup.alpha = 0f;
         staminaSlider.maxValue = Stamina;
         canRotate = true;
+        maxStamina = 100f;
 
         animator = GetComponent<Animator>();
 
@@ -132,6 +134,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        staminaSlider.maxValue = maxStamina;
+        
         if (!canMove) return;
 
         isAttacking = GetComponent<Combat>().isAttacking;
@@ -151,7 +155,7 @@ public class PlayerMovement : MonoBehaviour
                 StartDash();
                 GetComponent<Combat>().isInvulnerable = true;
                 GetComponent<Combat>().basicDamage += GetComponent<Combat>().dashAttackDamage;
-                Stamina = 0;
+                Stamina -= 100;
                 noStaminaRegen = true;
                 Invoke("EndDashInvul", 1f);
             }
@@ -370,7 +374,7 @@ public class PlayerMovement : MonoBehaviour
         if (IsGrounded() && Stamina >= 0f && !isDashing && !noStaminaRegen)
         {
             Stamina += staminaRegenAmount * Time.deltaTime;
-            Stamina = Mathf.Clamp(Stamina, 0, 100);
+            Stamina = Mathf.Clamp(Stamina, 0, maxStamina);
         }
     }
 

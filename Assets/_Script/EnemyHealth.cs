@@ -30,13 +30,13 @@ public class EnemyHealth : MonoBehaviour
         enemyHealth -= Damage;
         
         mat.material.color = Color.red;
-        Debug.Log("Color");
+        
         Invoke("StopColor", 0.1f);
     }
 
     void StopColor()
     {
         mat.material.color = originalMatColor;
-        Debug.Log("Stopcolor");
+        
     }
 }

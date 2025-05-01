@@ -4,12 +4,13 @@ using UnityEngine.UI;
 using TMPro;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 public class ShopManager : MonoBehaviour
 {
-    [Header("Shop Item Prefabs")]
-    public GameObject[] allItemPrefabs;
+    [Header("Fixed Shop Items")]
+    public GameObject healthUpPrefab;
+    public GameObject energyUpPrefab;
+    public GameObject damageUpPrefab;
 
     [Header("Spawn Points")]
     public Transform[] spawnPositions;
@@ -51,16 +52,19 @@ public class ShopManager : MonoBehaviour
 
     public bool canOpenShop;
 
+    GameObject player;
+
     void Start()
     {
         shopUI.SetActive(false);
         originalScales = new Vector3[3];
         scaleCoroutines = new Coroutine[3];
+        player = GameObject.FindGameObjectWithTag("Player");
+        canOpenShop = true;
     }
 
     void Update()
     {
-
         if (!shopOpen) return;
 
         Vector2 nav = Gamepad.current?.leftStick.ReadValue() ?? Vector2.zero;
@@ -115,41 +119,51 @@ public class ShopManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
-        SpawnRandomItems();
+        SpawnFixedItems();
         UpdateSelection();
     }
 
-    void SpawnRandomItems()
+    void SpawnFixedItems()
     {
         foreach (var item in currentShopItems)
         {
             Destroy(item);
         }
         currentShopItems.Clear();
-
-        var possibleItems = allItemPrefabs
-            .Select(prefab => prefab.GetComponent<ShopItem>())
-            .Where(item => item != null && Random.value * 100f <= item.spawnChance)
-            .Where(item => item.canRepeat || !lastUsedItemNames.Contains(item.name))
-            .OrderBy(x => Random.value)
-            .Distinct()
-            .Take(3)
-            .ToList();
-
         lastUsedItemNames.Clear();
 
-        for (int i = 0; i < possibleItems.Count && i < spawnPositions.Length; i++)
+        GameObject[] fixedPrefabs = { healthUpPrefab, energyUpPrefab, damageUpPrefab };
+
+        for (int i = 0; i < fixedPrefabs.Length && i < spawnPositions.Length; i++)
         {
-            GameObject newItem = Instantiate(possibleItems[i].gameObject, spawnPositions[i].position, spawnPositions[i].rotation, transform);
+            GameObject newItem = Instantiate(fixedPrefabs[i], spawnPositions[i].position, spawnPositions[i].rotation, transform);
             currentShopItems.Add(newItem);
-            lastUsedItemNames.Add(possibleItems[i].name);
+            lastUsedItemNames.Add(fixedPrefabs[i].name);
             originalScales[i] = newItem.transform.localScale;
         }
     }
 
     public void SelectItem()
     {
-        Debug.Log("Valgte: " + currentShopItems[selectedIndex].name);
+        string itemName = currentShopItems[selectedIndex].name;
+
+        if (itemName.Contains("HealthUp"))
+        {
+            Debug.Log("Health");
+            player.GetComponent<Combat>().MaxPlayerHealth += 10;
+            player.GetComponent<Combat>().playerHealth += 10;
+        }
+        else if (itemName.Contains("EnergyUp"))
+        {
+            Debug.Log("Stamina");
+            player.GetComponent<PlayerMovement>().maxStamina += 10f;
+        }
+        else if (itemName.Contains("DamageUp"))
+        {
+            Debug.Log("Damage");
+            player.GetComponent<Combat>().basicDamage += 5f;
+        }
+
         CloseShop();
     }
 
