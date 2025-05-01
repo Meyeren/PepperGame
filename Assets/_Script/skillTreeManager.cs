@@ -48,6 +48,8 @@ public class skillTreeManager : MonoBehaviour
     private GameObject lastSelectedButton;
     InputAction Interact;
 
+    public bool skillTreeHasBeenOpened;
+
     private void Start()
     {
         
@@ -66,7 +68,9 @@ public class skillTreeManager : MonoBehaviour
         hasClass = false;
         openSkillTree = false;
 
+        interactAction = input.actions.FindAction("Interact");
 
+        skillTreeHasBeenOpened = false;
 
 
         foreach (Button button in Runner)
@@ -222,7 +226,6 @@ public class skillTreeManager : MonoBehaviour
 
 
         Collider[] hit = Physics.OverlapSphere(target.transform.position, 5f);
-        bool playerInRange = false;
 
         bool interactPressed = Keyboard.current.eKey.wasPressedThisFrame ||
                                (Gamepad.current != null && Gamepad.current.rightShoulder.wasPressedThisFrame);
@@ -231,7 +234,6 @@ public class skillTreeManager : MonoBehaviour
         {
             if (collider.CompareTag("Player"))
             {
-                playerInRange = true;
                 if (!skillTree.enabled && interactPressed)
                 {
                     OpenTree();
@@ -284,6 +286,8 @@ public class skillTreeManager : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
 
+        skillTreeHasBeenOpened = true;
+
         if (Gamepad.current != null)
         {
             Cursor.visible = false;
@@ -308,6 +312,8 @@ public class skillTreeManager : MonoBehaviour
         player.GetComponent<PlayerMovement>().canRotate = true;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+
+        ChooseNormalClass();
 
         if (Gamepad.current != null)
         {
