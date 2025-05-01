@@ -155,13 +155,16 @@ public class FlockingTest : MonoBehaviour
                 if (target.GetComponent<Combat>().hasDamageReduction)
                 {
                     target.GetComponent<Combat>().playerHealth -= enemyDamage * target.GetComponent<Combat>().damageReduction;
+                    target.GetComponent<Combat>().DamageVibration();
                     playerMat.material.color = Color.blue;
                     Invoke("EndColor", 0.1f);
+                   
                     
                 }
                 else
                 {
                     target.GetComponent<Combat>().playerHealth -= enemyDamage;
+                    target.GetComponent<Combat>().DamageVibration();
                     playerMat.material.color = Color.red;
                     Invoke("EndColor", 0.1f);
                     
@@ -171,6 +174,7 @@ public class FlockingTest : MonoBehaviour
             else if (target.GetComponent<Combat>().isInvulnerable)
             {
                 playerMat.material.color = new Color(0.6f, 0.2f, 0.8f);
+                target.GetComponent<Combat>().DamageVibration();
                 Invoke("EndColor", 0.1f);
                 
             }
