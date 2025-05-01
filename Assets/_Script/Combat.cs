@@ -107,7 +107,7 @@ public class Combat : MonoBehaviour
         attackAction = input.actions.FindAction("Attack");
         specialAttackAction = input.actions.FindAction("SpecialAttack");
 
-        enemyLayer = LayerMask.GetMask("Enemy");
+        enemyLayer = LayerMask.GetMask("Enemy", "weak Enemy");
         cam = Camera.main;
 
         playerClass = GetComponent<PlayerClass>();
@@ -365,4 +365,14 @@ public class Combat : MonoBehaviour
         yield return new WaitForSeconds(delay);
         audioSource.PlayOneShot(clip);
     }
+
+    public void DamageVibration()
+    {
+        if (Gamepad.current != null)
+        {
+            Gamepad.current.SetMotorSpeeds(0.1f, 0.2f);
+        }
+        Invoke("EndVibration", 0.1f);
+    }
+
 }
