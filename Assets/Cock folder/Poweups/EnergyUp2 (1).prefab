@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6437673326022361448}
   - component: {fileID: 6681918387277266312}
   - component: {fileID: 8726393446431927346}
+  - component: {fileID: -3500540519408390745}
   m_Layer: 0
   m_Name: EnergyUp2 (1)
   m_TagString: Untagged
@@ -102,3 +103,24 @@ MonoBehaviour:
   description: Maximum stamina increase + 10
   spawnChance: 63.4
   canRepeat: 1
+--- !u!65 &-3500540519408390745
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1166139348445151752}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.0054929, y: 1.1614025, z: 0.2753101}
+  m_Center: {x: -0.18463677, y: 0.029895276, z: 0.000000007450582}
