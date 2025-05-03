@@ -60,7 +60,7 @@ public class ShopManager : MonoBehaviour
         originalScales = new Vector3[3];
         scaleCoroutines = new Coroutine[3];
         player = GameObject.FindGameObjectWithTag("Player");
-        canOpenShop = true;
+        canOpenShop = false;
     }
 
     void Update()

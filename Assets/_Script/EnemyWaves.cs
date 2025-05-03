@@ -147,7 +147,7 @@ public class EnemyWaves : MonoBehaviour
 
         if (enemiesAlive <= 0 && !isSpawning)
         {
-            return;
+            GameObject.FindFirstObjectByType<ShopManager>().canOpenShop = true;
         }
     }
 

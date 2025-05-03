@@ -12,7 +12,7 @@ public class StartWave : MonoBehaviour
     public float range = 5f;
 
     private bool whenStartWave;
-    private bool shopExtra;
+    private bool canOpenShop;
 
     Renderer mat;
     Color orgin;
@@ -27,7 +27,7 @@ public class StartWave : MonoBehaviour
 
     void Update()
     {
-        shopExtra = shop.GetComponent<ShopManager>().canOpenShop;
+        canOpenShop = shop.GetComponent<ShopManager>().canOpenShop;
         if (Waves.GetComponent<EnemyWaves>().enemiesAlive == 0)
         {
             whenStartWave = true;
@@ -52,7 +52,7 @@ public class StartWave : MonoBehaviour
         {
             if (collider.CompareTag("Player"))
             {
-                if(shopExtra == true)
+                if(canOpenShop == true)
                 {
                     mat.material.color = Color.blue;
                 }
@@ -60,14 +60,14 @@ public class StartWave : MonoBehaviour
                 {
                     mat.material.color = Color.red;
                 }
-                if (interactPressed && whenStartWave == true && shopExtra == true)
+                if (interactPressed && whenStartWave == true && canOpenShop == true)
                 {
                     shop.GetComponent<ShopManager>().OpenShop();
                 }
-                else if (interactPressed && whenStartWave == true && shopExtra == false)
+                else if (interactPressed && whenStartWave == true && canOpenShop == false)
                 {
                     Waves.GetComponent<EnemyWaves>().StartNextWave();
-                    shopExtra = true;
+                    canOpenShop = true;
                 }
                 else { return; }
             }
