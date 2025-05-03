@@ -169,7 +169,7 @@ public class PlayerMovement : MonoBehaviour
             StaminaRegen();
         }
 
-        if (Stamina == 100)
+        if (Stamina == maxStamina)
         {
             FadeOutStaminaBar();
         }

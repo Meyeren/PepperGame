@@ -6,10 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class Combat : MonoBehaviour
 {
-    [Header("Player")]
-    public float playerHealth = 100f;
-    public float MaxPlayerHealth = 100f;
-
     Slider healthSlider;
     CanvasGroup healthCanvas;
     Image fillImage;
@@ -22,30 +18,44 @@ public class Combat : MonoBehaviour
     InputAction specialAttackAction;
 
     PlayerClass playerClass;
-
     GameObject sword;
 
-    [Header("Attacking")]
+    SkinnedMeshRenderer[] renderers;
+    Color[] originalColors;
+
+    float Stamina;
+
+
+    float invulAbilityCost = 100f;
+
+    [Header("Player")]
+    public float playerHealth = 100f;
+    public float MaxPlayerHealth = 100f;
+
+    [Header("Attack Values")]
+    [SerializeField] float attackRange = 5f;
+    public float basicDamage = 50f;
+    [SerializeField] float baseAttackMoveRed = 2f;
+
+    public float damageReduction = 0.5f;
+    
+    public float dashAttackDamage = 50f;
+
+    [Header("Bool Checks")]
     public bool isAttacking;
     [SerializeField] bool isGrounded;
     [SerializeField] bool isDashing;
     public bool isGroundSlamming;
-    [SerializeField] float attackRange = 5f;
-
     public bool hasDamageReduction;
+    public bool isInvulnerable;
+
+    [Header("Abilites")]
     public bool attackWhileDash;
     public bool hasGroundSlam;
-    public bool isInvulnerable;
     public bool hasInvulnerableAbility;
 
-    float Stamina;
-    public float damageReduction = 0.5f;
 
-    float invulAbilityCost = 100f;
-
-    public float basicDamage = 50f;
-    public float dashAttackDamage = 50f;
-
+    [Header("SpecialAttacks")]
     [SerializeField] float specialAttackRange = 5f;
     [SerializeField] int specialDamage = 100;
     [SerializeField] float knockBackAmount = 5f;
@@ -79,8 +89,8 @@ public class Combat : MonoBehaviour
     [Header("Special Ability VFX")]
     public GameObject specialAttackEffectPrefab;
 
-    SkinnedMeshRenderer[] renderers;
-    Color[] originalColors;
+
+
 
     private void Start()
     {
@@ -187,6 +197,7 @@ public class Combat : MonoBehaviour
         isAttacking = true;
         animator.SetTrigger("isAttacking");
         PlaySound(swingSoundClip, swingSoundDelay);
+        GetComponent<PlayerMovement>().Speed -= 2f;
     }
 
     void PerformHit()
@@ -223,8 +234,9 @@ public class Combat : MonoBehaviour
             }
         }
         isAttacking = false;
+        GetComponent<PlayerMovement>().Speed += baseAttackMoveRed;
     }
-
+    
     void SpecialAttack()
     {
         hasDamageReduction = true;

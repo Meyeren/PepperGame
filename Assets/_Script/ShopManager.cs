@@ -42,7 +42,6 @@ public class ShopManager : MonoBehaviour
     private float inputCooldown = 0.3f;
     private float lastInputTime;
     private bool shopOpen = false;
-    private bool isReturningToPlayer = false;
     private Coroutine cameraTransition;
     private Vector3[] originalScales;
     private Coroutine[] scaleCoroutines;
@@ -105,7 +104,6 @@ public class ShopManager : MonoBehaviour
         shopOpen = true;
         canOpenShop = false;
         selectedIndex = 0;
-        isReturningToPlayer = false;
 
         mainCamSavedPosition = mainCamera.transform.position;
         mainCamSavedRotation = mainCamera.transform.rotation;
@@ -181,7 +179,6 @@ public class ShopManager : MonoBehaviour
         }
         shopOpen = false;
         shopUI.SetActive(false);
-        isReturningToPlayer = true;
 
         if (cameraTransition != null) StopCoroutine(cameraTransition);
         cameraTransition = StartCoroutine(SmoothCameraTransition(mainCamSavedPosition, mainCamSavedRotation, true));
@@ -262,7 +259,6 @@ public class ShopManager : MonoBehaviour
         if (isReturning && playerMovement != null)
         {
             playerMovement.SetCanMove(true);
-            isReturningToPlayer = false;
         }
     }
 }
