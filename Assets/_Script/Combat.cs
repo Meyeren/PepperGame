@@ -339,7 +339,11 @@ public class Combat : MonoBehaviour
 
     void EndVibration()
     {
-        Gamepad.current.SetMotorSpeeds(0f, 0f);
+        if (Gamepad.current != null)
+        {
+            Gamepad.current.SetMotorSpeeds(0f, 0f);
+        }
+
     }
 
     void EndInvul()
