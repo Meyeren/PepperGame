@@ -65,8 +65,6 @@ public class PlayerMovement : MonoBehaviour
     public AudioClip dashSound;
     private AudioSource audioSource;
 
-    GameObject dashVFX;
-
     public void SetCanMove(bool value)
     {
         canMove = value;
@@ -315,7 +313,9 @@ public class PlayerMovement : MonoBehaviour
             dashDirection = transform.forward;
         }
         dashDirection.y = 0f;
+        GameObject dashVFX = Instantiate(dashEffectPrefab, transform.position, Quaternion.LookRotation(dashDirection.normalized * dashSpeed));
 
+        Destroy(dashVFX, 2f);
 
         if (dashSound != null)
         {
@@ -337,13 +337,13 @@ public class PlayerMovement : MonoBehaviour
         while (elapsedTime < dashLength && isDashing)
         {
             rb.AddForce(dashDirection.normalized * dashSpeed, ForceMode.Impulse);
-            dashVFX = Instantiate(dashEffectPrefab, transform.position, Quaternion.LookRotation(dashDirection.normalized * dashSpeed));
+            
             elapsedTime += Time.deltaTime;
             yield return null;
             Camera.main.fieldOfView += 0.3f;
         }
 
-        Destroy(dashVFX);
+        
         isDashing = false;
         animator.SetBool("isDashing", isDashing);
         StartCoroutine(EndDash());

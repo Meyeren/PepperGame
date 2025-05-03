@@ -19,6 +19,9 @@ public class StartLevel : MonoBehaviour
         target = GameObject.Find("StartDoor");
 
         playerClass = player.GetComponent<PlayerClass>();
+
+        gameObject.GetComponent<MeshRenderer>().enabled = false;
+        gameObject.GetComponent<SphereCollider>().enabled = false;
     }
 
     private void OnTriggerEnter(Collider collider)
@@ -34,5 +37,16 @@ public class StartLevel : MonoBehaviour
     private void Update()
     {
         skillTree = skillTreeOb.GetComponent<skillTreeManager>().hasClass;
+
+        if (skillTree)
+        {
+            gameObject.GetComponent<MeshRenderer>().enabled = true;
+            gameObject.GetComponent<SphereCollider>().enabled = true;
+        }
+        else
+        {
+            gameObject.GetComponent<MeshRenderer>().enabled = false;
+            gameObject.GetComponent<SphereCollider>().enabled = false;
+        }
     }
 }

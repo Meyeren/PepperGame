@@ -27,6 +27,10 @@ public class enemyHealthBar : MonoBehaviour
         {
             FadeOutHealth();
         }
+        else if (enemyHealthScript.enemyHealth <= 0)
+        {
+            canvas.alpha = 0f;
+        }
         else
         {
             canvas.alpha = 1.0f;
