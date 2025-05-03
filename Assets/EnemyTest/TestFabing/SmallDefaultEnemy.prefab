@@ -147,7 +147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b175acf37b5002a4d830d9d8b42c669b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  neighborRadius: 5
+  neighborRadius: 50
   separationDistance: 2
   separationWeight: 1.5
   alignmentWeight: 2
@@ -157,7 +157,15 @@ MonoBehaviour:
   avoidanceWeight: 4
   obstacleMask:
     serializedVersion: 2
-    m_Bits: 513
+    m_Bits: 640
+  neighborLayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  minSpeed: 0.1
+  randomChangeInterval: 2
+  avoidanceRays: 5
+  avoidanceRayDistance: 3
+  avoidanceAngle: 45
   enemySpeed: 10
   enemyDamage: 2
   enemyAttackRange: 1.3

@@ -16,6 +16,23 @@ public class FlockingTest : MonoBehaviour
     public float randomMovementWeight = 0.2f;
     public float avoidanceWeight = 2f; 
     public LayerMask obstacleMask;
+    [SerializeField] private LayerMask neighborLayerMask;
+    public float minSpeed = 0.1f;
+
+    [Header("Movement Smoothing")]
+    private Vector3 currentVelocity;
+    public float rotationSmoothness = 5f;
+    public float acceleration = 2f;
+
+    [Header("Random Movement")]
+    public float randomChangeInterval = 2f;
+    private Vector3 randomDirection;
+    private float lastRandomChange;
+
+    [Header("Improved Obstacle Avoidance")]
+    public int avoidanceRays = 5;
+    public float avoidanceRayDistance = 3f;
+    public float avoidanceAngle = 45f;
 
     [Header("Enemy Behavior Settings")]
     public float enemySpeed = 5f;
@@ -30,6 +47,7 @@ public class FlockingTest : MonoBehaviour
     public float chaseFlockingRatio = 0.7f;
 
     private float saveSpeed;
+    private Collider[] neighbors = new Collider[20];
     public Transform target;
 
     Rigidbody rb;
@@ -58,9 +76,6 @@ public class FlockingTest : MonoBehaviour
 
         playerMat = target.GetComponentInChildren<SkinnedMeshRenderer>();
         originalColor = target.GetComponentInChildren<SkinnedMeshRenderer>().material.color;
-
-
-        
     }
 
     void Update()
@@ -80,17 +95,19 @@ public class FlockingTest : MonoBehaviour
         int neighborCount = 0;
         int obstacleCount = 0;
 
-        Collider[] neighbors = Physics.OverlapSphere(transform.position, neighborRadius);
+        int numNeighbors = Physics.OverlapSphereNonAlloc(
+            transform.position,
+            neighborRadius,
+            neighbors,
+            neighborLayerMask
+        );
 
-        if (Physics.SphereCast(transform.position, 0.5f, transform.forward, out RaycastHit hit, 3f, obstacleMask))
-        {
-            avoidance += hit.normal * avoidanceWeight;
-            obstacleCount++;
-        }
+        avoidance = CalculateAvoidance();
 
-        foreach (var neighbor in neighbors)
+        for (int i = 0; i < numNeighbors; i++)
         {
-            if (neighbor.gameObject == gameObject || !neighbor.CompareTag(gameObject.tag)) continue;
+            var neighbor = neighbors[i];
+            if (neighbor.gameObject == gameObject) continue;
 
             Vector3 toNeighbor = transform.position - neighbor.transform.position;
             float distance = toNeighbor.magnitude;
@@ -116,21 +133,92 @@ public class FlockingTest : MonoBehaviour
         }
 
         Vector3 toTarget = target != null ? (target.position - transform.position).normalized * (1f - flockingIntensity) : Vector3.zero;
+        Vector3 dynamicWeights = CalculateDynamicWeights(toTarget, neighborCount);
 
-        Vector3 randomMovement = new Vector3(
-        Random.Range(-1f, 1f),
-        0,
-        Random.Range(-1f, 1f)).normalized * randomMovementWeight;
+        Vector3 randomMovement = GetRandomMovement();
 
-        Vector3 moveDir = (separation.normalized * separationWeight + alignment * alignmentWeight + cohesion * cohesionWeight + toTarget * targetWeight + randomMovement + avoidance).normalized;
+        Vector3 moveDir = (
+            separation.normalized * dynamicWeights.x + 
+            alignment * dynamicWeights.y +             
+            cohesion * dynamicWeights.z +             
+            toTarget * targetWeight +
+            randomMovement +
+            avoidance
+        ).normalized;
 
         if (moveDir != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(moveDir);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * 5f);
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetRotation,
+                Time.deltaTime * rotationSmoothness
+            );
         }
 
-        transform.position += transform.forward * enemySpeed * Time.deltaTime;
+        currentVelocity = Vector3.Lerp(
+            currentVelocity,
+            moveDir * enemySpeed,
+            acceleration * Time.deltaTime
+        );
+
+        if (currentVelocity.magnitude < minSpeed && moveDir != Vector3.zero)
+        {
+            currentVelocity = moveDir.normalized * minSpeed;
+        }
+
+        transform.position += currentVelocity * Time.deltaTime;
+    }
+
+    private Vector3 CalculateAvoidance()
+    {
+        Vector3 avoidance = Vector3.zero;
+        int hitCount = 0;
+
+        for (int i = 0; i < avoidanceRays; i++)
+        {
+            float angle = i * (avoidanceAngle * 2) / (avoidanceRays - 1) - avoidanceAngle;
+            Vector3 dir = Quaternion.Euler(0, angle, 0) * transform.forward;
+
+            if (Physics.Raycast(transform.position, dir, out RaycastHit hit, avoidanceRayDistance, obstacleMask))
+            {
+                avoidance += hit.normal * avoidanceWeight;
+                hitCount++;
+            }
+        }
+
+        return hitCount > 0 ? avoidance / hitCount : avoidance;
+    }
+
+    private Vector3 CalculateDynamicWeights(Vector3 toTarget, int neighborCount)
+    {
+        float distanceToTarget = toTarget.magnitude;
+
+        float dynamicTargetWeight = Mathf.Lerp(targetWeight * 2f, targetWeight * 0.5f, distanceToTarget / 10f);
+        float dynamicFlockingWeight = 1f - (dynamicTargetWeight / (targetWeight * 2f));
+
+        float dynamicSeparation = neighborCount > 0 ? separationWeight : separationWeight * 0.3f;
+
+        return new Vector3(dynamicSeparation, alignmentWeight * dynamicFlockingWeight, cohesionWeight * dynamicFlockingWeight);
+    }
+
+    private Vector3 GetRandomMovement()
+    {
+        if (randomMovementWeight <= Mathf.Epsilon) return Vector3.zero;
+
+        if (Time.time - lastRandomChange > randomChangeInterval)
+        {
+            randomDirection = Vector3.Slerp(
+                transform.forward,
+                new Vector3(
+                    Random.Range(-1f, 1f),
+                    0,
+                    Random.Range(-1f, 1f)).normalized,
+                0.3f
+            );
+            lastRandomChange = Time.time;
+        }
+        return randomDirection * randomMovementWeight;
     }
 
     public bool IsPlayerNearby()
