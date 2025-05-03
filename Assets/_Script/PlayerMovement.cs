@@ -65,7 +65,7 @@ public class PlayerMovement : MonoBehaviour
     public AudioClip dashSound;
     private AudioSource audioSource;
 
-    
+    GameObject dashVFX;
 
     public void SetCanMove(bool value)
     {
@@ -148,6 +148,7 @@ public class PlayerMovement : MonoBehaviour
             if (!isAttacking)
             {
                 StartDash();
+
                 
             }
             else if (GetComponent<Combat>().attackWhileDash)
@@ -307,7 +308,6 @@ public class PlayerMovement : MonoBehaviour
         Stamina -= dashCost;
         isDashing = true;
         animator.SetBool("isDashing", isDashing);
-        footstepAudio.SetDashing(true);
 
         Vector3 dashDirection = rb.linearVelocity;
         if (dashDirection.magnitude < 0.01f)
@@ -316,13 +316,7 @@ public class PlayerMovement : MonoBehaviour
         }
         dashDirection.y = 0f;
 
-        if (dashEffectPrefab != null)
-        {
-            GameObject dashVFX = Instantiate(dashEffectPrefab, transform.position, Quaternion.LookRotation(dashDirection));
-            Destroy(dashVFX, 2f);
-        }
 
-        // Afspil dash lyd
         if (dashSound != null)
         {
             audioSource.PlayOneShot(dashSound);
@@ -343,14 +337,15 @@ public class PlayerMovement : MonoBehaviour
         while (elapsedTime < dashLength && isDashing)
         {
             rb.AddForce(dashDirection.normalized * dashSpeed, ForceMode.Impulse);
+            dashVFX = Instantiate(dashEffectPrefab, transform.position, Quaternion.LookRotation(dashDirection.normalized * dashSpeed));
             elapsedTime += Time.deltaTime;
             yield return null;
             Camera.main.fieldOfView += 0.3f;
         }
 
+        Destroy(dashVFX);
         isDashing = false;
         animator.SetBool("isDashing", isDashing);
-        footstepAudio.SetDashing(false);
         StartCoroutine(EndDash());
 
         if (Gamepad.current != null)
@@ -365,7 +360,6 @@ public class PlayerMovement : MonoBehaviour
         {
             isDashing = false;
             animator.SetBool("isDashing", isDashing);
-            footstepAudio.SetDashing(false);
         }
     }
 
