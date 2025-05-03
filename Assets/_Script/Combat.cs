@@ -51,7 +51,6 @@ public class Combat : MonoBehaviour
     [SerializeField] float knockBackAmount = 5f;
     [SerializeField] float speedReduction = 5f;
     [SerializeField] float specialAttackCost = 100f;
-    [SerializeField] float basicKnockbackAmount = 2f;
 
     [SerializeField] float lifeStealAmount = 0.5f;
 
@@ -176,11 +175,11 @@ public class Combat : MonoBehaviour
             GetComponent<PlayerMovement>().noStaminaRegen = true;
         }
 
-        /*if (playerHealth <= 0)
+        if (playerHealth <= 0)
         {
             playerHealth = MaxPlayerHealth;
             transform.position = new Vector3(-40f, 42, 0);
-        }*/
+        }
     }
 
     void Attack()
@@ -205,7 +204,7 @@ public class Combat : MonoBehaviour
             foreach (Collider enemy in hitEnemies)
             {
                 enemy.GetComponent<EnemyHealth>().TakeDamage(basicDamage);
-                enemy.GetComponent<FlockingTest>().KnockBack(transform.position, basicKnockbackAmount);
+                
 
                 if (playerClass.hasLifeSteal && playerHealth <= MaxPlayerHealth)
                 {

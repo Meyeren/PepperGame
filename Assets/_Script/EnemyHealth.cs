@@ -4,6 +4,8 @@ public class EnemyHealth : MonoBehaviour
 {
     public float enemyHealth = 100f;
 
+    public float maxEnemyHealth = 100f;
+
     private FlockingTest flockingTest;
 
     Renderer mat;
