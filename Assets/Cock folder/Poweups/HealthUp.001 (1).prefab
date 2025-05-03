@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 6342023842580508319}
   - component: {fileID: 2449900993299979507}
   - component: {fileID: 3768731370624525934}
+  - component: {fileID: -178683606040720454}
   m_Layer: 0
   m_Name: HealthUp.001 (1)
   m_TagString: Untagged
@@ -102,3 +103,24 @@ MonoBehaviour:
   description: Maximum health increase + 10
   spawnChance: 62.7
   canRepeat: 0
+--- !u!65 &-178683606040720454
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2912881336072699078}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 1.0287799, y: 1.1069026, z: 0.23070341}
+  m_Center: {x: -0.19046348, y: 0.22952494, z: -0.11535171}

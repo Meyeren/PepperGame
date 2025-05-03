@@ -58,8 +58,6 @@ public class skillTreeManager : MonoBehaviour
         input = player.GetComponent<PlayerInput>();
         playerClass = player.GetComponent<PlayerClass>();
 
-        //naviInput = input.actions.FindAction("Look");
-
         playerActionMap = input.actions.FindActionMap("Player");
         uiActionMap = input.actions.FindActionMap("UI");
 
@@ -97,26 +95,6 @@ public class skillTreeManager : MonoBehaviour
 
     private void Update()
     {
-        /*if (openSkillTree && Gamepad.current != null)
-        {
-            Vector2 navi = naviInput.ReadValue<Vector2>();
-
-            // Læs musens nuværende position
-            Vector2 currentPos = Mouse.current.position.ReadValue();
-
-            // Beregn bevægelsen baseret på joystick input (Skaleret)
-            Vector2 move = navi * 20f;
-
-            // Opdater musens position
-            Vector2 newPos = currentPos + move;
-
-            // Sørg for, at cursoren ikke går uden for skærmens grænser (valgfrit)
-            newPos.x = Mathf.Clamp(newPos.x, 0, Screen.width);
-            newPos.y = Mathf.Clamp(newPos.y, 0, Screen.height);
-
-            // Flyt musen til den nye position
-            Mouse.current.WarpCursorPosition(newPos);
-        }*/
 
         skillPointText.text = skillPoint.ToString();
         if (hasClass)
@@ -229,14 +207,11 @@ public class skillTreeManager : MonoBehaviour
 
         Collider[] hit = Physics.OverlapSphere(target.transform.position, 5f);
 
-        bool interactPressed = Keyboard.current.eKey.wasPressedThisFrame ||
-                               (Gamepad.current != null && Gamepad.current.rightShoulder.wasPressedThisFrame);
-
         foreach (var collider in hit)
         {
             if (collider.CompareTag("Player"))
             {
-                if (!skillTree.enabled && interactPressed)
+                if (!skillTree.enabled && interactAction.triggered)
                 {
                     OpenTree();
                 }
@@ -296,13 +271,6 @@ public class skillTreeManager : MonoBehaviour
             Cursor.visible = false;
             input.SwitchCurrentActionMap("UI");
         }
-
-        /*if (Gamepad.current != null)
-        {
-            EventSystem.current.SetSelectedGameObject(NormalObject);
-            EventSystem.current.SetSelectedGameObject(null); 
-            EventSystem.current.SetSelectedGameObject(NormalObject);
-        }*/
     }
 
     void CloseTree()

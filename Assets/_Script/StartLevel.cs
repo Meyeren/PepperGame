@@ -11,32 +11,42 @@ public class StartLevel : MonoBehaviour
 
     GameObject player;
 
-    private void Update()
-    {
-        skillTree = skillTreeOb.GetComponent<skillTreeManager>().skillTreeHasBeenOpened;
 
+    private void Start()
+    {
         player = GameObject.FindGameObjectWithTag("Player");
-        
+
         target = GameObject.Find("StartDoor");
 
         playerClass = player.GetComponent<PlayerClass>();
 
-        Collider[] hit = Physics.OverlapSphere(target.transform.position, 2.5f);
+        gameObject.GetComponent<MeshRenderer>().enabled = false;
+        gameObject.GetComponent<SphereCollider>().enabled = false;
+    }
 
-        bool interactPressed = Keyboard.current.eKey.wasPressedThisFrame ||
-       (Gamepad.current != null && Gamepad.current.rightShoulder.wasPressedThisFrame);
-
-        foreach (var collider in hit)
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.CompareTag("Player") && skillTree)
         {
+            collider.transform.position = new Vector3(12f, -2f, 0f);
+            playerClass.ForceClass();
+        }
+    }
 
-            if (collider.CompareTag("Player"))
-            {
-                if (interactPressed && skillTree)
-                {
-                    collider.transform.position = new Vector3(12f, -2f, 0f);
-                    playerClass.ForceClass();
-                }
-            }
+
+    private void Update()
+    {
+        skillTree = skillTreeOb.GetComponent<skillTreeManager>().hasClass;
+
+        if (skillTree)
+        {
+            gameObject.GetComponent<MeshRenderer>().enabled = true;
+            gameObject.GetComponent<SphereCollider>().enabled = true;
+        }
+        else
+        {
+            gameObject.GetComponent<MeshRenderer>().enabled = false;
+            gameObject.GetComponent<SphereCollider>().enabled = false;
         }
     }
 }

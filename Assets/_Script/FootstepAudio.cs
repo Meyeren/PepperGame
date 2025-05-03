@@ -55,7 +55,7 @@ public class FootstepAudio : MonoBehaviour
 
         if (!wasGrounded && grounded && isJumping)
         {
-            
+
             isJumping = false;
         }
 
@@ -77,7 +77,7 @@ public class FootstepAudio : MonoBehaviour
             if (stepTimer <= 0f)
             {
                 PlayFootstep();
-                
+
                 stepTimer = stepInterval;
             }
         }
@@ -89,10 +89,14 @@ public class FootstepAudio : MonoBehaviour
 
     void PlayFootstep()
     {
-        audioSource.pitch = Random.Range(minPitch, maxPitch);
-        audioSource.PlayOneShot(footstepClip);
-        
-        
+        if (GetComponent<PlayerMovement>().isDashing)
+        {
+            audioSource.pitch = Random.Range(minPitch, maxPitch);
+            audioSource.PlayOneShot(footstepClip);
+
+        }
+
+
     }
 
     public bool IsGrounded()
@@ -104,23 +108,10 @@ public class FootstepAudio : MonoBehaviour
     {
         if (!isJumping && state)
         {
-            
+
         }
         isJumping = state;
     }
 
-    public void SetDashing(bool state)
-    {
-        if (state)
-        {
-            audioSource.mute = true;
-        }
-        else
-        {
-            audioSource.mute = false;
-        }
-        
-    }
 
-    
 }

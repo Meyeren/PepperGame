@@ -65,8 +65,6 @@ public class PlayerMovement : MonoBehaviour
     public AudioClip dashSound;
     private AudioSource audioSource;
 
-    
-
     public void SetCanMove(bool value)
     {
         canMove = value;
@@ -148,6 +146,7 @@ public class PlayerMovement : MonoBehaviour
             if (!isAttacking)
             {
                 StartDash();
+
                 
             }
             else if (GetComponent<Combat>().attackWhileDash)
@@ -169,7 +168,7 @@ public class PlayerMovement : MonoBehaviour
             StaminaRegen();
         }
 
-        if (Stamina == 100)
+        if (Stamina == maxStamina)
         {
             FadeOutStaminaBar();
         }
@@ -307,7 +306,6 @@ public class PlayerMovement : MonoBehaviour
         Stamina -= dashCost;
         isDashing = true;
         animator.SetBool("isDashing", isDashing);
-        footstepAudio.SetDashing(true);
 
         Vector3 dashDirection = rb.linearVelocity;
         if (dashDirection.magnitude < 0.01f)
@@ -315,14 +313,10 @@ public class PlayerMovement : MonoBehaviour
             dashDirection = transform.forward;
         }
         dashDirection.y = 0f;
+        GameObject dashVFX = Instantiate(dashEffectPrefab, transform.position, Quaternion.LookRotation(dashDirection.normalized * dashSpeed));
 
-        if (dashEffectPrefab != null)
-        {
-            GameObject dashVFX = Instantiate(dashEffectPrefab, transform.position, Quaternion.LookRotation(dashDirection));
-            Destroy(dashVFX, 2f);
-        }
+        Destroy(dashVFX, 2f);
 
-        // Afspil dash lyd
         if (dashSound != null)
         {
             audioSource.PlayOneShot(dashSound);
@@ -343,14 +337,15 @@ public class PlayerMovement : MonoBehaviour
         while (elapsedTime < dashLength && isDashing)
         {
             rb.AddForce(dashDirection.normalized * dashSpeed, ForceMode.Impulse);
+            
             elapsedTime += Time.deltaTime;
             yield return null;
             Camera.main.fieldOfView += 0.3f;
         }
 
+        
         isDashing = false;
         animator.SetBool("isDashing", isDashing);
-        footstepAudio.SetDashing(false);
         StartCoroutine(EndDash());
 
         if (Gamepad.current != null)
@@ -365,7 +360,6 @@ public class PlayerMovement : MonoBehaviour
         {
             isDashing = false;
             animator.SetBool("isDashing", isDashing);
-            footstepAudio.SetDashing(false);
         }
     }
 

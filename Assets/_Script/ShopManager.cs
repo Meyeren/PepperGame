@@ -12,6 +12,7 @@ public class ShopManager : MonoBehaviour
     public GameObject energyUpPrefab;
     public GameObject damageUpPrefab;
 
+    
     [Header("Spawn Points")]
     public Transform[] spawnPositions;
 
@@ -42,7 +43,6 @@ public class ShopManager : MonoBehaviour
     private float inputCooldown = 0.3f;
     private float lastInputTime;
     private bool shopOpen = false;
-    private bool isReturningToPlayer = false;
     private Coroutine cameraTransition;
     private Vector3[] originalScales;
     private Coroutine[] scaleCoroutines;
@@ -60,28 +60,40 @@ public class ShopManager : MonoBehaviour
         originalScales = new Vector3[3];
         scaleCoroutines = new Coroutine[3];
         player = GameObject.FindGameObjectWithTag("Player");
-        canOpenShop = true;
+        canOpenShop = false;
     }
 
     void Update()
     {
         if (!shopOpen) return;
-
-        Vector2 nav = Gamepad.current?.leftStick.ReadValue() ?? Vector2.zero;
-
-        if (Time.time - lastInputTime > inputCooldown)
+        if (Gamepad.current != null)
         {
-            if (nav.x > 0.5f)
+            Vector2 nav = Gamepad.current?.leftStick.ReadValue() ?? Vector2.zero;
+
+            if (Time.time - lastInputTime > inputCooldown)
             {
-                ChangeSelection(1);
-                lastInputTime = Time.time;
-            }
-            else if (nav.x < -0.5f)
-            {
-                ChangeSelection(-1);
-                lastInputTime = Time.time;
+                if (nav.x > 0.5f)
+                {
+                    ChangeSelection(1);
+                    lastInputTime = Time.time;
+                }
+                else if (nav.x < -0.5f)
+                {
+                    ChangeSelection(-1);
+                    lastInputTime = Time.time;
+                }
             }
         }
+        else if (Gamepad.current == null)
+        {
+            HandleMouseHover();
+
+            if (Mouse.current.leftButton.wasPressedThisFrame)
+            {
+                SelectItem();
+            }
+        }
+        
 
         if (Gamepad.current?.buttonSouth.wasPressedThisFrame == true || Keyboard.current.enterKey.wasPressedThisFrame)
         {
@@ -105,7 +117,6 @@ public class ShopManager : MonoBehaviour
         shopOpen = true;
         canOpenShop = false;
         selectedIndex = 0;
-        isReturningToPlayer = false;
 
         mainCamSavedPosition = mainCamera.transform.position;
         mainCamSavedRotation = mainCamera.transform.rotation;
@@ -121,8 +132,6 @@ public class ShopManager : MonoBehaviour
         if (cameraTransition != null) StopCoroutine(cameraTransition);
         cameraTransition = StartCoroutine(SmoothCameraTransition(shopCameraTarget.position, shopCameraTarget.rotation, false));
 
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
 
         SpawnFixedItems();
         UpdateSelection();
@@ -181,13 +190,10 @@ public class ShopManager : MonoBehaviour
         }
         shopOpen = false;
         shopUI.SetActive(false);
-        isReturningToPlayer = true;
 
         if (cameraTransition != null) StopCoroutine(cameraTransition);
         cameraTransition = StartCoroutine(SmoothCameraTransition(mainCamSavedPosition, mainCamSavedRotation, true));
 
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
     }
 
     private void UpdateSelection()
@@ -262,7 +268,27 @@ public class ShopManager : MonoBehaviour
         if (isReturning && playerMovement != null)
         {
             playerMovement.SetCanMove(true);
-            isReturningToPlayer = false;
+        }
+    }
+
+
+    void HandleMouseHover()
+    {
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            for (int i = 0; i < currentShopItems.Count; i++)
+            {
+                if (hit.transform.gameObject == currentShopItems[i])
+                {
+                    if (selectedIndex != i)
+                    {
+                        selectedIndex = i;
+                        UpdateSelection();
+                    }
+                    break;
+                }
+            }
         }
     }
 }
