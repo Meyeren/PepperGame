@@ -3,6 +3,8 @@ using UnityEngine.InputSystem;
 using UnityEngine.UI;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using TMPro;
+using UnityEngine.EventSystems;
 
 public class Combat : MonoBehaviour
 {
@@ -10,6 +12,12 @@ public class Combat : MonoBehaviour
     CanvasGroup healthCanvas;
     Image fillImage;
     Image fillImage2;
+
+    public GameObject DeathScreen;
+    [SerializeField] TextMeshProUGUI KillCountText;
+    [SerializeField] TextMeshProUGUI SkillPointText;
+    [SerializeField] GameObject ContinueButton;
+
 
     Camera cam;
     Animator animator;
@@ -30,9 +38,18 @@ public class Combat : MonoBehaviour
 
     float invulAbilityCost = 100f;
 
+    skillTreeManager skillManager;
+
+    int nextSkillThreshhold = 50;
+    
+    private InputActionMap playerActionMap;
+    private InputActionMap uiActionMap;
+
     [Header("Player")]
     public float playerHealth = 100f;
     public float MaxPlayerHealth = 100f;
+    public int killCount;
+    
 
     [Header("Attack Values")]
     [SerializeField] float attackRange = 5f;
@@ -72,14 +89,14 @@ public class Combat : MonoBehaviour
     public AudioClip swingSoundClip;
     public AudioClip hitEnemySoundClip;
     public AudioClip specialAttackSoundClip;
-    public AudioClip specialAttackHitSoundClip; // ✅ ny lyd
+    public AudioClip specialAttackHitSoundClip;
     public AudioClip playerHurtSoundClip;
 
     [Header("Audio Delays (seconds)")]
     public float swingSoundDelay = 0f;
     public float hitEnemySoundDelay = 0f;
     public float specialAttackSoundDelay = 0f;
-    public float specialAttackHitSoundDelay = 0f; // ✅ ny delay
+    public float specialAttackHitSoundDelay = 0f;
     public float playerHurtSoundDelay = 0f;
 
     private AudioSource audioSource;
@@ -96,13 +113,6 @@ public class Combat : MonoBehaviour
 
     private void Start()
     {
-        isAttacking = false;
-        attackWhileDash = false;
-        isInvulnerable = false;
-        isGroundSlamming = false;
-        hasGroundSlam = false;
-        hasInvulnerableAbility = false;
-
         sword = GameObject.FindGameObjectWithTag("Sword");
         animator = GetComponent<Animator>();
 
@@ -118,19 +128,32 @@ public class Combat : MonoBehaviour
         attackAction = input.actions.FindAction("Attack");
         specialAttackAction = input.actions.FindAction("SpecialAttack");
 
+        skillManager = GameObject.Find("SkillManager").GetComponent<skillTreeManager>();
+
         enemyLayer = LayerMask.GetMask("Enemy", "weak Enemy");
         cam = Camera.main;
 
         playerClass = GetComponent<PlayerClass>();
 
         renderers = GetComponentsInChildren<SkinnedMeshRenderer>();
+
+
+        playerActionMap = input.actions.FindActionMap("Player");
+        uiActionMap = input.actions.FindActionMap("UI");
+
         originalColors = new Color[renderers.Length];
+        
         for (int i = 0; i < renderers.Length; i++)
         {
             originalColors[i] = renderers[i].material.color;
         }
 
         audioSource = GetComponent<AudioSource>();
+
+        DeathScreen.SetActive(false);
+
+
+
     }
 
     private void Update()
@@ -190,7 +213,10 @@ public class Combat : MonoBehaviour
         if (playerHealth <= 0)
         {
             playerHealth = MaxPlayerHealth;
-            transform.position = new Vector3(-40f, 42, 0);
+            GetComponent<PlayerMovement>().SetCanMove(false);
+            isAttacking = true;
+            DeathScreenEnable();
+            
             Waves.GetComponent<EnemyWaves>().StopClearWave();
             for (int i = 0; i < renderers.Length; i++)
             {
@@ -200,6 +226,12 @@ public class Combat : MonoBehaviour
                 }
             }
             StopAllCoroutines();
+        }
+
+        if (killCount >= nextSkillThreshhold)
+        {
+            skillManager.skillPoint++;
+            nextSkillThreshhold += 50;
         }
     }
 
@@ -315,10 +347,6 @@ public class Combat : MonoBehaviour
 
         StartCoroutine(FlashRed());
 
-        if (playerHealth <= 0f)
-        {
-            // Death logic here
-        }
     }
 
     IEnumerator FlashRed(Collider enemy = null)
@@ -403,4 +431,40 @@ public class Combat : MonoBehaviour
         Invoke("EndVibration", 0.1f);
     }
 
+
+    void DeathScreenEnable()
+    {
+        DeathScreen.SetActive(true);
+        KillCountText.text = "Kills: " + killCount.ToString();
+        SkillPointText.text = "Skillpoints gained: " + skillManager.skillPoint.ToString();
+        if (Gamepad.current == null)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        else if (Gamepad.current != null)
+        {
+            playerActionMap.Disable();
+            uiActionMap.Enable();   
+            EventSystem.current.SetSelectedGameObject(ContinueButton);
+        }
+    }
+
+    public void Continue()
+    {
+        playerActionMap.Enable();
+        uiActionMap.Disable();
+        transform.position = new Vector3(-40f, 42, 0);
+        isAttacking = false;
+        GetComponent<PlayerMovement>().SetCanMove(true);
+        DeathScreen.SetActive(false);
+        killCount = 0;
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
+    public void Quit()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
 }

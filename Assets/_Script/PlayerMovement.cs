@@ -24,8 +24,8 @@ public class PlayerMovement : MonoBehaviour
     public float Stamina = 100f;
     public float maxStamina;
     public bool noStaminaRegen;
-    [SerializeField] float sensitivity = 100f;
-    [SerializeField] float FOV = 80f;
+    public float sensitivity = 100f;
+    public float FOV = 80f;
     float Xrotation;
 
     [SerializeField] float jumpPower = 15.0f;

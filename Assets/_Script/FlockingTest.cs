@@ -61,6 +61,8 @@ public class FlockingTest : MonoBehaviour
 
     Renderer playerMat;
 
+    Combat combat;
+
     void Start()
     {
         saveSpeed = enemySpeed;
@@ -76,6 +78,8 @@ public class FlockingTest : MonoBehaviour
 
         playerMat = target.GetComponentInChildren<SkinnedMeshRenderer>();
         originalColor = target.GetComponentInChildren<SkinnedMeshRenderer>().material.color;
+
+        combat = GameObject.FindWithTag("Player").GetComponent<Combat>();
     }
 
     void Update()
@@ -283,7 +287,7 @@ public class FlockingTest : MonoBehaviour
         {
             waveManager.OnEnemyKilled(gameObject);
         }
-
+        combat.killCount++;
         Destroy(gameObject);
     }
 

@@ -11,6 +11,7 @@ public class EnemyHealth : MonoBehaviour
     Renderer mat;
     Color originalMatColor;
 
+
     private void Start()
     {
         flockingTest = GetComponent<FlockingTest>();
@@ -24,6 +25,7 @@ public class EnemyHealth : MonoBehaviour
         if (enemyHealth <= 0)
         {
             flockingTest.StateMachine.ChangeState(new Death(flockingTest));
+            
         }
     }
 

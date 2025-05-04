@@ -48,7 +48,7 @@ public class skillTreeManager : MonoBehaviour
 
     public bool skillTreeHasBeenOpened;
 
-    bool isSkilltreeOpen;
+    public bool isSkilltreeOpen;
 
     private void Start()
     {
