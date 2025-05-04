@@ -278,12 +278,10 @@ public class FlockingTest : MonoBehaviour
     }
 
     public void EnemyDeath()
-    {
-        
-        
+    { 
         if (waveManager != null)
         {
-            waveManager.OnEnemyKilled();
+            waveManager.OnEnemyKilled(gameObject);
         }
 
         Destroy(gameObject);

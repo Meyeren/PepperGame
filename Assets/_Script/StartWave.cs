@@ -21,8 +21,7 @@ public class StartWave : MonoBehaviour
     {
         whenStartWave = false;
         mat = button.GetComponent<Renderer>();
-        orgin = mat.material.color;
-        
+        orgin = mat.material.color; 
     }
 
     void Update()
@@ -32,8 +31,6 @@ public class StartWave : MonoBehaviour
         {
             whenStartWave = true;
             button.SetActive(true);
-            
-
         }
         else
         {

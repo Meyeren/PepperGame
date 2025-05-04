@@ -334,7 +334,7 @@ GameObject:
   - component: {fileID: 4078946939505953022}
   m_Layer: 10
   m_Name: SmallDefaultEnemy
-  m_TagString: Weak
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -479,6 +479,8 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   minSpeed: 0.1
+  rotationSmoothness: 5
+  acceleration: 2
   randomChangeInterval: 2
   avoidanceRays: 5
   avoidanceRayDistance: 3

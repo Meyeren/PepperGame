@@ -20,6 +20,8 @@ public class Combat : MonoBehaviour
     PlayerClass playerClass;
     GameObject sword;
 
+    public GameObject Waves;
+
     SkinnedMeshRenderer[] renderers;
     Color[] originalColors;
 
@@ -189,6 +191,15 @@ public class Combat : MonoBehaviour
         {
             playerHealth = MaxPlayerHealth;
             transform.position = new Vector3(-40f, 42, 0);
+            Waves.GetComponent<EnemyWaves>().StopClearWave();
+            for (int i = 0; i < renderers.Length; i++)
+            {
+                if (renderers[i] != null)
+                {
+                    renderers[i].material.color = originalColors[i];
+                }
+            }
+            StopAllCoroutines();
         }
     }
 
