@@ -41,6 +41,8 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
+            Test.SaveToCSV();
+
             Application.Quit();
 
 #if UNITY_EDITOR

@@ -65,6 +65,8 @@ public class PlayerMovement : MonoBehaviour
     public AudioClip dashSound;
     private AudioSource audioSource;
 
+    public int amountOfDash;
+
     public void SetCanMove(bool value)
     {
         canMove = value;
@@ -306,6 +308,8 @@ public class PlayerMovement : MonoBehaviour
         Stamina -= dashCost;
         isDashing = true;
         animator.SetBool("isDashing", isDashing);
+
+        amountOfDash++;
 
         Vector3 dashDirection = rb.linearVelocity;
         if (dashDirection.magnitude < 0.01f)

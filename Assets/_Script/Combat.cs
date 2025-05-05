@@ -216,7 +216,11 @@ public class Combat : MonoBehaviour
             GetComponent<PlayerMovement>().SetCanMove(false);
             isAttacking = true;
             DeathScreenEnable();
-            
+            Test.killCounts.Add(killCount);
+            Test.death.Add("Yes");
+            Test.amountDash.Add(GetComponent<PlayerMovement>().amountOfDash);
+            GetComponent<PlayerMovement>().amountOfDash = 0;
+
             Waves.GetComponent<EnemyWaves>().StopClearWave();
             for (int i = 0; i < renderers.Length; i++)
             {
