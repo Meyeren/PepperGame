@@ -48,6 +48,9 @@ public class EnemyWaves : MonoBehaviour
     public GameObject spawnEffectPrefab; // ? Tilf?jet effekt prefab
 
     private bool hasInitialSpawned = false;
+
+    public int whatWaveIsIt = 1;
+
     private List<GameObject> activeEnemies = new List<GameObject>();
 
     private List<WaveType> waveTypePattern = new List<WaveType>
@@ -56,6 +59,11 @@ public class EnemyWaves : MonoBehaviour
         WaveType.Weak,
         WaveType.Strong,
         WaveType.Weak,
+        WaveType.Weak,
+        WaveType.Strong,
+        WaveType.Weak,
+        WaveType.Strong,
+        WaveType.Strong,
         WaveType.Boss
     };
 
@@ -207,6 +215,8 @@ public class EnemyWaves : MonoBehaviour
         enemiesRemainingToSpawn = 0;
         hasInitialSpawned = false;
 
+        whatWaveIsIt++;
+
         for (int i = 0; i < spawnTimers.Length; i++)
         {
             spawnTimers[i] = 0f;
@@ -227,6 +237,8 @@ public class EnemyWaves : MonoBehaviour
         hasInitialSpawned = false;
         patternIndex = 0;
 
+        Test.amountWaves.Add(whatWaveIsIt);
+        whatWaveIsIt = 1;
         currentWave.ResetCounts();
 
 

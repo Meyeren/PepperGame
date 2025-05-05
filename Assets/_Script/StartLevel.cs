@@ -11,6 +11,8 @@ public class StartLevel : MonoBehaviour
 
     GameObject player;
 
+    private int whatAttemptIsThis;
+
 
     private void Start()
     {
@@ -28,6 +30,13 @@ public class StartLevel : MonoBehaviour
     {
         if (collider.CompareTag("Player") && skillTree)
         {
+            whatAttemptIsThis++;
+            Test.replays.Add(whatAttemptIsThis);
+            Test.amountSkillsBought.Add(skillTreeOb.GetComponent<skillTreeManager>().testSkills);
+            Test.reset.Add(skillTreeOb.GetComponent<skillTreeManager>().amountOfReset);
+            Test.whatSkillsBought.Add(skillTreeOb.GetComponent<skillTreeManager>().boughtSkill);
+            skillTreeOb.GetComponent<skillTreeManager>().amountOfReset = 0;
+            skillTreeOb.GetComponent<skillTreeManager>().testSkills = 0;
             collider.transform.position = new Vector3(12f, -2f, 0f);
             playerClass.ForceClass();
         }

@@ -50,6 +50,10 @@ public class skillTreeManager : MonoBehaviour
 
     public bool isSkilltreeOpen;
 
+    public int testSkills;
+    public int amountOfReset = 0;
+    public string boughtSkill;
+
     private void Start()
     {
         
@@ -307,7 +311,8 @@ public class skillTreeManager : MonoBehaviour
             Normal.colors = colorBlock;
             Normal.interactable = false;
             EventSystem.current.SetSelectedGameObject(NormalObject);
-
+            testSkills++; //test
+            boughtSkill = "normal";
         }
         
     }
@@ -331,6 +336,9 @@ public class skillTreeManager : MonoBehaviour
             Runner[2].colors = colorBlock2;
             Runner[0].interactable = false;
             Runner[2].interactable = false;
+
+            testSkills++; //test
+            boughtSkill = "Runner";
 
 
             if (skillPoint >= 3)
@@ -361,6 +369,8 @@ public class skillTreeManager : MonoBehaviour
                 skillPointsSpend += 3;
                 Runner[1].interactable = false;
 
+                testSkills++; //test
+
                 player.GetComponent<PlayerMovement>().allowDoubleJump = true;
                 if (skillPoint >= 5)
                 {
@@ -387,6 +397,7 @@ public class skillTreeManager : MonoBehaviour
                 skillPoint -= 5;
                 skillPointsSpend += 5;
                 Runner[2].interactable = false;
+                testSkills++; //test
 
 
                 player.GetComponent<Combat>().attackWhileDash = true;
@@ -417,6 +428,9 @@ public class skillTreeManager : MonoBehaviour
 
             colorBlock.disabledColor = Color.gray;
             Normal.interactable = true;
+
+            amountOfReset++;
+
             foreach (Button button in Runner)
             {
                 button.interactable = false;
@@ -452,7 +466,9 @@ public class skillTreeManager : MonoBehaviour
             colorBlock.disabledColor = Color.red;
 
             Warrior[0].colors = colorBlock;
-            
+            testSkills++; //test
+            boughtSkill = "Warrior";
+
             Warrior[0].interactable = false;
             if (skillPoint >= 5)
             {
@@ -480,6 +496,8 @@ public class skillTreeManager : MonoBehaviour
                 Warrior[1].colors = colorBlock;
                 Warrior[1].interactable = false;
                 player.GetComponent<Combat>().hasInvulnerableAbility = true;
+
+                testSkills++; //test
             }
         }
     }
@@ -498,7 +516,10 @@ public class skillTreeManager : MonoBehaviour
             colorBlock.disabledColor = Color.blue;
 
             Tank[0].colors = colorBlock;
-            
+
+            testSkills++; //test
+            boughtSkill = "Tank";
+
             Tank[0].interactable = false;
             if (skillPoint >= 5)
             {
@@ -526,6 +547,8 @@ public class skillTreeManager : MonoBehaviour
                 skillPointsSpend += 5;
                 Tank[1].interactable = false;
                 player.GetComponent<Combat>().hasGroundSlam = true;
+
+                testSkills++; //test
             }
         }
     }
