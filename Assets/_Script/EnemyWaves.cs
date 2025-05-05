@@ -107,7 +107,13 @@ public class EnemyWaves : MonoBehaviour
 
     void Update()
     {
+
+        if (enemiesAlive < 0)
+        {
+            enemiesAlive = 0;
+        }
         if (!isSpawning) return;
+
 
         if (!hasInitialSpawned)
         {
@@ -158,6 +164,9 @@ public class EnemyWaves : MonoBehaviour
                 }
             }
         }
+
+
+
     }
 
     void SpawnEnemy(GameObject prefab, Transform spawnPoint)
