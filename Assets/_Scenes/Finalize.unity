@@ -35265,7 +35265,7 @@ PrefabInstance:
       objectReference: {fileID: 1962861196}
     - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: attackRange
-      value: 4.5
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: basicDamage
@@ -35336,6 +35336,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: 6b3598d62262c463286d79c436d99e09, type: 3}
     - target: {fileID: 5718231501293312219, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: dashCost
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 5718231501293312219, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: jumpCost
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5718231501293312219, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: jumpEffect
       value: 
       objectReference: {fileID: 2051764565}
@@ -35347,6 +35355,10 @@ PrefabInstance:
       propertyPath: dashEffectPrefab
       value: 
       objectReference: {fileID: 462066992}
+    - target: {fileID: 5718231501293312219, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: staminaRegenAmount
+      value: 30
+      objectReference: {fileID: 0}
     - target: {fileID: 6184413027887669035, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
