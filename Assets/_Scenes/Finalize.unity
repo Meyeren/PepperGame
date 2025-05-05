@@ -19543,6 +19543,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 368992759709302911, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
+      propertyPath: description
+      value: You have very low health, but recover some when you deal damage.
+      objectReference: {fileID: 0}
     - target: {fileID: 456253823124271817, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -19550,6 +19554,10 @@ PrefabInstance:
     - target: {fileID: 456253823124271817, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ChooseNormalClass
+      objectReference: {fileID: 0}
+    - target: {fileID: 1008952820715877204, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
+      propertyPath: description
+      value: You have increased health, but reduced movement speed.
       objectReference: {fileID: 0}
     - target: {fileID: 1639226448510500872, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -19566,6 +19574,23 @@ PrefabInstance:
     - target: {fileID: 1956236950509423202, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ChooseRunnerClass
+      objectReference: {fileID: 0}
+    - target: {fileID: 2109402989298750646, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
+      propertyPath: description
+      value: No changes to your stats.
+      objectReference: {fileID: 0}
+    - target: {fileID: 2861175570750680856, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
+      propertyPath: description
+      value: You can now perform a massive ground slam that damages enemies around
+        you. Press Special Attack.
+      objectReference: {fileID: 0}
+    - target: {fileID: 3507251664659654455, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
+      propertyPath: m_fontSize
+      value: 30
+      objectReference: {fileID: 0}
+    - target: {fileID: 3507251664659654455, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
+      propertyPath: m_fontSizeBase
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 3992231652467684166, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -19599,6 +19624,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5355481846314958577, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
+      propertyPath: description
+      value: You move faster, but have reduced health and damage.
+      objectReference: {fileID: 0}
     - target: {fileID: 5921316087366671576, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -19607,6 +19636,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ResetSkill
       objectReference: {fileID: 0}
+    - target: {fileID: 6198515949179982545, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
+      propertyPath: description
+      value: You become invulnerable for a short time. Press Special Attack.
+      objectReference: {fileID: 0}
     - target: {fileID: 6385182464594316591, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -19614,6 +19647,14 @@ PrefabInstance:
     - target: {fileID: 6385182464594316591, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
       value: ChooseDA
+      objectReference: {fileID: 0}
+    - target: {fileID: 8031946292059316515, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
+      propertyPath: description
+      value: If you attack and then dash, you deal increased damage.
+      objectReference: {fileID: 0}
+    - target: {fileID: 8447672902051938940, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
+      propertyPath: description
+      value: You can now perform a double jump.
       objectReference: {fileID: 0}
     - target: {fileID: 8994327871602919796, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -29872,6 +29913,7 @@ MonoBehaviour:
   isSkilltreeOpen: 0
   testSkills: 0
   amountOfReset: 0
+  boughtSkill: 
 --- !u!4 &1618172111
 Transform:
   m_ObjectHideFlags: 0
