@@ -1,4 +1,3 @@
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -97,7 +96,7 @@ public class FlockingTest : MonoBehaviour
         Vector3 avoidance = Vector3.zero;
 
         int neighborCount = 0;
-        int obstacleCount = 0;
+        //int obstacleCount = 0;
 
         int numNeighbors = Physics.OverlapSphereNonAlloc(
             transform.position,
