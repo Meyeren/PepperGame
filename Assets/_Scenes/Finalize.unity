@@ -29935,7 +29935,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hasClass: 0
   openSkillTree: 0
-  skillPoint: 10
+  skillPoint: 0
   skillTree: {fileID: 244099680}
   skillTreeText: {fileID: 1246380394}
   skillPointText: {fileID: 1828511610}

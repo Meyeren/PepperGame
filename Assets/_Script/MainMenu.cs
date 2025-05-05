@@ -29,7 +29,7 @@ public class MainMenu : MonoBehaviour
         }
         else
         {
-            SceneManager.LoadScene(4);
+            SceneManager.LoadScene("Finalize");
         }
     }
 

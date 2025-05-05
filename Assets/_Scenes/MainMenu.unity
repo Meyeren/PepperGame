@@ -808,7 +808,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bdbbcc46fc1db7498c637de3f251dfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isButtonClickable: 1
+  isButtonClickable: 0
   newGameButton: {fileID: 1105561858}
   ContinueGameButton: {fileID: 1826588808}
   SettingsButton: {fileID: 766697791}
