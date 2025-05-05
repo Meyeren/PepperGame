@@ -190,6 +190,7 @@ public class EnemyWaves : MonoBehaviour
         if (enemiesAlive <= 0 && !isSpawning)
         {
             GameObject.FindFirstObjectByType<ShopManager>().canOpenShop = true;
+            GameObject.FindGameObjectWithTag("Player").GetComponent<Combat>().playerHealth += 10f;
         }
     }
 

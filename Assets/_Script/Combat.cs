@@ -17,13 +17,15 @@ public class Combat : MonoBehaviour
     [SerializeField] TextMeshProUGUI KillCountText;
     [SerializeField] TextMeshProUGUI SkillPointText;
     [SerializeField] GameObject ContinueButton;
-
+    public bool isControl;
+    
 
     Camera cam;
     Animator animator;
     PlayerInput input;
     InputAction attackAction;
     InputAction specialAttackAction;
+    InputAction testAction;
 
     PlayerClass playerClass;
     GameObject sword;
@@ -115,6 +117,7 @@ public class Combat : MonoBehaviour
     {
         sword = GameObject.FindGameObjectWithTag("Sword");
         animator = GetComponent<Animator>();
+        
 
         healthSlider = GameObject.Find("Healthbar").GetComponent<Slider>();
         fillImage = healthSlider.fillRect.GetComponentInChildren<Image>();
@@ -127,6 +130,7 @@ public class Combat : MonoBehaviour
         input = GetComponent<PlayerInput>();
         attackAction = input.actions.FindAction("Attack");
         specialAttackAction = input.actions.FindAction("SpecialAttack");
+        testAction = input.actions.FindAction("Goon");
 
         skillManager = GameObject.Find("SkillManager").GetComponent<skillTreeManager>();
 
@@ -158,6 +162,15 @@ public class Combat : MonoBehaviour
 
     private void Update()
     {
+        if (testAction.triggered && !isControl)
+        {
+            isControl = true;
+        }
+        else if (testAction.triggered && isControl)
+        {
+            isControl = false;
+        }
+        
         healthSlider.maxValue = MaxPlayerHealth;
         if (isInvulnerable)
         {
@@ -232,10 +245,10 @@ public class Combat : MonoBehaviour
             StopAllCoroutines();
         }
 
-        if (killCount >= nextSkillThreshhold)
+        if (killCount >= nextSkillThreshhold && !isControl)
         {
             skillManager.skillPoint++;
-            nextSkillThreshhold += 25;
+            nextSkillThreshhold += 20;
         }
     }
 
@@ -439,8 +452,16 @@ public class Combat : MonoBehaviour
     void DeathScreenEnable()
     {
         DeathScreen.SetActive(true);
-        KillCountText.text = "Kills: " + killCount.ToString();
-        SkillPointText.text = "Skillpoints: " + skillManager.skillPoint.ToString();
+        if (!isControl)
+        {
+            KillCountText.text = "Kills: " + killCount.ToString();
+            SkillPointText.text = "Skillpoints: " + skillManager.skillPoint.ToString();
+        }
+        else
+        {
+            KillCountText.text = "";
+            SkillPointText.text = "";
+        }
         if (Gamepad.current == null)
         {
             Cursor.visible = true;

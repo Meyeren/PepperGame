@@ -19,6 +19,8 @@ public class MainMenu : MonoBehaviour
     void Start()
     {
         SettingsPanel.SetActive(false);
+        EventSystem.current.SetSelectedGameObject(null);
+        EventSystem.current.SetSelectedGameObject(newGameButton.gameObject);
     }
 
     public void newGame()
