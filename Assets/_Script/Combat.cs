@@ -248,7 +248,7 @@ public class Combat : MonoBehaviour
         if (killCount >= nextSkillThreshhold && !isControl)
         {
             skillManager.skillPoint++;
-            nextSkillThreshhold += 20;
+            nextSkillThreshhold += 10;
         }
     }
 

@@ -164,18 +164,18 @@ public class ShopManager : MonoBehaviour
         if (itemName.Contains("HealthUp"))
         {
             
-            player.GetComponent<Combat>().MaxPlayerHealth += 10;
-            player.GetComponent<Combat>().playerHealth += 10;
+            player.GetComponent<Combat>().MaxPlayerHealth += 25;
+            player.GetComponent<Combat>().playerHealth += 25;
         }
         else if (itemName.Contains("EnergyUp"))
         {
             
-            player.GetComponent<PlayerMovement>().maxStamina += 10f;
+            player.GetComponent<PlayerMovement>().maxStamina += 20f;
         }
         else if (itemName.Contains("DamageUp"))
         {
             
-            player.GetComponent<Combat>().basicDamage += 5f;
+            player.GetComponent<Combat>().basicDamage += 25f;
         }
 
         CloseShop();

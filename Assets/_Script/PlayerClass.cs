@@ -24,8 +24,9 @@ public class PlayerClass : MonoBehaviour
     [SerializeField]int tankHealth = 200;
     [SerializeField] float tankSpeed = 5f;
 
-    [Header("LifeStealClass")]
-    public int lifeStealHealh = 20;
+    [Header("WarriorClass")]
+    public int warriorHealth = 20;
+    public int warriorDamage;
 
     [Header("RunnerClass")]
     [SerializeField] int runnerHealth = 50;
@@ -60,10 +61,10 @@ public class PlayerClass : MonoBehaviour
 
         if (hasLifeSteal)
         {
-            combat.playerHealth = lifeStealHealh;
-            combat.MaxPlayerHealth = lifeStealHealh;
+            combat.playerHealth = warriorHealth;
+            combat.MaxPlayerHealth = warriorHealth;
             move.Speed = normalSpeed;
-            combat.basicDamage = normalDamage;
+            combat.basicDamage = warriorDamage;
         }
 
         if (hasRunner)

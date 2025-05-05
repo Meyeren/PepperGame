@@ -2336,37 +2336,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 116202476}
   m_CullTransparentMesh: 1
---- !u!1 &120274892
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 120274893}
-  m_Layer: 0
-  m_Name: SpawnPoint (8)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &120274893
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 120274892}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 30, y: -12, z: -35}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1483679469}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &179415446 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 117214286460000749, guid: 545d185c2b69f114299efa3bbbb9bcbd, type: 3}
@@ -2536,9 +2505,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.64705884, g: 0.64705884, b: 0.64705884, a: 1}
+    m_SelectedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -16106,37 +16075,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5905561d870aa444f8cc891fecba6f79, type: 3}
---- !u!1 &718894718
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 718894719}
-  m_Layer: 0
-  m_Name: SpawnPoint (7)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &718894719
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 718894718}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -30, y: -12, z: -35}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1483679469}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &720370003 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1639226448510500872, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
@@ -17088,9 +17026,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.64779866, g: 0.64779866, b: 0.64779866, a: 1}
+    m_SelectedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -17315,9 +17253,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 0.9843137}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.64705884, g: 0.64705884, b: 0.64705884, a: 1}
+    m_SelectedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -19545,7 +19483,8 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 368992759709302911, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
       propertyPath: description
-      value: You have very low health, but recover some when you deal damage.
+      value: You have very low health, but recover some when you deal damage, and
+        do increased damage.
       objectReference: {fileID: 0}
     - target: {fileID: 456253823124271817, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
@@ -20112,9 +20051,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.64779866, g: 0.64779866, b: 0.64779866, a: 1}
+    m_SelectedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -21065,9 +21004,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.64705884, g: 0.64705884, b: 0.64705884, a: 1}
+    m_SelectedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -21267,9 +21206,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.64705884, g: 0.64705884, b: 0.64705884, a: 1}
+    m_HighlightedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.64705884, g: 0.64705884, b: 0.64705884, a: 1}
+    m_SelectedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -23646,37 +23585,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!1 &1262900952
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1262900953}
-  m_Layer: 0
-  m_Name: SpawnPoint (6)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1262900953
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1262900952}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -30, y: -12, z: 35}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1483679469}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1275095220 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2462341070079104981, guid: 5905561d870aa444f8cc891fecba6f79, type: 3}
@@ -28143,9 +28051,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 0.9843137}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.6663027, g: 0.45597476, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.64705884, g: 0.64705884, b: 0.64705884, a: 1}
+    m_SelectedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -28387,7 +28295,7 @@ MonoBehaviour:
     enemyPrefabs:
     - {fileID: 4021158041154224646, guid: 657a86209305a9d40850f3b843b513f7, type: 3}
     enemyCounts: 14000000
-    spawnInterval: 4
+    spawnInterval: 5
   - waveType: 0
     enemyPrefabs:
     - {fileID: 4021158041154224646, guid: 657a86209305a9d40850f3b843b513f7, type: 3}
@@ -28395,28 +28303,23 @@ MonoBehaviour:
     - {fileID: 4021158041154224646, guid: 657a86209305a9d40850f3b843b513f7, type: 3}
     - {fileID: 4021158041154224646, guid: 8d4f2664262f31247a7fa96435eaddc2, type: 3}
     enemyCounts: 0a000000050000001400000005000000
-    spawnInterval: 3
+    spawnInterval: 10
   - waveType: 0
     enemyPrefabs:
     - {fileID: 4021158041154224646, guid: 657a86209305a9d40850f3b843b513f7, type: 3}
     enemyCounts: 32000000
-    spawnInterval: 5
-  - waveType: 0
-    enemyPrefabs:
-    - {fileID: 4021158041154224646, guid: 657a86209305a9d40850f3b843b513f7, type: 3}
-    enemyCounts: 32000000
-    spawnInterval: 2
+    spawnInterval: 10
   strongWaves:
   - waveType: 1
     enemyPrefabs:
     - {fileID: 4021158041154224646, guid: 8d4f2664262f31247a7fa96435eaddc2, type: 3}
     enemyCounts: 14000000
-    spawnInterval: 3
+    spawnInterval: 7
   - waveType: 1
     enemyPrefabs:
     - {fileID: 4021158041154224646, guid: 08e7b53b2a323644886483723748ff17, type: 3}
     enemyCounts: 0a000000
-    spawnInterval: 3
+    spawnInterval: 7
   - waveType: 1
     enemyPrefabs:
     - {fileID: 4021158041154224646, guid: 08e7b53b2a323644886483723748ff17, type: 3}
@@ -28424,14 +28327,14 @@ MonoBehaviour:
     - {fileID: 4021158041154224646, guid: 08e7b53b2a323644886483723748ff17, type: 3}
     - {fileID: 4021158041154224646, guid: 657a86209305a9d40850f3b843b513f7, type: 3}
     enemyCounts: 05000000140000000500000014000000
-    spawnInterval: 3
+    spawnInterval: 7
   bossWaves:
   - waveType: 2
     enemyPrefabs:
     - {fileID: 4021158041154224646, guid: 08e7b53b2a323644886483723748ff17, type: 3}
     - {fileID: 4021158041154224646, guid: 8d4f2664262f31247a7fa96435eaddc2, type: 3}
     enemyCounts: 140000001e000000
-    spawnInterval: 2
+    spawnInterval: 5
   - waveType: 2
     enemyPrefabs:
     - {fileID: 4021158041154224646, guid: 657a86209305a9d40850f3b843b513f7, type: 3}
@@ -28439,16 +28342,12 @@ MonoBehaviour:
     - {fileID: 4021158041154224646, guid: 8d4f2664262f31247a7fa96435eaddc2, type: 3}
     - {fileID: 4021158041154224646, guid: 657a86209305a9d40850f3b843b513f7, type: 3}
     enemyCounts: 64000000140000001e00000028000000
-    spawnInterval: 4
+    spawnInterval: 10
   spawnPoints:
   - {fileID: 2144739223}
   - {fileID: 1175425956}
   - {fileID: 2077916063}
   - {fileID: 386728884}
-  - {fileID: 1746617005}
-  - {fileID: 1262900953}
-  - {fileID: 718894719}
-  - {fileID: 120274893}
   spawnEffectPrefab: {fileID: 1120639551}
   whatWaveIsIt: 1
   enemiesAlive: 0
@@ -28469,10 +28368,6 @@ Transform:
   - {fileID: 386728884}
   - {fileID: 1175425956}
   - {fileID: 2077916063}
-  - {fileID: 1746617005}
-  - {fileID: 1262900953}
-  - {fileID: 718894719}
-  - {fileID: 120274893}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1515999367
@@ -33101,37 +32996,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5905561d870aa444f8cc891fecba6f79, type: 3}
---- !u!1 &1746617004
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1746617005}
-  m_Layer: 0
-  m_Name: SpawnPoint (5)
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1746617005
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1746617004}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 30, y: -12, z: 35}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1483679469}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1758894825 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2462341070079104981, guid: 5905561d870aa444f8cc891fecba6f79, type: 3}
@@ -34898,9 +34762,9 @@ MonoBehaviour:
   m_Transition: 1
   m_Colors:
     m_NormalColor: {r: 1, g: 1, b: 1, a: 1}
-    m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
+    m_HighlightedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_PressedColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 1}
-    m_SelectedColor: {r: 0.64705884, g: 0.64705884, b: 0.64705884, a: 1}
+    m_SelectedColor: {r: 0.6666667, g: 0.45490196, b: 1, a: 1}
     m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
@@ -35080,8 +34944,20 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1935823947616722541, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: tankSpeed
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935823947616722541, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: normalDamage
       value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935823947616722541, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: runnerHealth
+      value: 75
+      objectReference: {fileID: 0}
+    - target: {fileID: 1935823947616722541, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: warriorDamage
+      value: 50
       objectReference: {fileID: 0}
     - target: {fileID: 2245757569264895010, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: m_ActionEvents.Array.data[3].m_ActionId
@@ -35300,6 +35176,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8300000, guid: eb252b173814a4b0f97d865a7166ffed, type: 3}
     - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
+      propertyPath: lifeStealAmount
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: swingSoundDelay
       value: 0.4
       objectReference: {fileID: 0}
@@ -35313,7 +35193,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: ec85e298b60fc442ebb692c509a1802e, type: 3}
     - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: nextSkillThreshhold
-      value: 20
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: playerHurtSoundClip
