@@ -40,7 +40,7 @@ public class Combat : MonoBehaviour
 
     skillTreeManager skillManager;
 
-    int nextSkillThreshhold = 50;
+    [SerializeField]int nextSkillThreshhold = 50;
     
     private InputActionMap playerActionMap;
     private InputActionMap uiActionMap;
@@ -231,7 +231,7 @@ public class Combat : MonoBehaviour
         if (killCount >= nextSkillThreshhold)
         {
             skillManager.skillPoint++;
-            nextSkillThreshhold += 50;
+            nextSkillThreshhold += 25;
         }
     }
 
@@ -436,7 +436,7 @@ public class Combat : MonoBehaviour
     {
         DeathScreen.SetActive(true);
         KillCountText.text = "Kills: " + killCount.ToString();
-        SkillPointText.text = "Skillpoints gained: " + skillManager.skillPoint.ToString();
+        SkillPointText.text = "Skillpoints: " + skillManager.skillPoint.ToString();
         if (Gamepad.current == null)
         {
             Cursor.visible = true;
