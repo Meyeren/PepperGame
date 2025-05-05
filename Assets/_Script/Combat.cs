@@ -332,7 +332,7 @@ public class Combat : MonoBehaviour
 
     public void TakeDamage(float damage)
     {
-        playerHealth -= damage;
+        
 
         PlaySound(playerHurtSoundClip, playerHurtSoundDelay);
 
