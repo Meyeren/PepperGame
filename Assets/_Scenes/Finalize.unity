@@ -19652,6 +19652,10 @@ PrefabInstance:
       propertyPath: description
       value: If you attack and then dash, you deal increased damage.
       objectReference: {fileID: 0}
+    - target: {fileID: 8447564980387407420, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
+      propertyPath: description
+      value: Reset skills and class.
+      objectReference: {fileID: 0}
     - target: {fileID: 8447672902051938940, guid: 09b3de8f9c2dc5840af10626244b3f78, type: 3}
       propertyPath: description
       value: You can now perform a double jump.
@@ -35309,7 +35313,7 @@ PrefabInstance:
       objectReference: {fileID: 8300000, guid: ec85e298b60fc442ebb692c509a1802e, type: 3}
     - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: nextSkillThreshhold
-      value: 25
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4153272475544662992, guid: e3a270d89e679a348aaf2ce5bcde1b1b, type: 3}
       propertyPath: playerHurtSoundClip
