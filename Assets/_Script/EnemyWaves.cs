@@ -45,7 +45,7 @@ public class EnemyWaves : MonoBehaviour
     public List<Transform> spawnPoints;
 
     [Header("Spawn Effect")]
-    public GameObject spawnEffectPrefab; // ? Tilf?jet effekt prefab
+    public GameObject spawnEffectPrefab;
 
     private bool hasInitialSpawned = false;
 
