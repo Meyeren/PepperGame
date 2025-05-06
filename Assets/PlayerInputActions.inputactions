@@ -141,7 +141,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Goon",
+                    "name": "Control",
                     "type": "Button",
                     "id": "f14ec4a1-cf70-4da6-8991-5482e9765fd2",
                     "expectedControlType": "",
@@ -642,7 +642,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Goon",
+                    "action": "Control",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

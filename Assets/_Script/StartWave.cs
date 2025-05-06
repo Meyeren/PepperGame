@@ -42,7 +42,7 @@ public class StartWave : MonoBehaviour
 
         Collider[] hit = Physics.OverlapSphere(target.transform.position, range);
 
-        bool interactPressed = Keyboard.current.eKey.wasPressedThisFrame ||
+        bool interactPressed = Keyboard.current.gKey.wasPressedThisFrame ||
        (Gamepad.current != null && Gamepad.current.rightShoulder.wasPressedThisFrame);
 
         foreach (var collider in hit)

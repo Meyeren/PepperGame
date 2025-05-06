@@ -130,7 +130,7 @@ public class Combat : MonoBehaviour
         input = GetComponent<PlayerInput>();
         attackAction = input.actions.FindAction("Attack");
         specialAttackAction = input.actions.FindAction("SpecialAttack");
-        testAction = input.actions.FindAction("Goon");
+        testAction = input.actions.FindAction("Control");
 
         skillManager = GameObject.Find("SkillManager").GetComponent<skillTreeManager>();
 

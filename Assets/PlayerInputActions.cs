@@ -163,7 +163,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""initialStateCheck"": false
                 },
                 {
-                    ""name"": ""Goon"",
+                    ""name"": ""Control"",
                     ""type"": ""Button"",
                     ""id"": ""f14ec4a1-cf70-4da6-8991-5482e9765fd2"",
                     ""expectedControlType"": """",
@@ -664,7 +664,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
-                    ""action"": ""Goon"",
+                    ""action"": ""Control"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -1309,7 +1309,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         m_Player_Gyro = m_Player.FindAction("Gyro", throwIfNotFound: true);
         m_Player_Interact = m_Player.FindAction("Interact", throwIfNotFound: true);
         m_Player_Pause = m_Player.FindAction("Pause", throwIfNotFound: true);
-        m_Player_Goon = m_Player.FindAction("Goon", throwIfNotFound: true);
+        m_Player_Control = m_Player.FindAction("Control", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_Navigate = m_UI.FindAction("Navigate", throwIfNotFound: true);
@@ -1405,7 +1405,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Gyro;
     private readonly InputAction m_Player_Interact;
     private readonly InputAction m_Player_Pause;
-    private readonly InputAction m_Player_Goon;
+    private readonly InputAction m_Player_Control;
     public struct PlayerActions
     {
         private @PlayerInputActions m_Wrapper;
@@ -1425,7 +1425,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         public InputAction @Gyro => m_Wrapper.m_Player_Gyro;
         public InputAction @Interact => m_Wrapper.m_Player_Interact;
         public InputAction @Pause => m_Wrapper.m_Player_Pause;
-        public InputAction @Goon => m_Wrapper.m_Player_Goon;
+        public InputAction @Control => m_Wrapper.m_Player_Control;
         public InputActionMap Get() { return m_Wrapper.m_Player; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -1480,9 +1480,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Pause.started += instance.OnPause;
             @Pause.performed += instance.OnPause;
             @Pause.canceled += instance.OnPause;
-            @Goon.started += instance.OnGoon;
-            @Goon.performed += instance.OnGoon;
-            @Goon.canceled += instance.OnGoon;
+            @Control.started += instance.OnControl;
+            @Control.performed += instance.OnControl;
+            @Control.canceled += instance.OnControl;
         }
 
         private void UnregisterCallbacks(IPlayerActions instance)
@@ -1532,9 +1532,9 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
             @Pause.started -= instance.OnPause;
             @Pause.performed -= instance.OnPause;
             @Pause.canceled -= instance.OnPause;
-            @Goon.started -= instance.OnGoon;
-            @Goon.performed -= instance.OnGoon;
-            @Goon.canceled -= instance.OnGoon;
+            @Control.started -= instance.OnControl;
+            @Control.performed -= instance.OnControl;
+            @Control.canceled -= instance.OnControl;
         }
 
         public void RemoveCallbacks(IPlayerActions instance)
@@ -1740,7 +1740,7 @@ public partial class @PlayerInputActions: IInputActionCollection2, IDisposable
         void OnGyro(InputAction.CallbackContext context);
         void OnInteract(InputAction.CallbackContext context);
         void OnPause(InputAction.CallbackContext context);
-        void OnGoon(InputAction.CallbackContext context);
+        void OnControl(InputAction.CallbackContext context);
     }
     public interface IUIActions
     {

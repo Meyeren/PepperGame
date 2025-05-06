@@ -172,7 +172,7 @@ public class ShopManager : MonoBehaviour
             
             player.GetComponent<PlayerMovement>().maxStamina += 20f;
         }
-        else if (itemName.Contains("DamageUp"))
+        else if (itemName.Contains("SpeedUp"))
         {
             
             player.GetComponent<Combat>().basicDamage += 25f;
