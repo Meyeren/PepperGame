@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84dda36cf50f84001a91b4b5949fa7a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  description: Maximum health increase + 10
+  description: Maximum health increase + 25
   spawnChance: 62.7
   canRepeat: 0
 --- !u!65 &-178683606040720454

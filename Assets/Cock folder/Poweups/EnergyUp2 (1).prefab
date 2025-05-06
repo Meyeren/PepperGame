@@ -100,7 +100,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 84dda36cf50f84001a91b4b5949fa7a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  description: Maximum stamina increase + 10
+  description: Maximum stamina increase + 20
   spawnChance: 63.4
   canRepeat: 1
 --- !u!65 &-3500540519408390745
