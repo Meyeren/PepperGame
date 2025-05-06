@@ -20,27 +20,39 @@ public class PlayerMovement : MonoBehaviour
     LayerMask groundLayer;
     Transform cam;
 
+    [Header("Player")]
     public float Speed = 8.0f;
     public float Stamina = 100f;
     public float maxStamina;
+    [SerializeField] float staminaRegenAmount = 10f;
     public bool noStaminaRegen;
+        public bool canRotate = true;
+
+    [Header("Camera")]
     public float sensitivity = 100f;
     public float FOV = 80f;
+    
     float Xrotation;
 
+    [Header("Jump")]
     [SerializeField] float jumpPower = 15.0f;
+    [SerializeField] float jumpCost = 50f;
+
     [SerializeField] float fallStop = 1.0f;
     [SerializeField] float fallSpeed = 1.0f;
-    [SerializeField] float jumpCost = 50f;
-    [SerializeField] float staminaRegenAmount = 10f;
     [SerializeField] float fallgravity = 15f;
 
-    public float dashCost = 100f;
-    [SerializeField] float dashSpeed = 20f;
-    [SerializeField] float dashLength = 10f;
-    public bool isDashing;
     public bool doubleJump;
     public bool allowDoubleJump;
+
+
+    [Header("Dash")]
+    [SerializeField] float dashSpeed = 20f;
+    [SerializeField] float dashLength = 10f;
+    public float dashCost = 100f;
+    public bool isDashing;
+    
+
 
     Slider staminaSlider;
     CanvasGroup staminaCanvasGroup;
@@ -49,7 +61,6 @@ public class PlayerMovement : MonoBehaviour
 
     private bool canMove = true;
 
-    public bool canRotate = true;
 
     bool isAttacking;
     bool isGroundSlamming;
@@ -209,12 +220,8 @@ public class PlayerMovement : MonoBehaviour
     private void MovePlayer()
     {
         Vector2 direction = moveAction.ReadValue<Vector2>();
-        if (Gamepad.current == null)
-        {
-            direction = direction.normalized;
-        }
-
         Vector3 move = transform.right * direction.x + transform.forward * direction.y;
+
         rb.linearVelocity = new Vector3(move.x * Speed, rb.linearVelocity.y, move.z * Speed);
         animator.SetFloat("speed", direction.y);
         animator.SetFloat("sideSpeed", direction.x);
