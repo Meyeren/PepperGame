@@ -11,6 +11,8 @@ public class EnemyHealth : MonoBehaviour
     Renderer mat;
     Color originalMatColor;
 
+    bool isDead;
+
 
     private void Start()
     {
@@ -22,9 +24,12 @@ public class EnemyHealth : MonoBehaviour
     private void Update()
     {
 
-        if (enemyHealth <= 0)
+        if (enemyHealth <= 0 && !isDead)
         {
+            isDead = true;
             flockingTest.StateMachine.ChangeState(new Death(flockingTest));
+            GameObject.FindWithTag("Player").GetComponent<Combat>().killCount++;
+            
             
         }
     }

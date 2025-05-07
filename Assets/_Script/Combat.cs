@@ -110,14 +110,15 @@ public class Combat : MonoBehaviour
     [Header("Special Ability VFX")]
     public GameObject specialAttackEffectPrefab;
 
-
+    GameObject killCanvas;
 
 
     private void Start()
     {
         sword = GameObject.FindGameObjectWithTag("Sword");
         animator = GetComponent<Animator>();
-        
+
+        killCanvas = GameObject.Find("KillCanvas");
 
         healthSlider = GameObject.Find("Healthbar").GetComponent<Slider>();
         fillImage = healthSlider.fillRect.GetComponentInChildren<Image>();
@@ -169,6 +170,7 @@ public class Combat : MonoBehaviour
         else if (testAction.triggered && isControl)
         {
             isControl = false;
+            killCanvas.SetActive(true);
         }
         
         healthSlider.maxValue = MaxPlayerHealth;
