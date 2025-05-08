@@ -42,7 +42,7 @@ public class Combat : MonoBehaviour
 
     skillTreeManager skillManager;
 
-    [SerializeField]int nextSkillThreshhold = 50;
+    public int nextSkillThreshhold = 50;
     
     private InputActionMap playerActionMap;
     private InputActionMap uiActionMap;

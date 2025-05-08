@@ -39,6 +39,7 @@ public class StartLevel : MonoBehaviour
             skillTreeOb.GetComponent<skillTreeManager>().testSkills = 0;
             collider.transform.position = new Vector3(12f, -2f, 0f);
             playerClass.ForceClass();
+            player.GetComponent<Combat>().nextSkillThreshhold = 0;
         }
     }
 

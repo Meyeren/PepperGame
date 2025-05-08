@@ -167,7 +167,7 @@ public class PlayerMovement : MonoBehaviour
                 StartDash();
                 GetComponent<Combat>().isInvulnerable = true;
                 GetComponent<Combat>().basicDamage += GetComponent<Combat>().dashAttackDamage;
-                Stamina -= 100;
+                Stamina -= 50f;
                 noStaminaRegen = true;
                 Invoke("EndDashInvul", 1f);
             }
