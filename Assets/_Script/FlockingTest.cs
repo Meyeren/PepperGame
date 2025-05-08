@@ -13,7 +13,7 @@ public class FlockingTest : MonoBehaviour
 
     public float targetWeight = 0.5f;
     public float randomMovementWeight = 0.2f;
-    public float avoidanceWeight = 2f; 
+    public float avoidanceWeight = 2f;
     public LayerMask obstacleMask;
     [SerializeField] private LayerMask neighborLayerMask;
     public float minSpeed = 0.1f;
@@ -40,7 +40,7 @@ public class FlockingTest : MonoBehaviour
 
     [Header("State Settings")]
     public float chaseTransitionTime = 1f;
-    public float attackCooldown = 1.5f;
+    public float attackCooldown = 1f;
 
     [Header("Flocking Variations")]
     public float chaseFlockingRatio = 0.7f;
@@ -61,6 +61,8 @@ public class FlockingTest : MonoBehaviour
     Renderer playerMat;
 
     Combat combat;
+
+    private float lastAttackTime = -Mathf.Infinity;
 
     void Start()
     {
@@ -83,7 +85,7 @@ public class FlockingTest : MonoBehaviour
 
     void Update()
     {
-        StateMachine.Update(); 
+        StateMachine.Update();
     }
 
     public void ApplyFlocking(float flockingIntensity = 1f)
@@ -96,7 +98,6 @@ public class FlockingTest : MonoBehaviour
         Vector3 avoidance = Vector3.zero;
 
         int neighborCount = 0;
-        //int obstacleCount = 0;
 
         int numNeighbors = Physics.OverlapSphereNonAlloc(
             transform.position,
@@ -141,9 +142,9 @@ public class FlockingTest : MonoBehaviour
         Vector3 randomMovement = GetRandomMovement();
 
         Vector3 moveDir = (
-            separation.normalized * dynamicWeights.x + 
-            alignment * dynamicWeights.y +             
-            cohesion * dynamicWeights.z +             
+            separation.normalized * dynamicWeights.x +
+            alignment * dynamicWeights.y +
+            cohesion * dynamicWeights.z +
             toTarget * targetWeight +
             randomMovement +
             avoidance
@@ -227,17 +228,20 @@ public class FlockingTest : MonoBehaviour
     public bool IsPlayerNearby()
     {
         if (target == null) return false;
-        return Vector3.Distance(transform.position, target.position) < 400f; 
+        return Vector3.Distance(transform.position, target.position) < 400f;
     }
 
     public bool IsInAttackRange()
     {
         if (target == null) return false;
-        return Vector3.Distance(transform.position, target.position) < enemyAttackRange; 
+        return Vector3.Distance(transform.position, target.position) < enemyAttackRange;
     }
 
     public void DoAttack()
     {
+        if (Time.time - lastAttackTime < attackCooldown) return;
+        lastAttackTime = Time.time;
+
         if (IsInAttackRange())
         {
             animator.SetBool("isAttacking", true);
@@ -249,8 +253,6 @@ public class FlockingTest : MonoBehaviour
                     target.GetComponent<Combat>().DamageVibration();
                     playerMat.material.color = Color.blue;
                     Invoke("EndColor", 0.1f);
-                   
-                    
                 }
                 else
                 {
@@ -258,21 +260,15 @@ public class FlockingTest : MonoBehaviour
                     target.GetComponent<Combat>().DamageVibration();
                     playerMat.material.color = Color.red;
                     Invoke("EndColor", 0.1f);
-                    
                 }
-
             }
             else if (target.GetComponent<Combat>().isInvulnerable)
             {
                 playerMat.material.color = new Color(0.6f, 0.2f, 0.8f);
                 target.GetComponent<Combat>().DamageVibration();
                 Invoke("EndColor", 0.1f);
-                
             }
         }
-        
-        
-            
     }
 
     public void StopMoving()
@@ -282,12 +278,11 @@ public class FlockingTest : MonoBehaviour
 
     public void EnemyDeath()
     {
-        
         if (waveManager != null)
         {
             waveManager.OnEnemyKilled(gameObject);
         }
-        
+
         Destroy(gameObject);
     }
 
@@ -297,8 +292,7 @@ public class FlockingTest : MonoBehaviour
         direction.y = 0f;
 
         rb.AddForce(direction * knockBackAmount, ForceMode.Impulse);
-        Invoke("ResetKnockBack",0.5f);
-        
+        Invoke("ResetKnockBack", 0.5f);
     }
 
     void ResetKnockBack()
@@ -319,6 +313,5 @@ public class FlockingTest : MonoBehaviour
     void EndColor()
     {
         playerMat.material.color = originalColor;
-        
     }
 }

@@ -338,7 +338,7 @@ MonoBehaviour:
   enemyDamage: 15
   enemyAttackRange: 4
   chaseTransitionTime: 1
-  attackCooldown: 4
+  attackCooldown: 0.1
   chaseFlockingRatio: 0.7
   target: {fileID: 0}
 --- !u!114 &6446699561580773000
