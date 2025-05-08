@@ -10,16 +10,14 @@ public class KillCount : MonoBehaviour
 
     CanvasGroup canvas;
 
-    int lastKillCount;
-    float checkTimer = 0f; 
 
     private void Start()
     {
         combat = GetComponentInParent<Combat>();
         canvas = GetComponent<CanvasGroup>();
-        lastKillCount = combat.killCount;
+
         canvas.alpha = 0f;
-        checkTimer = 6f;
+
     }
 
     private void Update()
