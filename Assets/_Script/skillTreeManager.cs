@@ -210,7 +210,8 @@ public class skillTreeManager : MonoBehaviour
 
 
         Collider[] hit = Physics.OverlapSphere(target.transform.position, 5f);
-
+        bool backPressed = Keyboard.current.gKey.wasPressedThisFrame ||
+                       (Gamepad.current != null && Gamepad.current.buttonEast.wasPressedThisFrame);
         foreach (var collider in hit)
         {
             if (collider.CompareTag("Player"))
@@ -218,17 +219,19 @@ public class skillTreeManager : MonoBehaviour
                 if (!skillTree.enabled && interactAction.triggered)
                 {
                     OpenTree();
+                    
+                }
+                else if (skillTree.enabled && backPressed)
+                {
+                   
+                    CloseTree();
                 }
             }
         }
 
-        bool backPressed = Keyboard.current.eKey.wasPressedThisFrame ||
-                        (Gamepad.current != null && Gamepad.current.buttonSouth.wasPressedThisFrame);
+       
 
-        if (skillTree.enabled && backPressed)
-        {
-            CloseTree();
-        }
+
 
         if (skillTree.enabled && Gamepad.current != null)
         {
