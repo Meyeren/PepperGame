@@ -49,6 +49,8 @@ public class EnemyWaves : MonoBehaviour
 
     private bool hasInitialSpawned = false;
 
+    Combat combat;
+
     public int whatWaveIsIt = 1;
 
     private List<GameObject> activeEnemies = new List<GameObject>();
@@ -61,7 +63,7 @@ public class EnemyWaves : MonoBehaviour
         WaveType.Weak,
         WaveType.Weak,
         WaveType.Strong,
-        WaveType.Weak,
+        WaveType.Strong,
         WaveType.Strong,
         WaveType.Strong,
         WaveType.Boss
@@ -80,6 +82,7 @@ public class EnemyWaves : MonoBehaviour
 
     void Start()
     {
+        combat = GameObject.FindWithTag("Player").GetComponent<Combat>();
         if (spawnPoints.Count == 0)
         {
             Debug.Log("no point stupid");
@@ -189,7 +192,10 @@ public class EnemyWaves : MonoBehaviour
 
         if (enemiesAlive <= 0 && !isSpawning)
         {
-            GameObject.FindFirstObjectByType<ShopManager>().canOpenShop = true;
+            if (!combat.isControl) {
+                GameObject.FindFirstObjectByType<ShopManager>().canOpenShop = true;
+            }
+            
             GameObject.FindGameObjectWithTag("Player").GetComponent<Combat>().playerHealth += 10f;
         }
     }

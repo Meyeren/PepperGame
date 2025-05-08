@@ -328,11 +328,13 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 512
   minSpeed: 0.1
+  rotationSmoothness: 5
+  acceleration: 2
   randomChangeInterval: 2
   avoidanceRays: 5
   avoidanceRayDistance: 3
   avoidanceAngle: 45
-  enemySpeed: 2.5
+  enemySpeed: 5
   enemyDamage: 15
   enemyAttackRange: 4
   chaseTransitionTime: 1

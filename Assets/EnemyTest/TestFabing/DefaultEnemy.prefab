@@ -170,7 +170,7 @@ MonoBehaviour:
   avoidanceRays: 7
   avoidanceRayDistance: 2.5
   avoidanceAngle: 60
-  enemySpeed: 6
+  enemySpeed: 7
   enemyDamage: 5
   enemyAttackRange: 3
   chaseTransitionTime: 1
