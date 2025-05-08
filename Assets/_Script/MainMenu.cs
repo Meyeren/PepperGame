@@ -8,7 +8,6 @@ public class MainMenu : MonoBehaviour
 {
     public bool isButtonClickable;
     public Button newGameButton;
-    public Button ContinueGameButton;
     public Button SettingsButton;
     public Button CloseSettingsButton;
     public Button CreditsButton;
@@ -63,7 +62,6 @@ public class MainMenu : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(CloseSettingsButton.gameObject);
             newGameButton.enabled = false;
-            ContinueGameButton.enabled = false;
             SettingsButton.enabled = false;
             CreditsButton.enabled = false;
             ExitButton.enabled = false;
@@ -81,7 +79,6 @@ public class MainMenu : MonoBehaviour
         {
             EventSystem.current.SetSelectedGameObject(SettingsButton.gameObject);
             newGameButton.enabled = true;
-            ContinueGameButton.enabled = true;
             SettingsButton.enabled = true;
             CreditsButton.enabled = true;
             ExitButton.enabled = true;
