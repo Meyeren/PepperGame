@@ -149,6 +149,10 @@ public class PlayerMovement : MonoBehaviour
         
         if (!canMove) return;
 
+        if (Stamina < 0f)
+        {
+            Stamina = 0f;
+        }
         isAttacking = GetComponent<Combat>().isAttacking;
         isGroundSlamming = GetComponent<Combat>().isGroundSlamming;
 
